@@ -1,4 +1,4 @@
-## MAD24_P01_Team4
+## MAD24_P01_Team4 - FOOD 
 
 # Stage 1
 **Introduction:**
@@ -26,19 +26,19 @@
 **Task and features - one person one or more feature:**
 
 ```
-1. [Name]
+1. 
 ```
 ```
-2. [Name]
+2. 
 ```
 ```
-3. [Name]
+3. 
 ```
 ```
-4. [Name]
+4. 
 ```
 ```
-5. [Name]
+5. 
 ```
 or more
 # Stage 2

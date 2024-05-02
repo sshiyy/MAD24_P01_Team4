@@ -33,26 +33,26 @@ Food & Drink
 **Task and features - one person one or more feature:**
 
 ```
-1. 
-```
+1.
 Log in
 ```
-2. 
 ```
+2.
 Take orders
 ```
-3. 
 ```
+3.
 Make payment
 ```
-4. 
 ```
+4.
 Point system
 ```
-5. 
 ```
+5.
 Filtering page
 ```
+
 # Stage 2
 
 **Planned task and feature - one person one or more feature: [contiunous from stage 1]**

@@ -14,7 +14,7 @@ Kaylea Luk -
 **Introduction:**
 
 ```
-Welcome to Enchante, where each meal is an enjoyable experience! Our revolutionary app is intended to enhance your eating experience by bringing convenience and flavor to your fingertips. Whether you want a delicious pasta dish or a refreshing beverage, Enchante Pasta and Pour has you covered.
+Welcome to Enchante, where each meal is an enjoyable experience! Our revolutionary app is intended to enhance your eating experience by bringing convenience and flavor to your fingertips. Whether you want a delicious pasta dish or a refreshing beverage, Enchante has you covered.
 
 With our user-friendly interface, you can easily take orders and explore our extensive selection. The days of waiting in line are over; simply log in to your unique account and explore a world of gastronomic choices.
 
@@ -22,7 +22,7 @@ Track your orders in real time to ensure that your meals arrive on time and hot.
 
 But that's not all, our loyalty program earns you points for every purchase and provides thrilling bonuses and unique offers with each visit. Furthermore, our advanced filtering page allows you to adapt your dining experience to your own preferences, ensuring that each item is precisely tailored to your taste.
 
-Join us on a culinary journey unlike any other with Enchante Pasta and Pour. Download our app now and experience a world of flavor at your fingertips. Bon appétit!
+Join us on a culinary journey unlike any other with Enchante. Download our app now and experience a world of flavor at your fingertips. Bon appétit!
 ```
 
 
@@ -58,7 +58,7 @@ Forget about searching for cash or standing in line. You can quickly pay for yo
 ```
 4. Point system - Kaylea
 
-You get rewarded for your love of pasta with our loyalty program! Gain points for each purchase you make. These points can then be exchanged for interesting benefits like freebies, discounts, or even unique admission to events. Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
+You get rewarded for your love of food with our loyalty program! Gain points for each purchase you make. These points can then be exchanged for interesting benefits like freebies, discounts, or even unique admission to events. Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
 ```
 ```
 5. Filtering page - Raeann
@@ -68,7 +68,7 @@ Easily browse through our menu by utilizing our sophisticated filtering page. W
 
 # Stage 2 
 
-**Planned task and feature - one person one or more feature: [contiunous from stage 1]**
+**Planned task and feature - one person one or more feature: [continuous from stage 1]**
 
 ```
 1. Receive orders
@@ -83,6 +83,6 @@ Easily browse through our menu by utilizing our sophisticated filtering page. W
 4. Edit Food Details 
 ```
 ```
-5.
+5. In-restaurant order system
 ```
 

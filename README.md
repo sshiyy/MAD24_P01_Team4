@@ -5,7 +5,7 @@
 Tam Shi Ying - S10257952D
 Raeann Tai Yu Xuan - S10262832J
 Ng Kai Huat Jason - S10262552
-Tam Ming Qi - S10257808
+law Ming Qi - S10257808
 Kaylea Luk - 
 ```
 
@@ -46,17 +46,17 @@ Food & Drink
 With personalized accounts, logging in to the Enchante app grants you access to exclusive perks and features. Save your favorite orders for quick reordering, track your loyalty points, and receive personalized recommendations tailored to your tastes.
 ```
 ```
-2. Take orders
+2. Take orders - Shi Ying
 
 Stay up to date with real-time order tracking. You can track your order's progress from the minute you place it until it arrives at your door. No more wondering when your pasta will arrive; with our monitoring tool, you'll know exactly when to expect your wonderful dinner.
 ```
 ```
-3. Make payment
+3. Make payment - Ming Qi
 
 Forget about searching for cash or standing in line. You can quickly pay for your orders within the app thanks to our secure payment system. You can be confident that your transactions are secure and simple regardless of whether you like to use a credit card, PayPal, or another payment method.
 ```
 ```
-4. Point system
+4. Point system - Kaylea
 
 You get rewarded for your love of pasta with our loyalty program! Gain points for each purchase you make. These points can then be exchanged for interesting benefits like freebies, discounts, or even unique admission to events. Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
 ```

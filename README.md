@@ -35,19 +35,24 @@ Food & Drink
 ```
 1. 
 ```
+Log in
 ```
 2. 
 ```
+Take orders
 ```
 3. 
 ```
+Make payment
 ```
 4. 
 ```
+Point system
 ```
 5. 
 ```
-or more
+Filtering page
+```
 # Stage 2
 
 **Planned task and feature - one person one or more feature: [contiunous from stage 1]**

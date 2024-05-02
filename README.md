@@ -41,7 +41,7 @@ Food & Drink
 **Task and features - one person one or more feature:**
 
 ```
-1. Log in
+1. Log in - Jason
 
 With personalized accounts, logging in to the Enchante app grants you access to exclusive perks and features. Save your favorite orders for quick reordering, track your loyalty points, and receive personalized recommendations tailored to your tastes.
 ```
@@ -61,7 +61,7 @@ Forget about searching for cash or standing in line. You can quickly pay for yo
 You get rewarded for your love of pasta with our loyalty program! Gain points for each purchase you make. These points can then be exchanged for interesting benefits like freebies, discounts, or even unique admission to events. Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
 ```
 ```
-5. Filtering page
+5. Filtering page - Raeann
 
 Easily browse through our menu by utilizing our sophisticated filtering page. With the help of our user-friendly filters, you can locate the ideal food to fulfill your needs, regardless of your dietary restrictions, such as being gluten-free or vegetarian. You may easily tailor your culinary experience to fit your preferences, from ingredient preferences to dietary restrictions.
 ```

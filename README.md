@@ -28,7 +28,6 @@ Tam Shi Ying - S10257952D
 
 ```
 Food & Drink
-
 ```
 
 **Task and features - one person one or more feature:**

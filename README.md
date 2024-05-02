@@ -4,7 +4,9 @@
 ```
 Tam Shi Ying - S10257952D
 Raeann Tai Yu Xuan - S10262832J
-
+Ng Kai Huat Jason - S10262552
+Tam Ming Qi - S10257808
+Kaylea Luk - 
 ```
 
 
@@ -27,8 +29,7 @@ Join us on a culinary journey unlike any other with Enchante Pasta and Pour. Dow
 **Objective:**
 
 ```
-
-
+The Enchante application aims to facilitate a smooth and delightful eating experience for our customers while concurrently promoting business expansion. By giving users a simple way to browse our menu, place orders, and follow delivery in real time, our app seeks to boost sales. Additionally, we want to encourage customers to choose Enchante for their dining standards by introducing a point system that rewards repeat business and fosters customer loyalty. In order to differentiate Enchante from rivals and maintain our position as a leader in the culinary sector, we constantly work to improve our service and menu options by optimizing restaurant operations and obtaining insightful knowledge about customer needs and feedback. 
 ```
 
 **Category of application:**
@@ -65,7 +66,7 @@ You get rewarded for your love of pasta with our loyalty program! Gain points fo
 Easily browse through our menu by utilizing our sophisticated filtering page. With the help of our user-friendly filters, you can locate the ideal food to fulfill your needs, regardless of your dietary restrictions, such as being gluten-free or vegetarian. You may easily tailor your culinary experience to fit your preferences, from ingredient preferences to dietary restrictions.
 ```
 
-# Stage 2
+# Stage 2 
 
 **Planned task and feature - one person one or more feature: [contiunous from stage 1]**
 

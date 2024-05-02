@@ -31,8 +31,9 @@ Food & Drink
 ```
 
 **Task and features - one person one or more feature:**
-1.
+
 ```
+1.
 Log in
 ```
 ```
@@ -57,10 +58,12 @@ Filtering page
 **Planned task and feature - one person one or more feature: [contiunous from stage 1]**
 
 ```
-1. 
+1.
+Receive orders
 ```
 ```
 2.
+Show order status for user to track orders
 ```
 ```
 3.

@@ -31,9 +31,8 @@ Food & Drink
 ```
 
 **Task and features - one person one or more feature:**
-
-```
 1.
+```
 Log in
 ```
 ```

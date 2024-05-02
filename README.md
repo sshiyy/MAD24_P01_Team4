@@ -6,7 +6,7 @@ Tam Shi Ying - S10257952D
 Raeann Tai Yu Xuan - S10262832J
 Ng Kai Huat Jason - S10262552
 law Ming Qi - S10257808
-Kaylea Luk - 
+Kaylea Luk - S10258039
 ```
 
 

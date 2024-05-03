@@ -18,22 +18,17 @@ Welcome to Enchante, where each meal is an enjoyable experience! Our revolutiona
 experience by bringing convenience and flavor to your fingertips. Whether you want a delicious pasta dish or a refreshing beverage,
 Enchante has you covered.
 
-With our user-friendly interface, you can easily take orders and
-explore our extensive selection.The days of waiting in line are over!
-Just simply log in to your unique account and explore a world of
-gastronomic choices.
+With our user-friendly interface, you can easily take orders and explore our extensive selection.The days of waiting in line are over!
+Just simply log in to your unique account and explore a world of gastronomic choices.
 
-Track your orders in real time to ensure that your meals arrive on time
-and hot. When it comes time to pay the bill, our secure payment
+Track your orders in real time to ensure that your meals arrive on time and hot. When it comes time to pay the bill, our secure payment
 system makes things simple, giving you more time to savor each scrumptious bite.
 
-But that's not all, our loyalty program earns you points for every purchase and
-provides thrilling bonuses and unique offers with each visit.
-Furthermore, our advanced filtering page allows you to adapt your dining experience
+But that's not all, our loyalty program earns you points for every purchase and provides thrilling bonuses and unique offers with
+each visit. Furthermore, our advanced filtering page allows you to adapt your dining experience
 to your own preferences, ensuring that each item is precisely tailored to your taste.
 
-Join us on a culinary journey unlike any other with Enchante.
-Download our app now and experience a world of flavor at your fingertips.
+Join us on a culinary journey unlike any other with Enchante. Download our app now and experience a world of flavor at your fingertips.
 Bon appétit!
 ```
 

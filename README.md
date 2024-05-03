@@ -85,8 +85,9 @@ Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
 5. Filtering page - Raeann
 
 Easily browse through our menu by utilizing our sophisticated filtering page. With the help of our user-friendly filters,
-you can locate the ideal food to fulfill your needs, regardless of your dietary restrictions, such as being gluten-free or vegetarian.
-You may easily tailor your culinary experience to fit your preferences, from ingredient preferences to dietary restrictions.
+you can locate the ideal food to fulfill your needs, regardless of your dietary restrictions, such as being gluten-free or
+vegetarian. You may easily tailor your culinary experience to fit your preferences, from ingredient preferences to dietary
+restrictions.
 ```
 
 # Stage 2 

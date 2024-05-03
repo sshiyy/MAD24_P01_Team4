@@ -14,10 +14,8 @@ Kaylea Luk - S10258039
 **Introduction:**
 
 ```
-Welcome to Enchante, where each meal is an enjoyable experience!
-Our revolutionary app is intended to enhance your eating
-experience by bringing convenience and flavor to your fingertips.
-Whether you want a delicious pasta dish or a refreshing beverage,
+Welcome to Enchante, where each meal is an enjoyable experience! Our revolutionary app is intended to enhance your eating
+experience by bringing convenience and flavor to your fingertips. Whether you want a delicious pasta dish or a refreshing beverage,
 Enchante has you covered.
 
 With our user-friendly interface, you can easily take orders and

@@ -58,7 +58,7 @@ Food & Drink
 
 With personalized accounts, logging in to the Enchante app grants you access to exclusive perks and features.
 Save your favorite orders for quick reordering, track your loyalty points, and receive personalized recommendations
-tailored to your tastes.
+tailored to your tastes. With validations.
 ```
 ```
 2. Take orders - Shi Ying

@@ -56,38 +56,36 @@ Food & Drink
 ```
 1. Log in - Jason
 
-With personalized accounts, logging in to the Enchante app grants you access to exclusive perks and features.
-Save your favorite orders for quick reordering, track your loyalty points, and receive personalized recommendations
-tailored to your tastes. With validations.
+We will have a log in page for owner and user. For user, there will be an additional 
+sign in page for the users to create an account with us but it will be static where we 
+will hard code the username,password and email. 
 ```
 ```
 2. Take orders - Shi Ying
 
-Stay up to date with real-time order tracking. You can track your order's progress from the minute you place it until
-it arrives at your door. No more wondering when your pasta will arrive; with our monitoring tool, you'll know exactly
-when to expect your wonderful dinner.
+There will be a product page with all the items displayed and a add to cart button so that 
+users will be able to take their orders and make payment. 
 ```
 ```
 3. Make payment - Ming Qi
 
-Forget about searching for cash or standing in line. You can quickly pay for your orders within the app thanks to our
-secure payment system. You can be confident that your transactions are secure and simple regardless of whether you like to
-use a credit card, PayPal, or another payment method.
+There will be multiple payment method like QR code and credit card. For QR, we can make it static 
+where we will leave it there for 5 seconds and it will pay automatically and for credit card we can 
+just let them key in the details and will display the last 4 digit and proceed to payment. 
 ```
 ```
 4. Point system - Kaylea
 
-You get rewarded for your love of food with our loyalty program! Gain points for each purchase you make. These points
-can then be exchanged for interesting benefits like freebies, discounts, or even unique admission to events.
-Your devotion will be rewarded more the more you enjoy Enchante Pasta and Pour.
+There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
+when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
+to become gold. Can have a reedem points page? so users can redeem voucher. 
 ```
 ```
 5. Filtering page - Raeann
 
-Easily browse through our menu by utilizing our sophisticated filtering page. With the help of our user-friendly filters,
-you can locate the ideal food to fulfill your needs, regardless of your dietary restrictions, such as being gluten-free or
-vegetarian. You may easily tailor your culinary experience to fit your preferences, from ingredient preferences to dietary
-restrictions.
+This will be in the search/product page where the items will be sorted into categories: Pasta,
+Pizza, Appetizer, side dish, desserts and beverages. User will be allowed to click on their desired
+category and find the dish or item they want to order. 
 ```
 
 # Stage 2 

@@ -93,13 +93,13 @@ category and find the dish or item they want to order.
 **Planned task and feature - one person one or more feature: [continuous from stage 1]**
 
 ```
-1. Receive orders
+1. Log in - owner and user
 ```
 ```
-2. Show order status for user to track orders
+2. Real time order tracking
 ```
 ```
-3. Order History
+3. Preference page
 ```
 ```
 4. Edit Food Details 

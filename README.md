@@ -115,9 +115,17 @@ into the preference of the user. This will make ordering more convenient and fas
 tap on the preference button and get it added to the cart.
 ```
 ```
-4. 
+4. Notifications
+
+There will be a notification function whereby users can get notification regarding their orders.
+For example, when their orders are arriving, there will be a notification to inform users. The
+notification will also appear when new items are added in the menu.
 ```
 ```
-5. 
+5.  Statistics
+
+There will be a statistics page for owner to track the business. Some statistics includes the
+demand for each food, delivery ratings as well as overall food rating. There will also be a
+statistics involving the category of reviews that were made by customers.
 ```
 

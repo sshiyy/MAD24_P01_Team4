@@ -93,18 +93,39 @@ category and find the dish or item they want to order.
 **Planned task and feature - one person one or more feature: [continuous from stage 1]**
 
 ```
-1. Receive orders
+1. Log in - owner and user (dynamic - database)
+
+We will implement the using of database for our log in page so that users and owners can sign up
+and log in with. The information that users and owners provided will be stored in the database
+for future log ins and also syncing of data.
 ```
 ```
-2. Show order status for user to track orders
+2. Real time order tracking
+
+There will be a page that consists of real time order tracking so that users are able to track where
+their order are specifically and also get an estimate of the duration it will take for the order to
+reach their door step.
 ```
 ```
-3. Order History
+3. Preference function
+
+There will be a preference function in the main page which makes use of database to collect what
+users order. With this information, the system will gather what users frequently order and add it
+into the preference of the user. This will make ordering more convenient and fast as user can just
+tap on the preference button and get it added to the cart.
 ```
 ```
-4. Edit Food Details 
+4. Notifications
+
+There will be a notification function whereby users can get notification regarding their orders.
+For example, when their orders are arriving, there will be a notification to inform users. The
+notification will also appear when new items are added in the menu.
 ```
 ```
-5. In-restaurant order system
+5.  Statistics
+
+There will be a statistics page for owner to track the business. Some statistics includes the
+demand for each food, delivery ratings as well as overall food rating. There will also be a
+statistics involving the category of reviews that were made by customers.
 ```
 

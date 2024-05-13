@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MAD_P01_Team4</string>
+    <string name="underline_clear_all"><u>Clear All</u></string>
+
+
+
 </resources>

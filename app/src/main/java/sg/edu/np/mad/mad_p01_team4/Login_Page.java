@@ -43,7 +43,8 @@ public class Login_Page extends AppCompatActivity {
                 // Check if username or password is empty
                 if (usernameText.isEmpty() || passwordText.isEmpty()) {
                     // Show a Toast message (or any other popup)
-                    Toast.makeText(v.getContext(), "Username or Password cannot be empty!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "Username or Password cannot be empty!",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     // Username and password are not empty, proceed with login logic (optional)
                     // ... (e.g., validate credentials with server)

@@ -68,28 +68,73 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/pastacarbonara" />
 
-            <TextView
-                android:id="@+id/carbonaraprice"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:text="Carbonara"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/carbonaratext"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="noodle"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/carbonaraprice" />
+                <TextView
+                    android:id="@+id/carbonaratext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Carbonara"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/carbonaraprice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="noodle"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/carbonaratext" />
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:orientation="horizontal">
+
+                   <ImageButton
+                       android:id="@+id/btn_decrease"
+                       android:layout_width="50dp"
+                       android:layout_height="50dp"
+                       android:padding="15dp"
+                       android:scaleType="fitCenter"
+                       android:adjustViewBounds="true"
+                       app:srcCompat="@drawable/minusicon"
+                       android:background="@color/lightGray"/>
+
+                   <TextView
+                       android:id="@+id/tv_quantity"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginLeft="10dp"
+                       android:layout_marginRight="10dp"
+                       android:text="1"
+                       android:textColor="@color/black"
+                       android:textSize="15sp" />
+
+                   <ImageButton
+                       android:id="@+id/btn_increase"
+                       android:layout_width="50dp"
+                       android:layout_height="50dp"
+                       android:padding="15dp"
+                       android:scaleType="fitCenter"
+                       android:adjustViewBounds="true"
+                       app:srcCompat="@drawable/plusicon"
+                       android:background="@color/lightGray"/>
+
+               </LinearLayout>
+
+            </LinearLayout>
+
 
 
         </LinearLayout>

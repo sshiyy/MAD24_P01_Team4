@@ -1,68 +1,32 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductPage extends AppCompatActivity {
 
-    private TextView tvQuantity;
-    private ImageButton btnIncrease;
-    private ImageButton btnDecrease;
-    private int quantity = 0;
+    private RecyclerView recyclerView;
+    private FoodAdapter foodAdapter;
+    private List<food_item> foodList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_product_page);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
-        tvQuantity = findViewById(R.id.tv_quantity);
-        btnIncrease = findViewById(R.id.btn_increase);
-        btnDecrease = findViewById(R.id.btn_decrease);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        tvQuantity.setText(String.valueOf(quantity));
+        foodList = new ArrayList<>();
+        foodList.add(new food_item("Carbonara", 12.50, R.drawable.pastacarbonara));
+        foodList.add(new food_item("Bolognese", 11.00, R.drawable.pastabolognese));
 
-        btnIncrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                increaseQuantity();
-            }
-        });
 
-        btnDecrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                decreaseQuantity();
-            }
-        });
-
-    }
-
-    public void increaseQuantity() {
-        quantity++;
-        tvQuantity.setText(String.valueOf(quantity));
-    }
-
-    public void decreaseQuantity() {
-        if (quantity>0){
-            quantity--;
-            tvQuantity.setText(String.valueOf(quantity));
-        }
+        foodAdapter = new FoodAdapter(this, foodList);
+        recyclerView.setAdapter(foodAdapter);
     }
 }
-
-
-

@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "MAD_P01_Team4"
 include(":app")
+include(":app")
  

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#222222</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightBrown">#eed6c2</color>
     <color name="lightGray">#e2d9cd</color>
     <color name="fortexts">#656565</color>
+    <color name="yellow">#f4c430</color>
+    <color name="background">#f4efe9</color>
+    <color name="green">#49583c</color>
+    <color name="orange">#d5702b</color>
 </resources>

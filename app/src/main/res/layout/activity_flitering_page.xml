@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/lightBrown"
+    android:background="@color/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FliteringPage">
@@ -97,7 +97,7 @@
                 app:srcCompat="@drawable/pasta"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:background="@color/lightGray"
+                android:background="@color/white"
                 android:contentDescription="Pasta Image" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -137,7 +137,7 @@
                 android:layout_height="90dp"
                 android:padding="15dp"
                 android:adjustViewBounds="true"
-                android:background="@color/lightGray"
+                android:background="@color/white"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/pizza" />
 
@@ -176,7 +176,7 @@
                 android:layout_height="90dp"
                 android:padding="15dp"
                 android:adjustViewBounds="true"
-                android:background="@color/lightGray"
+                android:background="@color/white"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/appetizer" />
 
@@ -217,7 +217,7 @@
                 app:srcCompat="@drawable/sidedish"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:background="@color/lightGray"
+                android:background="@color/white"
                 />
 
             </com.google.android.material.card.MaterialCardView>
@@ -259,7 +259,7 @@
                 app:srcCompat="@drawable/desserts"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
-                android:background="@color/lightGray"/>
+                android:background="@color/white"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -299,7 +299,7 @@
                     app:srcCompat="@drawable/beverages"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
-                    android:background="@color/lightGray"/>
+                    android:background="@color/white"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -354,8 +354,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:text="Lot1"
-            android:background="@drawable/button_background"
-            android:textColor="@color/black"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/filterBy" />
 
         <Space
@@ -368,9 +368,9 @@
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/button_background"
+            android:backgroundTint="@color/green"
             android:text="Jem"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/filterBy"
             />
 
@@ -383,10 +383,10 @@
             android:layout_width="110dp"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/button_background"
+            android:backgroundTint="@color/green"
             android:layout_marginLeft="10dp"
             android:text="Ion"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@+id/filterBy"
             />
 
@@ -463,10 +463,10 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="150dp"
         android:layout_marginEnd="1dp"
-        android:background="@color/white"
+        android:backgroundTint="@color/green"
         android:gravity="center"
         android:text="Apply"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekbarlinear" />
@@ -478,6 +478,7 @@
         android:orientation="vertical"
         android:background="@color/white"
         android:layout_marginTop="30dp"
+        android:backgroundTint="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/applyBtn">
 
     <LinearLayout
@@ -495,6 +496,7 @@
             android:padding="20dp"
             android:layout_marginLeft="10dp"
             app:srcCompat="@drawable/home"
+
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"

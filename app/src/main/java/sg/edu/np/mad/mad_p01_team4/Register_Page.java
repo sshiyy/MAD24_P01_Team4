@@ -43,9 +43,6 @@ public class Register_Page extends AppCompatActivity {
                 String regPasswordText = regpassword.getText().toString().trim();
                 String regEmailText = regemail.getText().toString().trim();
 
-                // Transfer to Log In Page
-                Intent intent = new Intent(v.getContext(), ProductPage.class);
-                v.getContext().startActivity(intent);
             }
         });
 

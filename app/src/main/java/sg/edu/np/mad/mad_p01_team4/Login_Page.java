@@ -49,9 +49,9 @@ public class Login_Page extends AppCompatActivity {
                     // Username and password are not empty, proceed with login logic (optional)
                     // ... (e.g., validate credentials with server)
 
-                    // Start Product Page
-                    Intent intent = new Intent(v.getContext(), ProductPage.class);
-                    v.getContext().startActivity(intent);
+                    // Start Product Page ( ADD THIS BACK )
+                    //Intent intent = new Intent(v.getContext(), ProductPage.class);
+                    //v.getContext().startActivity(intent);
                 }
             }
         });

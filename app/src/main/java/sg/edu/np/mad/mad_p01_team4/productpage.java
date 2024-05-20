@@ -45,9 +45,14 @@ public class productpage extends AppCompatActivity {
 
         // for pizza
         ArrayList<Food> pizza_list = new ArrayList<>();
+        pizza_list.add(new Food("Margherita Pizza", 10.00, R.drawable.marghertiapizza));
+        pizza_list.add(new Food("Pepperoni Pizza", 12.00, R.drawable.pepperonipizza));
+        pizza_list.add(new Food("Cheese Pizza", 11.00, R.drawable.cheesepizza));
+        pizza_list.add(new Food("Mushroom Pizza", 11.00, R.drawable.mushroompizza));
 
         // for appetizer
         ArrayList<Food> appetizer_list = new ArrayList<>();
+        appetizer_list.add(new Food("Mushroom Soup", 9.00, R.drawable.mushroomsoupgarbread));
 
         // for side dish
         ArrayList<Food> sidedish_list = new ArrayList<>();
@@ -59,13 +64,29 @@ public class productpage extends AppCompatActivity {
         ArrayList<Food> beverage_list = new ArrayList<>();
 
 
-        // recyclerview
+        // recyclerview for mains
         FoodAdapter foodAdapter = new FoodAdapter(food_list, this);
         RecyclerView recyclerView = findViewById(R.id.productpagerv);
         GridLayoutManager gridlayoutman = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridlayoutman);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(foodAdapter);
+
+        // recyclerview for pizza
+        FoodAdapter pizzaAdapter = new FoodAdapter(pizza_list, this);
+        RecyclerView pizzaRecyclerView = findViewById(R.id.pizzapagerv);
+        GridLayoutManager pizzaLayoutManager = new GridLayoutManager(this, 2);
+        pizzaRecyclerView.setLayoutManager(pizzaLayoutManager);
+        pizzaRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        pizzaRecyclerView.setAdapter(pizzaAdapter);
+
+        // recyclerview for appetizer
+        FoodAdapter appetizerAdapter = new FoodAdapter(appetizer_list, this);
+        RecyclerView appetizerRecyclerView = findViewById(R.id.appetizerpagerv);
+        GridLayoutManager appetizerLayoutManager = new GridLayoutManager(this, 2);
+        appetizerRecyclerView.setLayoutManager(appetizerLayoutManager);
+        appetizerRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        appetizerRecyclerView.setAdapter(appetizerAdapter);
 
     }
 }

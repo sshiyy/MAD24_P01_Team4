@@ -1,6 +1,9 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +23,55 @@ public class FliteringPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Find the ImageView by its ID
+        ImageView crossImage = findViewById(R.id.crossImage);
+
+        // Set an OnClickListener on it
+        crossImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Use an Intent to navigate to the target activity (ProductActivity)
+                Intent intent = new Intent(FliteringPage.this, productpage.class);
+                startActivity(intent);
+            }
+        });
+
+        // Set click listeners for other ImageButtons (assuming you have them in your layout)
+        ImageView homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to HomeActivity
+                startActivity(new Intent(FliteringPage.this, productpage.class));
+            }
+        });
+
+        ImageView orderButton = findViewById(R.id.order);
+        orderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to OrderActivity
+                startActivity(new Intent(FliteringPage.this, Checkout.class));
+            }
+        });
+
+//        ImageView favouritesButton = findViewById(R.id.favourites);
+//        favouritesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to FavouritesActivity
+//                startActivity(new Intent(FliteringPage.this, FavouritesActivity.class));
+//            }
+//        });
+
+//        ImageView accountButton = findViewById(R.id.account);
+//        accountButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to AccountActivity
+//                startActivity(new Intent(FliteringPage.this, AccountActivity.class));
+//            }
+//        });
     }
 }

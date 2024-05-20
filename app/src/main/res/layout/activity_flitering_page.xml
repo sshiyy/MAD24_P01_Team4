@@ -326,7 +326,7 @@
         android:layout_width="wrap_content"
         android:layout_height="21dp"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="360dp"
+        android:layout_marginTop="340dp"
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -389,21 +389,25 @@
         android:gravity="center"
         android:text="Apply"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
         app:layout_constraintTop_toBottomOf="@+id/seekbarlinear" />
 
 
 
         <LinearLayout
+            android:id="@+id/bottomLinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginBottom="30dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/rounded_searchtext"
-            app:layout_constraintTop_toBottomOf="@+id/applyBtn">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageButton
                 android:id="@+id/home"

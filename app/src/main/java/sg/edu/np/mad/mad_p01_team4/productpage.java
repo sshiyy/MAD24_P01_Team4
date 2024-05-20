@@ -1,6 +1,9 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.view.View;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +30,8 @@ public class productpage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
 
         // for mains
         ArrayList<Food> food_list = new ArrayList<>();
@@ -147,6 +152,18 @@ public class productpage extends AppCompatActivity {
         beverageRecyclerView.setLayoutManager(beverageLayoutManager);
         beverageRecyclerView.setItemAnimator(new DefaultItemAnimator());
         beverageRecyclerView.setAdapter(beverageAdapter);
+
+
+        //intent for Filter
+        Button filterButton = findViewById(R.id.filterbutton);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(productpage.this, FliteringPage.class));
+
+            }
+        });
 
     }
 }

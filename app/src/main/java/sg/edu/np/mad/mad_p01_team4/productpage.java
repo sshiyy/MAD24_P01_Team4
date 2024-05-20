@@ -55,7 +55,12 @@ public class productpage extends AppCompatActivity {
         appetizer_list.add(new Food("Mushroom Soup", 9.00, R.drawable.mushroomsoupgarbread));
         appetizer_list.add(new Food("Cauliflower Soup", 7.00, R.drawable.cheesycauliflowersoup));
         appetizer_list.add(new Food("Clam Chowder", 8.00, R.drawable.clamchowder));
+        appetizer_list.add(new Food("Avocado Toast", 7.00, R.drawable.avocadotoast));
+        appetizer_list.add(new Food("Broccoli Toast", 6.00, R.drawable.broccoligarlictoastwithhoney));
         appetizer_list.add(new Food("Poached Salmon", 15.00, R.drawable.poachedsalmon));
+        appetizer_list.add(new Food("Grilled Fish", 14.00, R.drawable.grilledfish));
+        appetizer_list.add(new Food("Smoked Salmon Rosti", 12.00, R.drawable.smokesalmonrosti));
+        appetizer_list.add(new Food("Salad", 6.00, R.drawable.salad));
 
         // for side dish
         ArrayList<Food> sidedish_list = new ArrayList<>();

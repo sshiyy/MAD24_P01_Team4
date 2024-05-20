@@ -8,28 +8,29 @@
     tools:context=".productpage">
 
     <TextView
-        android:id="@+id/productpagetitle"
+        android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:text="Enchanté"
-        android:textSize="40sp"
+        android:layout_height="100dp"
+        android:text="ENCHANTE"
+        android:textColor="@color/white"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/green"
         />
 
-    <ScrollView
+
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/productpagesv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/productpagetitle"
-        app:layout_constraintBottom_toTopOf="@id/bottomLinear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/background"
-        >
+        app:layout_constraintBottom_toTopOf="@id/bottomLinear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,26 +40,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                >
 
                 <TextView
                     android:id="@+id/tvMains"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:text="Mains"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
+                    android:layout_marginLeft="15dp"
                     android:layout_weight="1"
-                    android:layout_marginLeft="15dp" />
+                    android:text="Mains"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/filterbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sort By"
                     android:layout_marginRight="20dp"
                     android:backgroundTint="@color/green"
-                    />
+                    android:text="Sort By" />
 
             </LinearLayout>
 
@@ -66,175 +68,176 @@
                 android:id="@+id/productpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tvPizza"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Pizza"
-                android:textStyle="bold"
-                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/productpagerv"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Pizza"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/productpagerv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pizzapagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tvAppetizer"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Appetizer"
-                android:textStyle="bold"
-                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/pizzapagerv"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Appetizer"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pizzapagerv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/appetizerpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tvSidedish"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Side Dish"
-                android:textStyle="bold"
-                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/appetizerpagerv"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Side Dish"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appetizerpagerv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sidedishpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tvDessert"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Dessert"
-                android:textStyle="bold"
-                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/sidedishpagerv"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Dessert"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sidedishpagerv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dessertpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tvBeverage"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Beverage"
-                android:textStyle="bold"
-                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/dessertpagerv"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Beverage"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dessertpagerv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/beveragepagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/bottomLinear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/white"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="80dp"
-            android:padding="20dp"
             android:layout_marginLeft="10dp"
-            app:srcCompat="@drawable/home"
-            android:scaleType="fitCenter"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            />
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/home" />
+
         <ImageButton
             android:id="@+id/order"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="80dp"
-            android:padding="20dp"
             android:layout_marginLeft="10dp"
-            app:srcCompat="@drawable/order"
-            android:scaleType="fitCenter"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
-            />
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/order" />
 
         <ImageButton
             android:id="@+id/favourites"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="80dp"
-            android:padding="20dp"
             android:layout_marginLeft="10dp"
-            app:srcCompat="@drawable/favourite"
-            android:scaleType="fitCenter"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
-            />
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/favourite" />
 
         <ImageButton
             android:id="@+id/account"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="80dp"
-            android:padding="20dp"
             android:layout_marginLeft="10dp"
-            app:srcCompat="@drawable/account"
-            android:scaleType="fitCenter"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
-            />
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/account" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cart_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/shoppingcartimg"
+        android:backgroundTint="@color/green"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productpagesv"
+        app:layout_constraintVertical_bias="1.0"
+        app:maxImageSize="100dp"
+        app:fabCustomSize="100dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

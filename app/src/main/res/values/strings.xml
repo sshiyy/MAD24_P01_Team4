@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MAD_P01_Team4</string>
     <string name="underline_clear_all"><u>Clear All</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

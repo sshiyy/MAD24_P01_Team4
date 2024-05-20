@@ -57,19 +57,47 @@ public class productpage extends AppCompatActivity {
         appetizer_list.add(new Food("Clam Chowder", 8.00, R.drawable.clamchowder));
         appetizer_list.add(new Food("Avocado Toast", 7.00, R.drawable.avocadotoast));
         appetizer_list.add(new Food("Broccoli Toast", 6.00, R.drawable.broccoligarlictoastwithhoney));
+        appetizer_list.add(new Food("Cheese bread sticks",6.80, R.drawable.cheesybreadsticks));
         appetizer_list.add(new Food("Poached Salmon", 15.00, R.drawable.poachedsalmon));
         appetizer_list.add(new Food("Grilled Fish", 14.00, R.drawable.grilledfish));
+        appetizer_list.add(new Food("Spicy Shrimp", 14.00, R.drawable.spicycaribbeanshrimp));
         appetizer_list.add(new Food("Smoked Salmon Rosti", 12.00, R.drawable.smokesalmonrosti));
         appetizer_list.add(new Food("Salad", 6.00, R.drawable.salad));
 
         // for side dish
         ArrayList<Food> sidedish_list = new ArrayList<>();
+        sidedish_list.add(new Food("BBQ Sausage", 8.00, R.drawable.bbqsausage));
+        sidedish_list.add(new Food("Buffalo Wings", 9.00, R.drawable.buffalowings));
+        sidedish_list.add(new Food("Calamari", 8.50, R.drawable.calamari));
+        sidedish_list.add(new Food("Curly Fries", 7.00, R.drawable.curlyfries));
+        sidedish_list.add(new Food("Fries", 6.00, R.drawable.fries));
+        sidedish_list.add(new Food("Honey Chicken Wings", 9.00, R.drawable.honeychickenwings));
+        sidedish_list.add(new Food("Meatball & Cheese", 8.00, R.drawable.meatballandmozzarella));
+        sidedish_list.add(new Food("Onion Ring", 5.00, R.drawable.onionrings));
+        sidedish_list.add(new Food("Popcorn Chicken", 7.00, R.drawable.popcornchick));
 
         // for dessert
         ArrayList<Food> dessert_list = new ArrayList<>();
+        dessert_list.add(new Food("Tiramisu Crepe Cake", 6.00, R.drawable.tiramisucrepecake));
+        dessert_list.add(new Food("Tiramisu", 7.00, R.drawable.tiramisu));
+        dessert_list.add(new Food("Strawberry Shortcake", 6.00, R.drawable.strawberryshortcake));
+        dessert_list.add(new Food("Rainbow Crepe Cake", 6.00, R.drawable.rainbowcrepecake));
+        dessert_list.add(new Food("Ice Cream Waffle", 7.00, R.drawable.icecreamwaffle));
+        dessert_list.add(new Food("Ice Cream Croissant", 8.00, R.drawable.icecreamcroissant));
+        dessert_list.add(new Food("Chocolate Cake", 6.00, R.drawable.chococake));
+        dessert_list.add(new Food("Banana Split", 7.00, R.drawable.bananasplit));
 
         // for beverage
         ArrayList<Food> beverage_list = new ArrayList<>();
+        beverage_list.add(new Food("Apple Juice", 3.50, R.drawable.applejuice));
+        beverage_list.add(new Food("Avocado Milkshake", 5.00, R.drawable.avocadomilkshake));
+        beverage_list.add(new Food("Coffee", 3.50, R.drawable.coffee));
+        beverage_list.add(new Food("Hot Chocolate", 3.50, R.drawable.hotchoco));
+        beverage_list.add(new Food("Lemonade", 2.50, R.drawable.lemonade));
+        beverage_list.add(new Food("Mocha", 3.50, R.drawable.mocha));
+        beverage_list.add(new Food("Orange Juice", 3.50, R.drawable.orangejuice));
+        beverage_list.add(new Food("Root Beer", 4.50, R.drawable.rootbeer));
+        beverage_list.add(new Food("Strawberry Smoothie", 5.00, R.drawable.strawberrysmoothie));
 
 
         // recyclerview for mains
@@ -95,6 +123,30 @@ public class productpage extends AppCompatActivity {
         appetizerRecyclerView.setLayoutManager(appetizerLayoutManager);
         appetizerRecyclerView.setItemAnimator(new DefaultItemAnimator());
         appetizerRecyclerView.setAdapter(appetizerAdapter);
+
+        // recyclerview for side dish
+        FoodAdapter sidedishAdapter = new FoodAdapter(sidedish_list, this);
+        RecyclerView sidedishRecyclerView = findViewById(R.id.sidedishpagerv);
+        GridLayoutManager sidedishLayoutManager = new GridLayoutManager(this, 2);
+        sidedishRecyclerView.setLayoutManager(sidedishLayoutManager);
+        sidedishRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        sidedishRecyclerView.setAdapter(sidedishAdapter);
+
+        // recyclerview for dessert
+        FoodAdapter dessertAdapter = new FoodAdapter(dessert_list, this);
+        RecyclerView dessertRecyclerView = findViewById(R.id.dessertpagerv);
+        GridLayoutManager dessertLayoutManager = new GridLayoutManager(this, 2);
+        dessertRecyclerView.setLayoutManager(dessertLayoutManager);
+        dessertRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        dessertRecyclerView.setAdapter(dessertAdapter);
+
+        // recyclerview for beverage
+        FoodAdapter beverageAdapter = new FoodAdapter(beverage_list, this);
+        RecyclerView beverageRecyclerView = findViewById(R.id.beveragepagerv);
+        GridLayoutManager beverageLayoutManager = new GridLayoutManager(this, 2);
+        beverageRecyclerView.setLayoutManager(beverageLayoutManager);
+        beverageRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        beverageRecyclerView.setAdapter(beverageAdapter);
 
     }
 }

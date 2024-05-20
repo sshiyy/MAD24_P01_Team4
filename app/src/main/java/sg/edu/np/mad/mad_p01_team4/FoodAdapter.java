@@ -1,36 +1,73 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodViewHolder> {
-    private ArrayList<Food> list_food;
-    private productpage activity;
-    public FoodAdapter(ArrayList<Food> list_food, productpage activity){
-        this.list_food = list_food;
-        this.activity = activity;
+public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
+    private ArrayList<Food> foodList;
+    private Context context;
+
+    public FoodAdapter(ArrayList<Food> foodList, Context context) {
+        this.foodList = foodList;
+        this.context = context;
     }
 
-    public FoodViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_productlist,parent,false);
-        FoodViewHolder holder = new FoodViewHolder(view);
-        return holder;
+    @NonNull
+    @Override
+    public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.custom_productlist, parent, false);
+        return new FoodViewHolder(view);
     }
 
-    public void onBindViewHolder(FoodViewHolder holder, int position) {
-        Food list_items = list_food.get(position);
-        holder.name.setText(list_items.getName());
-        holder.price.setText("$" + String.format("%.0f", list_items.getPrice()));
-        holder.foodimage.setImageResource(list_items.getImageResourceId());
+    @Override
+    public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
+        Food food = foodList.get(position);
+        holder.tvName.setText(food.getName());
+        int price = (int) food.getPrice();
+        holder.tvPrice.setText("$" + price);
+        holder.ivImage.setImageResource(food.getImageResourceId());
+
+        holder.btnIncrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
+            quantity++;
+            holder.tvQuantity.setText(String.valueOf(quantity));
+        });
+
+        holder.btnDecrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
+            if (quantity > 0) {
+                quantity--;
+                holder.tvQuantity.setText(String.valueOf(quantity));
+            }
+        });
     }
 
+    @Override
     public int getItemCount() {
-        return list_food.size();
+        return foodList.size();
+    }
+
+    public static class FoodViewHolder extends RecyclerView.ViewHolder {
+        private TextView tvName, tvPrice, tvQuantity;
+        private ImageView ivImage;
+        private ImageButton btnIncrease, btnDecrease;
+
+        public FoodViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvPrice = itemView.findViewById(R.id.tvPrice);
+            ivImage = itemView.findViewById(R.id.ivImage);
+            tvQuantity = itemView.findViewById(R.id.tvQuantity);
+            btnIncrease = itemView.findViewById(R.id.btnIncrease);
+            btnDecrease = itemView.findViewById(R.id.btnDecrease);
+        }
     }
 }

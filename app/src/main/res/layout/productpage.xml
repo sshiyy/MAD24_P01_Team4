@@ -7,17 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".productpage">
 
-    <ImageView
+    <TextView
         android:id="@+id/logo"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="ENCHANTE"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/mainlogo" />
+        android:background="@color/green"
+        />
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/productpagesv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -35,7 +40,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                >
 
                 <TextView
                     android:id="@+id/tvMains"
@@ -159,7 +166,7 @@
                 android:scrollbars="vertical" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/bottomLinear"
@@ -217,4 +224,20 @@
             app:srcCompat="@drawable/account" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cart_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/shoppingcartimg"
+        android:backgroundTint="@color/green"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productpagesv"
+        app:layout_constraintVertical_bias="1.0"
+        app:maxImageSize="100dp"
+        app:fabCustomSize="100dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

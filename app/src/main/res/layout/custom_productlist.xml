@@ -13,7 +13,8 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         android:clickable="false"
-        android:focusable="false">
+        android:focusable="false"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,6 +65,8 @@
                         android:background="@color/white"
                         android:scaleType="fitCenter"
                         android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                     <TextView
@@ -84,6 +87,8 @@
                         android:scaleType="fitCenter"
                         android:padding="8dp"
                         android:background="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                 </LinearLayout>

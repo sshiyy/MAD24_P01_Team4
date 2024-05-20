@@ -26,7 +26,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodViewHolder> {
     public void onBindViewHolder(FoodViewHolder holder, int position) {
         Food list_items = list_food.get(position);
         holder.name.setText(list_items.getName());
-        holder.price.setText("$" + String.format("%.2f", list_items.getPrice()));
+        holder.price.setText("$" + String.format("%.0f", list_items.getPrice()));
         holder.foodimage.setImageResource(list_items.getImageResourceId());
     }
 

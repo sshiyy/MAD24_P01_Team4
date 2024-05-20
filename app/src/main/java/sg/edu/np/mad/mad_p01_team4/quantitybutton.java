@@ -21,8 +21,8 @@ public class quantitybutton extends AppCompatActivity {
         setContentView(R.layout.custom_productlist);
 
         tvQuantity = findViewById(R.id.tvQuantity);
-        ImageView btnDecrease = findViewById(R.id.btnDecrease);
-        ImageView btnIncrease = findViewById(R.id.btnIncrease);
+        btnDecrease = findViewById(R.id.btnDecrease);  // Corrected to ImageButton
+        btnIncrease = findViewById(R.id.btnIncrease);
 
         btnDecrease.setOnClickListener(new View.OnClickListener() {
             @Override

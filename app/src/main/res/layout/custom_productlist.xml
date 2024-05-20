@@ -33,22 +33,57 @@
 
                 <TextView
                     android:id="@+id/tvName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:paddingTop="8dp" />
 
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Price"
-                    android:textSize="18sp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="20dp"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvPrice"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="Price"
+                        android:textSize="18sp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="20dp"/>
+
+                    <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat = "@drawable/plusicon"
+                        android:background="@color/white"
+                        android:scaleType="fitCenter"
+                        android:padding="8dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="1"
+                        android:textSize="18sp" />
+
+                    <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat = "@drawable/minusicon"
+                        android:scaleType="fitCenter"
+                        android:padding="8dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
+

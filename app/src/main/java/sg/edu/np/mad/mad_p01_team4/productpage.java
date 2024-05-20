@@ -53,6 +53,9 @@ public class productpage extends AppCompatActivity {
         // for appetizer
         ArrayList<Food> appetizer_list = new ArrayList<>();
         appetizer_list.add(new Food("Mushroom Soup", 9.00, R.drawable.mushroomsoupgarbread));
+        appetizer_list.add(new Food("Cauliflower Soup", 7.00, R.drawable.cheesycauliflowersoup));
+        appetizer_list.add(new Food("Clam Chowder", 8.00, R.drawable.clamchowder));
+        appetizer_list.add(new Food("Poached Salmon", 15.00, R.drawable.poachedsalmon));
 
         // for side dish
         ArrayList<Food> sidedish_list = new ArrayList<>();

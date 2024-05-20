@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".productpage">
+
+    <TextView
+        android:id="@+id/productpagetitle"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:text="Enchanté"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tvMains"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Mains"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintTop_toBottomOf="@id/productpagetitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ScrollView
+        android:id="@+id/productpagesv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvMains"
+        app:layout_constraintBottom_toTopOf="@id/bottomLinear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productpagerv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvPizza"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Pizza"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintTop_toBottomOf="@id/productpagesv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/bottomLinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <ImageButton
+            android:id="@+id/home"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/home"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            />
+        <ImageButton
+            android:id="@+id/order"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/order"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            />
+
+        <ImageButton
+            android:id="@+id/favourites"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/favourite"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            />
+
+        <ImageButton
+            android:id="@+id/account"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/account"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

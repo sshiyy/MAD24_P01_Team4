@@ -50,8 +50,8 @@ public class Login_Page extends AppCompatActivity {
                     // ... (e.g., validate credentials with server)
 
                     // Start Product Page ( ADD THIS BACK )
-                    //Intent intent = new Intent(v.getContext(), ProductPage.class);
-                    //v.getContext().startActivity(intent);
+                    Intent intent = new Intent(v.getContext(), productpage.class);
+                    v.getContext().startActivity(intent);
                 }
             }
         });

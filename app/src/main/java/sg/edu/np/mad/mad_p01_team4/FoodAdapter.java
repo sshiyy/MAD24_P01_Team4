@@ -42,6 +42,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
             quantity++;
             holder.tvQuantity.setText(String.valueOf(quantity));
+            cart.getInstance().additems(food);
         });
 
         holder.btnDecrease.setOnClickListener(v -> {

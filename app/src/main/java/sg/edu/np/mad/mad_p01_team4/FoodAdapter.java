@@ -1,5 +1,6 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvPrice.setText("$" + price);
         holder.ivImage.setImageResource(food.getImageResourceId());
 
+        holder.ivImage.setOnClickListener(v -> showFoodDetailDialog(food));
+
         holder.btnIncrease.setOnClickListener(v -> {
             int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
             quantity++;
@@ -69,5 +72,22 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             btnIncrease = itemView.findViewById(R.id.btnIncrease);
             btnDecrease = itemView.findViewById(R.id.btnDecrease);
         }
+    }
+
+    private void showFoodDetailDialog(Food food){
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_food_detail, null);
+
+        ImageView ivFoodImage = dialogView.findViewById(R.id.ivFoodImage);
+        TextView tvFoodDescription = dialogView.findViewById(R.id.tvFoodDescription);
+
+        ivFoodImage.setImageResource(food.getImageResourceId());
+        tvFoodDescription.setText(food.getDescription());
+
+        new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setPositiveButton("Close", null)
+                .show();
     }
 }

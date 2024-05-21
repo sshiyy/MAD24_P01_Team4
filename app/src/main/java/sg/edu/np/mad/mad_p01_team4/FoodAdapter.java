@@ -81,9 +81,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         ImageView ivFoodImage = dialogView.findViewById(R.id.ivFoodImage);
         TextView tvFoodDescription = dialogView.findViewById(R.id.tvFoodDescription);
+        ImageButton btnFavorite = dialogView.findViewById(R.id.toggleFavorite);
 
         ivFoodImage.setImageResource(food.getImageResourceId());
         tvFoodDescription.setText(food.getDescription());
+
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            private boolean isFavorite = false;
+            @Override
+            public void onClick(View v) {
+                isFavorite = !isFavorite;
+                btnFavorite.setImageResource(isFavorite ? R.drawable.redhearticon : R.drawable.hearticon);
+            }
+        });
 
         new AlertDialog.Builder(context)
                 .setView(dialogView)

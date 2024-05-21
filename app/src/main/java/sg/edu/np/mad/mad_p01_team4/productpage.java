@@ -36,74 +36,74 @@ public class productpage extends AppCompatActivity {
 
         // for mains
         ArrayList<Food> food_list = new ArrayList<>();
-        food_list.add(new Food("Carbonara", 12.50, R.drawable.pastacarbonara));
-        food_list.add(new Food("Bolognese", 11.00, R.drawable.pastabolognese));
-        food_list.add(new Food("Aglio Olio", 10.00, R.drawable.aglioolio));
-        food_list.add(new Food("Baked Rice", 11.50, R.drawable.baakedrice));
-        food_list.add(new Food("Chicken Chop", 12.80, R.drawable.chickenchop));
-        food_list.add(new Food("Fish & Chips", 13.50, R.drawable.fishnchips));
-        food_list.add(new Food("Lasagna", 12.00,R.drawable.lasagna));
-        food_list.add(new Food("Mac & Cheese", 10.00, R.drawable.macncheese));
-        food_list.add(new Food("Risotto", 10.00, R.drawable.risotto));
-        food_list.add(new Food("Steak with Rice", 15.80, R.drawable.steakwithegg));
-        food_list.add(new Food("Steak with Potato", 15.80, R.drawable.steakwithpotato));
+        food_list.add(new Food("Carbonara", 13, R.drawable.pastacarbonara));
+        food_list.add(new Food("Bolognese", 11, R.drawable.pastabolognese));
+        food_list.add(new Food("Aglio Olio", 10, R.drawable.aglioolio));
+        food_list.add(new Food("Baked Rice", 12, R.drawable.baakedrice));
+        food_list.add(new Food("Chicken Chop", 13, R.drawable.chickenchop));
+        food_list.add(new Food("Fish & Chips", 14, R.drawable.fishnchips));
+        food_list.add(new Food("Lasagna", 12,R.drawable.lasagna));
+        food_list.add(new Food("Mac & Cheese", 10, R.drawable.macncheese));
+        food_list.add(new Food("Risotto", 10, R.drawable.risotto));
+        food_list.add(new Food("Steak with Rice", 16, R.drawable.steakwithegg));
+        food_list.add(new Food("Steak with Potato", 16, R.drawable.steakwithpotato));
 
 
         // for pizza
         ArrayList<Food> pizza_list = new ArrayList<>();
-        pizza_list.add(new Food("Margherita Pizza", 10.00, R.drawable.marghertiapizza));
-        pizza_list.add(new Food("Pepperoni Pizza", 12.00, R.drawable.pepperonipizza));
-        pizza_list.add(new Food("Cheese Pizza", 11.00, R.drawable.cheesepizza));
-        pizza_list.add(new Food("Mushroom Pizza", 11.00, R.drawable.mushroompizza));
+        pizza_list.add(new Food("Margherita Pizza", 10, R.drawable.marghertiapizza));
+        pizza_list.add(new Food("Pepperoni Pizza", 12, R.drawable.pepperonipizza));
+        pizza_list.add(new Food("Cheese Pizza", 11, R.drawable.cheesepizza));
+        pizza_list.add(new Food("Mushroom Pizza", 11, R.drawable.mushroompizza));
 
         // for appetizer
         ArrayList<Food> appetizer_list = new ArrayList<>();
-        appetizer_list.add(new Food("Mushroom Soup", 9.00, R.drawable.mushroomsoupgarbread));
-        appetizer_list.add(new Food("Cauliflower Soup", 7.00, R.drawable.cheesycauliflowersoup));
-        appetizer_list.add(new Food("Clam Chowder", 8.00, R.drawable.clamchowder));
-        appetizer_list.add(new Food("Avocado Toast", 7.00, R.drawable.avocadotoast));
-        appetizer_list.add(new Food("Broccoli Toast", 6.00, R.drawable.broccoligarlictoastwithhoney));
-        appetizer_list.add(new Food("Cheese bread sticks",6.80, R.drawable.cheesybreadsticks));
-        appetizer_list.add(new Food("Poached Salmon", 15.00, R.drawable.poachedsalmon));
-        appetizer_list.add(new Food("Grilled Fish", 14.00, R.drawable.grilledfish));
-        appetizer_list.add(new Food("Spicy Shrimp", 14.00, R.drawable.spicycaribbeanshrimp));
-        appetizer_list.add(new Food("Smoked Salmon Rosti", 12.00, R.drawable.smokesalmonrosti));
-        appetizer_list.add(new Food("Salad", 6.00, R.drawable.salad));
+        appetizer_list.add(new Food("Mushroom Soup", 9, R.drawable.mushroomsoupgarbread));
+        appetizer_list.add(new Food("Cauliflower Soup", 7, R.drawable.cheesycauliflowersoup));
+        appetizer_list.add(new Food("Clam Chowder", 8, R.drawable.clamchowder));
+        appetizer_list.add(new Food("Avocado Toast", 7, R.drawable.avocadotoast));
+        appetizer_list.add(new Food("Broccoli Toast", 6, R.drawable.broccoligarlictoastwithhoney));
+        appetizer_list.add(new Food("Cheese bread sticks",7, R.drawable.cheesybreadsticks));
+        appetizer_list.add(new Food("Poached Salmon", 15, R.drawable.poachedsalmon));
+        appetizer_list.add(new Food("Grilled Fish", 14, R.drawable.grilledfish));
+        appetizer_list.add(new Food("Spicy Shrimp", 14, R.drawable.spicycaribbeanshrimp));
+        appetizer_list.add(new Food("Smoked Salmon Rosti", 12, R.drawable.smokesalmonrosti));
+        appetizer_list.add(new Food("Salad", 6, R.drawable.salad));
 
         // for side dish
         ArrayList<Food> sidedish_list = new ArrayList<>();
-        sidedish_list.add(new Food("BBQ Sausage", 8.00, R.drawable.bbqsausage));
-        sidedish_list.add(new Food("Buffalo Wings", 9.00, R.drawable.buffalowings));
-        sidedish_list.add(new Food("Calamari", 8.50, R.drawable.calamari));
-        sidedish_list.add(new Food("Curly Fries", 7.00, R.drawable.curlyfries));
-        sidedish_list.add(new Food("Fries", 6.00, R.drawable.fries));
-        sidedish_list.add(new Food("Honey Chicken Wings", 9.00, R.drawable.honeychickenwings));
-        sidedish_list.add(new Food("Meatball & Cheese", 8.00, R.drawable.meatballandmozzarella));
-        sidedish_list.add(new Food("Onion Ring", 5.00, R.drawable.onionrings));
-        sidedish_list.add(new Food("Popcorn Chicken", 7.00, R.drawable.popcornchick));
+        sidedish_list.add(new Food("BBQ Sausage", 8, R.drawable.bbqsausage));
+        sidedish_list.add(new Food("Buffalo Wings", 9, R.drawable.buffalowings));
+        sidedish_list.add(new Food("Calamari", 8, R.drawable.calamari));
+        sidedish_list.add(new Food("Curly Fries", 7, R.drawable.curlyfries));
+        sidedish_list.add(new Food("Fries", 6, R.drawable.fries));
+        sidedish_list.add(new Food("Honey Chicken Wings", 9, R.drawable.honeychickenwings));
+        sidedish_list.add(new Food("Meatball & Cheese", 8, R.drawable.meatballandmozzarella));
+        sidedish_list.add(new Food("Onion Ring", 5, R.drawable.onionrings));
+        sidedish_list.add(new Food("Popcorn Chicken", 7, R.drawable.popcornchick));
 
         // for dessert
         ArrayList<Food> dessert_list = new ArrayList<>();
-        dessert_list.add(new Food("Tiramisu Crepe Cake", 6.00, R.drawable.tiramisucrepecake));
-        dessert_list.add(new Food("Tiramisu", 7.00, R.drawable.tiramisu));
-        dessert_list.add(new Food("Strawberry Shortcake", 6.00, R.drawable.strawberryshortcake));
-        dessert_list.add(new Food("Rainbow Crepe Cake", 6.00, R.drawable.rainbowcrepecake));
-        dessert_list.add(new Food("Ice Cream Waffle", 7.00, R.drawable.icecreamwaffle));
-        dessert_list.add(new Food("Ice Cream Croissant", 8.00, R.drawable.icecreamcroissant));
-        dessert_list.add(new Food("Chocolate Cake", 6.00, R.drawable.chococake));
-        dessert_list.add(new Food("Banana Split", 7.00, R.drawable.bananasplit));
+        dessert_list.add(new Food("Tiramisu Crepe Cake", 6, R.drawable.tiramisucrepecake));
+        dessert_list.add(new Food("Tiramisu", 7, R.drawable.tiramisu));
+        dessert_list.add(new Food("Strawberry Shortcake", 6, R.drawable.strawberryshortcake));
+        dessert_list.add(new Food("Rainbow Crepe Cake", 6, R.drawable.rainbowcrepecake));
+        dessert_list.add(new Food("Ice Cream Waffle", 7, R.drawable.icecreamwaffle));
+        dessert_list.add(new Food("Ice Cream Croissant", 8, R.drawable.icecreamcroissant));
+        dessert_list.add(new Food("Chocolate Cake", 6, R.drawable.chococake));
+        dessert_list.add(new Food("Banana Split", 7, R.drawable.bananasplit));
 
         // for beverage
         ArrayList<Food> beverage_list = new ArrayList<>();
-        beverage_list.add(new Food("Apple Juice", 3.50, R.drawable.applejuice));
-        beverage_list.add(new Food("Avocado Milkshake", 5.00, R.drawable.avocadomilkshake));
-        beverage_list.add(new Food("Coffee", 3.50, R.drawable.coffee));
-        beverage_list.add(new Food("Hot Chocolate", 3.50, R.drawable.hotchoco));
-        beverage_list.add(new Food("Lemonade", 2.50, R.drawable.lemonade));
-        beverage_list.add(new Food("Mocha", 3.50, R.drawable.mocha));
-        beverage_list.add(new Food("Orange Juice", 3.50, R.drawable.orangejuice));
-        beverage_list.add(new Food("Root Beer", 4.50, R.drawable.rootbeer));
-        beverage_list.add(new Food("Strawberry Smoothie", 5.00, R.drawable.strawberrysmoothie));
+        beverage_list.add(new Food("Apple Juice", 4, R.drawable.applejuice));
+        beverage_list.add(new Food("Avocado Milkshake", 5, R.drawable.avocadomilkshake));
+        beverage_list.add(new Food("Coffee", 4, R.drawable.coffee));
+        beverage_list.add(new Food("Hot Chocolate", 4, R.drawable.hotchoco));
+        beverage_list.add(new Food("Lemonade", 3, R.drawable.lemonade));
+        beverage_list.add(new Food("Mocha", 4, R.drawable.mocha));
+        beverage_list.add(new Food("Orange Juice", 4, R.drawable.orangejuice));
+        beverage_list.add(new Food("Root Beer", 5, R.drawable.rootbeer));
+        beverage_list.add(new Food("Strawberry Smoothie", 5, R.drawable.strawberrysmoothie));
 
 
         // recyclerview for mains

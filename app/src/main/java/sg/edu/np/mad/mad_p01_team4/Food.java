@@ -2,10 +2,10 @@ package sg.edu.np.mad.mad_p01_team4;
 
 public class Food {
     public String name;
-    public double price;
+    public int price;
     public int img;
 
-    public Food(String name, double price, int img){
+    public Food(String name, int price, int img){
         this.name = name;
         this.price = price;
         this.img = img;

@@ -7,19 +7,41 @@
     android:layout_height="match_parent"
     tools:context=".productpage">
 
-    <TextView
-        android:id="@+id/logo"
+    <LinearLayout
+        android:id="@+id/logolayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:text="ENCHANTE"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/green"
-        />
+        android:orientation="horizontal"
+        android:background="@color/background"
+        >
+
+        <TextView
+            android:id="@+id/logo"
+            android:layout_width="380dp"
+            android:layout_height="100dp"
+            android:text="Menu"
+            android:textColor="@color/black"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:paddingLeft="20dp"
+            android:paddingTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/background"
+            />
+
+        <ImageButton
+            android:id="@+id/filterbutton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat= "@drawable/filter"
+            android:background="@color/background"
+            android:padding="0dp"
+            android:layout_marginTop="40dp"
+            android:scaleType="centerInside"
+            />
+
+    </LinearLayout>
 
 
     <androidx.core.widget.NestedScrollView
@@ -30,39 +52,23 @@
         app:layout_constraintBottom_toTopOf="@id/bottomLinear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo">
+        app:layout_constraintTop_toBottomOf="@id/logolayout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/tvMains"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="10dp"
-                >
-
-                <TextView
-                    android:id="@+id/tvMains"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="1"
-                    android:text="Mains"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/filterbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:backgroundTint="@color/green"
-                    android:text="Sort By" />
-
-            </LinearLayout>
+                android:layout_height="40dp"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:text="Mains"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productpagerv"
@@ -231,7 +237,7 @@
         android:layout_height="100dp"
         android:layout_margin="16dp"
         android:src="@drawable/shoppingcartimg"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/background"
         android:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
         app:layout_constraintEnd_toEndOf="parent"

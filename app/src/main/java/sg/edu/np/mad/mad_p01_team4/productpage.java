@@ -1,9 +1,14 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-import android.os.Bundle;
-import android.widget.Button;
-import android.view.View;
 import android.content.Intent;
+import android.os.Bundle;
+
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Button;
+import android.content.Intent;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -31,6 +38,25 @@ public class productpage extends AppCompatActivity {
             return insets;
         });
 
+
+        ImageButton filterbutton = findViewById(R.id.filterbutton);
+        filterbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(productpage.this, FliteringPage.class);
+                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton cartbutton = findViewById(R.id.cart_button);
+
+        cartbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(productpage.this, cartpage.class);
+                startActivity(intent);
+            }
+        });
 
 
         // for mains

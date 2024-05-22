@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.ImageView;
 
 
 import androidx.activity.EdgeToEdge;
@@ -180,6 +181,45 @@ public class productpage extends AppCompatActivity {
         beverageRecyclerView.setAdapter(beverageAdapter);
 
 
+
+        // Set click listeners for other ImageButtons (assuming you have them in your layout)
+        ImageView homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to HomeActivity
+                startActivity(new Intent(productpage.this, productpage.class));
+            }
+        });
+
+        ImageView orderButton = findViewById(R.id.order);
+        orderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to OrderActivity
+                startActivity(new Intent(productpage.this, Checkout.class));
+            }
+        });
+
+        // Set click listeners for favouritesButton and accountButton if you uncomment them
+
+        //        ImageView favouritesButton = findViewById(R.id.favourites);
+//        favouritesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to FavouritesActivity
+//                startActivity(new Intent(productpage.this, FavouritesActivity.class));
+//            }
+//        });
+
+//        ImageView accountButton = findViewById(R.id.account);
+//        accountButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to AccountActivity
+//                startActivity(new Intent(productpage.this, AccountActivity.class));
+//            }
+//        });
 
     }
 }

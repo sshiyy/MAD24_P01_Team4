@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "236453498860",
+    "project_id": "madenchanto-be6b9",
+    "storage_bucket": "madenchanto-be6b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236453498860:android:f9e599c5b491ae0bf5fac9",
+        "android_client_info": {
+          "package_name": "sg.edu.np.mad.mad_p01_team4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSkM3PtgS91a6BHKbEpgMol-FVO7xHh-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

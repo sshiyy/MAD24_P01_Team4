@@ -159,4 +159,67 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/bottomLinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rounded_searchtext"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/home"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/home"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="Pasta Image" />
+
+        <ImageButton
+            android:id="@+id/order"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/order"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="order Image" />
+
+        <ImageButton
+            android:id="@+id/favourites"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/favourite"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="favourite Image" />
+
+        <ImageButton
+            android:id="@+id/account"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/account"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="account Image" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

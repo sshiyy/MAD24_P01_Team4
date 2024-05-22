@@ -3,6 +3,8 @@ package sg.edu.np.mad.mad_p01_team4;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class FliteringPage extends AppCompatActivity {
 
+    private SeekBar priceSeekBar;
+    private TextView minPrice;
+    private TextView maxPrice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +28,29 @@ public class FliteringPage extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        // Initialize SeekBar and TextViews
+        priceSeekBar = findViewById(R.id.priceSeekBar);
+        minPrice = findViewById(R.id.minPrice);
+        maxPrice = findViewById(R.id.maxPrice);
+
+        // Set SeekBar listener to update TextViews
+        priceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updatePriceRange(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Optional: Handle start of touch event
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Optional: Handle stop of touch event
+            }
         });
 
         // Find the ImageView by its ID
@@ -56,7 +85,9 @@ public class FliteringPage extends AppCompatActivity {
             }
         });
 
-//        ImageView favouritesButton = findViewById(R.id.favourites);
+        // Set click listeners for favouritesButton and accountButton if you uncomment them
+
+        //        ImageView favouritesButton = findViewById(R.id.favourites);
 //        favouritesButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -73,5 +104,16 @@ public class FliteringPage extends AppCompatActivity {
 //                startActivity(new Intent(FliteringPage.this, AccountActivity.class));
 //            }
 //        });
+    }
+
+    private void updatePriceRange(int progress) {
+        // Calculate the price range based on progress
+        int min = 5;
+        int max = 100;
+        int price = min + ((max - min) * progress / 100);
+
+        // Update TextViews
+        minPrice.setText("$" + min);
+        maxPrice.setText("$" + price);
     }
 }

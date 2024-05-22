@@ -7,13 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".productpage">
 
+
     <LinearLayout
         android:id="@+id/logolayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/background"
-        >
+        />
 
         <TextView
             android:id="@+id/logo"
@@ -39,20 +43,37 @@
             android:padding="0dp"
             android:layout_marginTop="40dp"
             android:scaleType="centerInside"
+            android:contentDescription="filter button"
             />
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/productpagetitle"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:text="Enchanté"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
-    <androidx.core.widget.NestedScrollView
+
+    <ScrollView
         android:id="@+id/productpagesv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/background"
+        app:layout_constraintTop_toBottomOf="@id/productpagetitle"
         app:layout_constraintBottom_toTopOf="@id/bottomLinear"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logolayout">
+        app:layout_constraintTop_toBottomOf="@id/logolayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/background"
+        />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,166 +89,219 @@
                 android:layout_weight="1"
                 android:text="Mains"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold" 
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                 />
+
+                <TextView
+                    android:id="@+id/tvMains"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:text="Mains"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="15dp" />
+
+                <Button
+                    android:id="@+id/filterbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sort By"
+                    android:layout_marginRight="20dp"
+                    android:backgroundTint="@color/green"
+                    />
+
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
             <TextView
                 android:id="@+id/tvPizza"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:text="Pizza"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                android:text="Pizza"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/productpagerv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productpagerv" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pizzapagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
             <TextView
                 android:id="@+id/tvAppetizer"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:text="Appetizer"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                android:text="Appetizer"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pizzapagerv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pizzapagerv" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/appetizerpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
             <TextView
                 android:id="@+id/tvSidedish"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:text="Side Dish"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                android:text="Side Dish"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appetizerpagerv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appetizerpagerv" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sidedishpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
             <TextView
                 android:id="@+id/tvDessert"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:text="Dessert"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                android:text="Dessert"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sidedishpagerv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sidedishpagerv" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dessertpagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
             <TextView
                 android:id="@+id/tvBeverage"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:text="Beverage"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:layout_marginLeft="15dp"
                 android:paddingTop="10dp"
-                android:text="Beverage"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dessertpagerv"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dessertpagerv" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/beveragepagerv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/bottomLinear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:orientation="horizontal"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        >
 
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
+            android:layout_height="80dp"
+            android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/home"
+            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:padding="20dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/home"
+            android:contentDescription="home button"/>
+
 
         <ImageButton
             android:id="@+id/order"
             android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:layout_height="80dp"
             android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/order"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/order" />
+            app:srcCompat="@drawable/order"
+            android:contentDescription="order button"
+            android:background="@android:color/transparent"
+            />
+
 
         <ImageButton
             android:id="@+id/favourites"
             android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:layout_height="80dp"
             android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/favourite"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/favourite" />
+            app:srcCompat="@drawable/favourite"
+            android:contentDescription="favorites button"
+            android:background="@android:color/transparent"
+            />
 
         <ImageButton
             android:id="@+id/account"
             android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:layout_height="80dp"
             android:padding="20dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/account"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/account" />
+            app:srcCompat="@drawable/account"
+            android:contentDescription="account button"
+            android:background="@android:color/transparent"
+            />
+
 
     </LinearLayout>
 
@@ -241,9 +315,9 @@
         android:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productpagesv"
         app:layout_constraintVertical_bias="1.0"
         app:maxImageSize="100dp"
-        app:fabCustomSize="100dp" />
+        app:fabCustomSize="100dp"
+        android:contentDescription="cart button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

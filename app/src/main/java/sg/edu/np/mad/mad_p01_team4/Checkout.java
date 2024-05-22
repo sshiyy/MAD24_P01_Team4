@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,5 +74,50 @@ public class Checkout extends AppCompatActivity {
         });
 
         dialog.show();
+
+
+        //for naviagtion bar - Bottom
+
+        // Set click listeners for other ImageButtons (assuming you have them in your layout)
+        ImageView homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to HomeActivity
+                startActivity(new Intent(Checkout.this, productpage.class));
+            }
+        });
+
+        ImageView orderButton = findViewById(R.id.order);
+        orderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to OrderActivity
+                startActivity(new Intent(Checkout.this, Checkout.class));
+            }
+        });
+
+        // Set click listeners for favouritesButton and accountButton if you uncomment them
+
+        //        ImageView favouritesButton = findViewById(R.id.favourites);
+//        favouritesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to FavouritesActivity
+//                startActivity(new Intent(Checkout.this, FavouritesActivity.class));
+//            }
+//        });
+
+//        ImageView accountButton = findViewById(R.id.account);
+//        accountButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to AccountActivity
+//                startActivity(new Intent(Checkout.this, AccountActivity.class));
+//            }
+//        });
+
+
+
     }
 }

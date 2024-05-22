@@ -13,6 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/background"
         />
 
@@ -40,6 +43,7 @@
             android:padding="0dp"
             android:layout_marginTop="40dp"
             android:scaleType="centerInside"
+            android:contentDescription="filter button"
             />
 
     </LinearLayout>
@@ -249,7 +253,12 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            />
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/home"
+            android:contentDescription="home button"/>
+
+
         <ImageButton
             android:id="@+id/order"
             android:layout_width="0dp"
@@ -259,8 +268,11 @@
             android:layout_marginLeft="10dp"
             app:srcCompat="@drawable/order"
             android:scaleType="fitCenter"
+            app:srcCompat="@drawable/order"
+            android:contentDescription="order button"
             android:background="@android:color/transparent"
             />
+
 
         <ImageButton
             android:id="@+id/favourites"
@@ -271,6 +283,8 @@
             android:layout_marginLeft="10dp"
             app:srcCompat="@drawable/favourite"
             android:scaleType="fitCenter"
+            app:srcCompat="@drawable/favourite"
+            android:contentDescription="favorites button"
             android:background="@android:color/transparent"
             />
 
@@ -283,8 +297,11 @@
             android:layout_marginLeft="10dp"
             app:srcCompat="@drawable/account"
             android:scaleType="fitCenter"
+            app:srcCompat="@drawable/account"
+            android:contentDescription="account button"
             android:background="@android:color/transparent"
             />
+
 
     </LinearLayout>
 
@@ -298,9 +315,9 @@
         android:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productpagesv"
         app:layout_constraintVertical_bias="1.0"
         app:maxImageSize="100dp"
-        app:fabCustomSize="100dp" />
+        app:fabCustomSize="100dp"
+        android:contentDescription="cart button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

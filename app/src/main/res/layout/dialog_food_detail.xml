@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/ivFoodImage"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:src="@drawable/pastacarbonara"
+        android:background="@color/background"
+        />
+
+    <ImageButton
+        android:id="@+id/toggleFavorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="14dp"
+        app:srcCompat="@drawable/hearticon"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="0dp"
+        android:scaleType="centerInside"
+        />
+
+    <TextView
+        android:id="@+id/tvFoodDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="This is the description of the food."
+        android:textSize="20sp"
+        android:paddingTop="8dp"
+        android:gravity="center_horizontal"
+        android:paddingBottom="8dp" />
+
+
+
+</LinearLayout>

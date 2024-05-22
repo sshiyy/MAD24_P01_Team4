@@ -180,16 +180,6 @@ public class productpage extends AppCompatActivity {
         beverageRecyclerView.setAdapter(beverageAdapter);
 
 
-        //intent for Filter
-        Button filterButton = findViewById(R.id.filterbutton);
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(productpage.this, FliteringPage.class));
-
-            }
-        });
 
     }
 }

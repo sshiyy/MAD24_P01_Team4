@@ -34,4 +34,10 @@ public class cart {
     public void clearCart() {
         cartitems.clear();
     }
+
+    public boolean isCartempty() {
+        return cartitems.isEmpty();
+    }
+
+
 }

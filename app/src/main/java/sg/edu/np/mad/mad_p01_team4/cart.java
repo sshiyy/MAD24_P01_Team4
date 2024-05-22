@@ -17,7 +17,13 @@ public class cart {
         }
         return instance;
     }
-    public void additems(Food food){
+    public void additems(Food food) {
+        for (Food item : cartitems) {
+            if (item.getName().equals(food.getName())) {
+                item.incrementQuantity();
+                return;
+            }
+        }
         cartitems.add(food);
     }
 

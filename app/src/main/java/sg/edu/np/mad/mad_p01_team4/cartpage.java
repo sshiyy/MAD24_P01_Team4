@@ -29,5 +29,11 @@ public class cartpage extends AppCompatActivity {
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         List<Food> cartitems = cart.getInstance().getCartitems();
+        cartAdapter cartAdapter = new cartAdapter(cartitems, this);
+        recyclerview.setAdapter(cartAdapter);
+
+        cartAdapter.notifyDataSetChanged();
     }
+
+
 }

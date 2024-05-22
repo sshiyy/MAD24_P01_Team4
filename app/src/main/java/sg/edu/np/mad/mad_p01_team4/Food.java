@@ -6,12 +6,14 @@ public class Food {
     public int img;
 
     private String description;
+    private int quantity;
 
     public Food(String name, int price, int img, String description){
         this.name = name;
         this.price = price;
         this.img = img;
         this.description = description;
+        this.quantity = 1;
     }
     public String getName() {
         return name;
@@ -27,5 +29,17 @@ public class Food {
 
     public String getDescription(){
         return description;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void incrementQuantity() {
+        this.quantity++;
     }
 }

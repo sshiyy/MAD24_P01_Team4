@@ -32,7 +32,10 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
     @Override
     public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
         Food food = cartItems.get(position);
-
+        holder.tvName.setText(food.getName());
+        holder.tvPrice.setText("$" + String.valueOf(food.getPrice()));
+        holder.ivImage.setImageResource(food.getImageResourceId());
+        holder.tvQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
     }
 
     @Override
@@ -41,7 +44,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
     }
 
     public static class cartViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvPrice;
+        private TextView tvName, tvPrice, tvQuantity;
         private ImageView ivImage;
 
         public cartViewHolder(@NonNull View itemView) {
@@ -49,7 +52,10 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivImage = itemView.findViewById(R.id.ivImage);
+            tvQuantity = itemView.findViewById(R.id.tvQuantity);
         }
     }
+
+
 }
 

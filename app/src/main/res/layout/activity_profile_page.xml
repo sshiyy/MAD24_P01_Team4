@@ -87,4 +87,13 @@
         app:layout_constraintStart_toEndOf="@+id/iv_profileicon"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/iv_logout"
+        android:layout_width="60dp"
+        android:layout_height="71dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logout_icon" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

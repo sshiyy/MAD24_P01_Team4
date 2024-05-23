@@ -19,8 +19,6 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.regex.Pattern;
 
-import javax.xml.validation.Validator;
-
 public class Login_Page extends AppCompatActivity {
 
     // Declare FirebaseAuth instance
@@ -60,8 +58,13 @@ public class Login_Page extends AppCompatActivity {
     private boolean validateInput() {
         boolean isValid = true;
 
-        if (isValidEmail(email.getText().toString().trim())) {
+        if (email.getText().toString().trim().isEmpty()) {
+            email.setError("Email cannot be empty");
+            Log.d("Login_Page","Email is empty");
+            isValid = false;
+        } else if (!isValidEmail(email.getText().toString().trim())) { // Call the isValidEmail function here
             email.setError("Email is invalid");
+            Log.d("Login_Page","Email is invalid");
             isValid = false;
         } else {
             email.setError(null);
@@ -89,7 +92,7 @@ public class Login_Page extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 // Proceed to the next activity
-                                Intent intent = new Intent(Login_Page.this, ProfilePage.class); // Replace Home_Page.class with your target activity
+                                Intent intent = new Intent(Login_Page.this, productpage.class); // Replace Home_Page.class with your target activity
                                 startActivity(intent);
                             }
                         } else {
@@ -102,7 +105,8 @@ public class Login_Page extends AppCompatActivity {
     }
 
     public static boolean isValidEmail(String email) {
-        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?$";
+        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)" +
+                "*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?(\\.[a-zA-Z]{2,})?$";
         Pattern pattern = Pattern.compile(emailRegex);
         return pattern.matcher(email).matches();
     }

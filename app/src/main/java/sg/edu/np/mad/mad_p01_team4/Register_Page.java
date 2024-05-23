@@ -37,7 +37,8 @@ public class Register_Page extends AppCompatActivity {
 
     // Function to check for valid email format
     public static boolean isValidEmail(String email) {
-        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?$";
+        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)" +
+                "*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?$";
         Pattern pattern = Pattern.compile(emailRegex);
         return pattern.matcher(email).matches();
     }
@@ -129,7 +130,7 @@ public class Register_Page extends AppCompatActivity {
                 });
     }
 
-    // Function to register the user with Firebase Authentication and store additional user data in Firestore
+    // Function to register the user with Firebase Authentication and store additional user data in FireStore
     private void registerUser(String username, String name, String password, String email) {
         // Create a new user with email and password using Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)

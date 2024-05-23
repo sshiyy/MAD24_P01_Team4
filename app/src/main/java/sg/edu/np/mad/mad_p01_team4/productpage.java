@@ -1,6 +1,7 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
+import android.graphics.ImageDecoder;
 import android.os.Bundle;
 
 import android.view.View;
@@ -55,6 +56,16 @@ public class productpage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(productpage.this, cartpage.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton profilebtn = findViewById(R.id.account);
+
+        profilebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(productpage.this, ProfilePage.class);
                 startActivity(intent);
             }
         });

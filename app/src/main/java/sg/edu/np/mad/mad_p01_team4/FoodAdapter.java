@@ -14,12 +14,16 @@ import java.util.ArrayList;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private ArrayList<Food> foodList;
+    private ArrayList<Food> filteredfood;
     private Context context;
 
     public FoodAdapter(ArrayList<Food> foodList, Context context) {
         this.foodList = foodList;
         this.context = context;
+        this.filteredfood = new ArrayList<>(foodList);
     }
+
+
 
     @NonNull
     @Override

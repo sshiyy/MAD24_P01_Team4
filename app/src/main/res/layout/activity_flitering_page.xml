@@ -3,461 +3,330 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
+    android:background="@color/background"
     tools:context=".FliteringPage">
 
     <TextView
         android:id="@+id/filterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Filter"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/crossImage"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="30dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/crossImage"
+        app:layout_constraintHorizontal_bias="0.058"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/crossImage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:srcCompat="@drawable/cross"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-        android:id="@+id/clearButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="20dp"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        android:text="@string/underline_clear_all"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@id/filterText"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Close" />
 
     <EditText
         android:id="@+id/searchBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:hint="Search..."
         android:inputType="text"
-        android:textSize="20dp"
-        android:background="@drawable/jason_customedittext"
-        android:drawableStart="@drawable/search_logo"
-        android:padding="8dp"
+        android:padding="12dp"
+        android:drawablePadding="10dp"
         app:layout_constraintTop_toBottomOf="@id/filterText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/clearButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/price"
-        >
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="30dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="20dp">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/pastaButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            app:srcCompat="@drawable/pasta"
-                            android:scaleType="fitCenter"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white"
-                            android:contentDescription="Pasta Image" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/pastaText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pasta"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/pizzaButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/pizza" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/pizzaText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pizza"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/appetizerButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/appetizer" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/appetizerText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Appetizer"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/sideDishButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            app:srcCompat="@drawable/sidedish"
-                            android:scaleType="fitCenter"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/sideDishText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Side Dish"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/dessertButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            app:srcCompat="@drawable/desserts"
-                            android:scaleType="fitCenter"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/dessertText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dessert"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/beverageButton"
-                            android:layout_width="80dp"
-                            android:layout_height="90dp"
-                            android:padding="15dp"
-                            app:srcCompat="@drawable/beverages"
-                            android:scaleType="fitCenter"
-                            android:adjustViewBounds="true"
-                            android:background="@color/white"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/beverageText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Beverages"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:layout_gravity="center"
-                        android:gravity="center_horizontal" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </HorizontalScrollView>
-    </ScrollView>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:drawableStart="@drawable/search_logo"
+        android:background="@drawable/jason_customedittext"
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/price"
-        android:text="Price"
+        android:id="@+id/priceText"
         android:layout_width="wrap_content"
-        android:layout_height="21dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="340dp"
+        android:layout_height="wrap_content"
+        android:text="Price"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+    <SeekBar
+        android:id="@+id/priceSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:max="100"
+        android:progress="50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/priceText"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <TextView
+        android:id="@+id/minPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$10"
+        app:layout_constraintTop_toBottomOf="@id/priceSeekBar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp" />
+
+    <TextView
+        android:id="@+id/maxPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$40"
+        app:layout_constraintTop_toBottomOf="@id/priceSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp" />
+
+
+    <TextView
+        android:id="@+id/cuisineTypeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cuisine Type"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/minPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/seekbarlinear"
-        app:layout_constraintTop_toBottomOf="@+id/price"
-        >
-
-        <SeekBar
-            android:id="@+id/priceSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="50"
-            android:thumbOffset="10dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/cuisineTypeText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/minPrice"
+            <CheckBox
+                android:id="@+id/checkbox_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$5"
-                android:layout_marginLeft="15dp"
-                app:layout_constraintTop_toBottomOf="@+id/priceSeekBar"
-                />
+                android:text="Main"
+                android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/maxPrice"
+            <CheckBox
+                android:id="@+id/checkbox_sidedish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$100"
-                android:layout_marginLeft="334dp"
-                app:layout_constraintEnd_toStartOf="@+id/minPrice"
-                app:layout_constraintTop_toBottomOf="@+id/priceSeekBar"
-                />
+                android:text="Sidedish"
+                android:textSize="16sp"/>
+
+            <CheckBox
+                android:id="@+id/checkbox_appetizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appetizer"
+                android:textSize="16sp"/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            app:layout_constraintEnd_toEndOf="@id/checkbox_main"
+            android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/checkbox_dessert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dessert"
+            android:textSize="16sp"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_beverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Beverage"
+            android:textSize="16sp"/>
+
 
     </LinearLayout>
 
+
+</LinearLayout>
+
+
+
     <Button
         android:id="@+id/applyBtn"
-        android:layout_width="390dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="150dp"
-        android:layout_marginEnd="1dp"
         android:backgroundTint="@color/green"
-        android:gravity="center"
         android:text="Apply"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/bottomCardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
-        app:layout_constraintTop_toBottomOf="@+id/seekbarlinear" />
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="25dp"
+       />
 
-
+<!--    navigation bar -->
+<!--Card view for shadow-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:id="@+id/bottomLinear"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/rounded_searchtext"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:gravity="center"
+            android:background="@drawable/shadow_background">
 
-            <ImageButton
-                android:id="@+id/home"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
-                android:padding="20dp"
-                android:layout_marginLeft="10dp"
-                app:srcCompat="@drawable/home"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Pasta Image" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/order"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
-                android:padding="20dp"
-                android:layout_marginLeft="10dp"
-                app:srcCompat="@drawable/order"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="order Image" />
+                <ImageButton
+                    android:id="@+id/home"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Home Image"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/home" />
 
-            <ImageButton
-                android:id="@+id/favourites"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
-                android:padding="20dp"
-                android:layout_marginLeft="10dp"
-                app:srcCompat="@drawable/favourite"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="favourite Image" />
+                <TextView
+                    android:id="@+id/homeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Home"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/account"
-                android:layout_width="90dp"
-                android:layout_height="80dp"
-                android:padding="20dp"
-                android:layout_marginRight="10dp"
-                app:srcCompat="@drawable/account"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="account Image" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/order"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Order Image"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/order" />
+
+                <TextView
+                    android:id="@+id/orderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Order"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/favourites"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Favourites Image"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/favourite" />
+
+                <TextView
+                    android:id="@+id/favouritesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Favourites"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/account"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Account Image"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/account" />
+
+                <TextView
+                    android:id="@+id/accountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Account"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

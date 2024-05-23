@@ -1,9 +1,11 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+
 import android.content.Intent;
 import android.graphics.ImageDecoder;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,12 +24,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class productpage extends AppCompatActivity {
+
+    private static final String TAG = "productpage";
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +52,7 @@ public class productpage extends AppCompatActivity {
             return insets;
         });
 
+        db = FirebaseFirestore.getInstance();
 
         ImageButton filterbutton = findViewById(R.id.filterbutton);
         filterbutton.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +62,7 @@ public class productpage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         FloatingActionButton cartbutton = findViewById(R.id.cart_button);
 
@@ -191,6 +205,15 @@ public class productpage extends AppCompatActivity {
         beverageRecyclerView.setAdapter(beverageAdapter);
 
 
+        //adding prodyct to firestore
+        addProductsToFirestore(food_list, "mains");
+        addProductsToFirestore(pizza_list, "pizza");
+        addProductsToFirestore(appetizer_list, "appetizers");
+        addProductsToFirestore(sidedish_list, "sidedishes");
+        addProductsToFirestore(dessert_list, "desserts");
+        addProductsToFirestore(beverage_list, "beverages");
+
+
 
         // Set click listeners for other ImageButtons (assuming you have them in your layout)
         ImageView homeButton = findViewById(R.id.home);
@@ -231,5 +254,23 @@ public class productpage extends AppCompatActivity {
 //            }
 //        });
 
+    }
+    private void addProductsToFirestore(ArrayList<Food> productList, String collectionName) {
+        for (Food product : productList) {
+            db.collection(collectionName)
+                    .add(product)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+        }
     }
 }

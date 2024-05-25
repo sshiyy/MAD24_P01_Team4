@@ -38,7 +38,7 @@ public class Login_Page extends AppCompatActivity {
         // Get references to the UI elements
         email = findViewById(R.id.et_email);
         password = findViewById(R.id.et_password);
-        loginBtn = findViewById(R.id.btn_login);
+        loginBtn = findViewById(R.id.btn_editProfile);
         signupRedirectText = findViewById(R.id.tv_signup);
 
         // Set OnClickListener for the login button

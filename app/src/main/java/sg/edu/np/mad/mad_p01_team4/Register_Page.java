@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ public class Register_Page extends AppCompatActivity {
     // Declare EditText and Button variables
     EditText regusername, regname, regpassword, regemail;
     Button registerbtn;
+
+    private TextView logInRedirect;
 
     // Declare Firebase Firestore and FirebaseAuth instances
     FirebaseFirestore db;
@@ -57,9 +60,14 @@ public class Register_Page extends AppCompatActivity {
         regpassword = findViewById(R.id.regpassword);
         regemail = findViewById(R.id.regemail);
         registerbtn = findViewById(R.id.btn_register);
+        logInRedirect = findViewById(R.id.tv_LogInHereText);
 
         // Initialize Firebase Firestore instance
         db = FirebaseFirestore.getInstance();
+
+
+        // Set OnClickListener for the signup redirect text
+        logInRedirect.setOnClickListener(v -> startActivity(new Intent(this, Login_Page.class)));
 
         // Set OnClickListener for the register button
         registerbtn.setOnClickListener(new View.OnClickListener() {

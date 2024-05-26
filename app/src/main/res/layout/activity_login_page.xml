@@ -10,7 +10,7 @@
     >
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_editProfile"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginBottom="100dp"
@@ -81,7 +81,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
 
     <TextView
         android:id="@+id/tv_signup"
@@ -96,7 +96,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_signuptext"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
 
     <ImageView
         android:id="@+id/mainLogo"

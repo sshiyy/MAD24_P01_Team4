@@ -38,7 +38,7 @@ public class Login_Page extends AppCompatActivity {
         // Get references to the UI elements
         email = findViewById(R.id.et_email);
         password = findViewById(R.id.et_password);
-        loginBtn = findViewById(R.id.btn_login);
+        loginBtn = findViewById(R.id.btn_editProfile);
         signupRedirectText = findViewById(R.id.tv_signup);
 
         // Set OnClickListener for the login button
@@ -94,6 +94,7 @@ public class Login_Page extends AppCompatActivity {
                                 // Proceed to the next activity
                                 Intent intent = new Intent(Login_Page.this, productpage.class); // Replace Home_Page.class with your target activity
                                 startActivity(intent);
+                                finish(); // Finish the login activity so the user cannot navigate back to it
                             }
                         } else {
                             // If sign in fails, display a message to the user

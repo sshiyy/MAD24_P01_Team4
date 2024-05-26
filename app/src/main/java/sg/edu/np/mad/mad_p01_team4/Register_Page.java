@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ public class Register_Page extends AppCompatActivity {
     // Declare EditText and Button variables
     EditText regusername, regname, regpassword, regemail;
     Button registerbtn;
+
+    private TextView logInRedirect;
 
     // Declare Firebase Firestore and FirebaseAuth instances
     FirebaseFirestore db;
@@ -57,9 +60,14 @@ public class Register_Page extends AppCompatActivity {
         regpassword = findViewById(R.id.regpassword);
         regemail = findViewById(R.id.regemail);
         registerbtn = findViewById(R.id.btn_register);
+        logInRedirect = findViewById(R.id.tv_LogInHereText);
 
         // Initialize Firebase Firestore instance
         db = FirebaseFirestore.getInstance();
+
+
+        // Set OnClickListener for the signup redirect text
+        logInRedirect.setOnClickListener(v -> startActivity(new Intent(this, Login_Page.class)));
 
         // Set OnClickListener for the register button
         registerbtn.setOnClickListener(new View.OnClickListener() {
@@ -88,29 +96,29 @@ public class Register_Page extends AppCompatActivity {
 
                 // Validate if password length >= 6
                 if(regPasswordText.length() < 6){
-                    regpassword.setError("Minimun 6 Characters for password!"); // Set error on EditText
+                    regpassword.setError("Minimum 6 Characters for password!"); // Set error on EditText
                     Log.d("Register-Page", "Password Length");
                     return; // Exit the function if email is invalid
                 }
 
-                // Check username existence before adding user
-                ValidateUsername(regUsernameText);
+                // Check email existence before adding user
+                ValidateEmail(regEmailText);
             }
         });
     }
 
-    // Function to validate if the username already exists in Firestore
-    private void ValidateUsername(String username) {
+    // Function to validate if the email already exists in Firestore
+    private void ValidateEmail(String email) {
         db.collection("Accounts")
-                .whereEqualTo("username", username)
+                .whereEqualTo("email", email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            boolean usernameAvailable = task.getResult().isEmpty();
-                            if (usernameAvailable) {
-                                // Username is available, proceed with registration logic
+                            boolean emailAvailable = task.getResult().isEmpty();
+                            if (emailAvailable) {
+                                // Email is available, proceed with registration logic
                                 String regUsernameText = regusername.getText().toString().trim();
                                 String regnameText = regname.getText().toString().trim();
                                 String regPasswordText = regpassword.getText().toString().trim();
@@ -119,12 +127,12 @@ public class Register_Page extends AppCompatActivity {
                                 // Call function to register the user
                                 registerUser(regUsernameText, regnameText, regPasswordText, regEmailText);
                             } else {
-                                regusername.setError("Username Already Exists!"); // Set error on EditText
-                                Log.d("Register-Page", "Existing Username");
+                                regemail.setError("Email Already Exists!"); // Set error on EditText
+                                Log.d("Register-Page", "Existing Email");
                             }
                         } else {
-                            Log.w("Register_Page", "Error checking username existence", task.getException());
-                            // Handle potential errors during username existence check
+                            Log.w("Register_Page", "Error checking email existence", task.getException());
+                            // Handle potential errors during email existence check
                         }
                     }
                 });

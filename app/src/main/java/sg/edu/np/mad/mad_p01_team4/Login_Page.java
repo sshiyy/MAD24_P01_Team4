@@ -52,6 +52,26 @@ public class Login_Page extends AppCompatActivity {
 
         // Set OnClickListener for the signup redirect text
         signupRedirectText.setOnClickListener(v -> startActivity(new Intent(this, Register_Page.class)));
+
+
+        // Inside onCreate method
+        TextView forgotPasswordText = findViewById(R.id.tv_forgot_password);
+        forgotPasswordText.setOnClickListener(v -> {
+            String userEmail = email.getText().toString().trim();
+            if (!userEmail.isEmpty()) {
+                mAuth.sendPasswordResetEmail(userEmail)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Login_Page.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Login_Page.this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                Toast.makeText(Login_Page.this, "Please enter your email address to reset your password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     // Function to validate user input

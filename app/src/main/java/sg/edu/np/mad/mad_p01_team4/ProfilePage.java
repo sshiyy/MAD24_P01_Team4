@@ -3,6 +3,8 @@ package sg.edu.np.mad.mad_p01_team4;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -10,9 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -95,10 +102,10 @@ public class ProfilePage extends AppCompatActivity {
                             Long points = document.getLong("points");
 
                             usernameTitle.setText(username); // Set the username to TextView
-                            usernameDisplay.setHint(username); // Set the username to EditText
+                            usernameDisplay.setText(username); // Set the username to EditText
                             nameTitle.setText(name); // Set the name to TextView
-                            nameDisplay.setHint(name); // Set the name to EditText
-                            emailDisplay.setHint(email); // Set the email to EditText
+                            nameDisplay.setText(name); // Set the name to EditText
+                            emailDisplay.setText(email); // Set the email to EditText
 
                             if (points != null) {
                                 pointsDisplay.setText(String.valueOf(points)); // Set the points to TextView
@@ -127,10 +134,69 @@ public class ProfilePage extends AppCompatActivity {
         if (!newName.isEmpty()) {
             updatedFields.put("name", newName);
         }
-        if (!newEmail.isEmpty()) {
-            updatedFields.put("email", newEmail);
-        }
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (!newEmail.isEmpty() && currentUser != null) {
+            // Show password input dialog for email change
+            showPasswordDialog(currentUser, newEmail, updatedFields, userId);
+        } else {
+            updateFirestore(userId, updatedFields);
+        }
+    }
+
+    private void showPasswordDialog(FirebaseUser currentUser, String newEmail, Map<String, Object> updatedFields, String userId) {
+        // Inflate the custom layout for password input
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.activity_dialog_password_input, null);
+        EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView)
+                .setTitle("Re-authenticate")
+                .setMessage("Please enter your current password to update your email.")
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    String password = passwordInput.getText().toString().trim();
+                    if (!password.isEmpty()) {
+                        reauthenticateAndChangeEmail(currentUser, newEmail, password, updatedFields, userId);
+                    } else {
+                        Toast.makeText(ProfilePage.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    private void reauthenticateAndChangeEmail(FirebaseUser currentUser, String newEmail, String password, Map<String, Object> updatedFields, String userId) {
+        AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
+        currentUser.reauthenticateAndRetrieveData(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Update email in Firebase Authentication
+                currentUser.updateEmail(newEmail).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        // Update email in Firestore
+                        updatedFields.put("email", newEmail);
+                        updateFirestore(userId, updatedFields);
+                    } else {
+                        if (task1.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            Toast.makeText(ProfilePage.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ProfilePage.this, "Email update failed: " + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else {
+                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                    Toast.makeText(ProfilePage.this, "User re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfilePage.this, "Re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void updateFirestore(String userId, Map<String, Object> updatedFields) {
         if (!updatedFields.isEmpty()) {
             db.collection("Accounts").document(userId).update(updatedFields)
                     .addOnSuccessListener(aVoid -> {

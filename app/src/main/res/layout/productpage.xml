@@ -27,7 +27,7 @@
             android:textSize="35sp"
             android:textStyle="bold"
             android:paddingLeft="20dp"
-            android:paddingTop="30dp"
+            android:paddingTop="35dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:background="@color/background"
@@ -40,7 +40,7 @@
             app:srcCompat= "@drawable/filter"
             android:background="@color/background"
             android:padding="0dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="45dp"
             android:scaleType="centerInside"
             android:contentDescription="filter button"
             />
@@ -226,6 +226,18 @@
             android:contentDescription="favorites button"/>
 
         <ImageButton
+            android:id="@+id/cart_button"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="23dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/shoppingcartimg"
+            android:contentDescription="cart button"/>
+
+        <ImageButton
             android:id="@+id/account"
             android:layout_width="0dp"
             android:layout_height="80dp"
@@ -238,20 +250,4 @@
             android:contentDescription="account button"/>
 
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/cart_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="16dp"
-        android:src="@drawable/shoppingcartimg"
-        android:backgroundTint="@color/background"
-        android:tint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/bottomLinear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:maxImageSize="100dp"
-        app:fabCustomSize="100dp"
-        android:contentDescription="cart button"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

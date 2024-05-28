@@ -49,7 +49,7 @@ public class productpage extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton cartbutton = findViewById(R.id.cart_button);
+        ImageView cartbutton = findViewById(R.id.cart_button);
 
         cartbutton.setOnClickListener(new View.OnClickListener() {
             @Override

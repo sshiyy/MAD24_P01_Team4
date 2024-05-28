@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -54,6 +55,7 @@ public class cartpage extends AppCompatActivity {
 
 
         RecyclerView recyclerview = findViewById(R.id.cartrv);
+
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         List<Food> cartitems = cart.getInstance().getCartitems();
@@ -65,7 +67,11 @@ public class cartpage extends AppCompatActivity {
         if(cart.getInstance().isCartempty()){
             showAlertDialog();
         }
+
+
     }
+
+    
 
     private void showAlertDialog() {
         new AlertDialog.Builder(this)

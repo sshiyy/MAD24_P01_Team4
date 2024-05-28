@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="name"
+                android:text="name"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp" />
 
@@ -139,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="email"
+                android:text="email"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp" />
 
@@ -166,7 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="username"
+                android:text="username"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp" />
 
@@ -178,7 +178,7 @@
         android:id="@+id/btn_editProfile"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="150dp"
         android:backgroundTint="#D5702B"
         android:text="Edit Profile"
         android:textSize="20sp"

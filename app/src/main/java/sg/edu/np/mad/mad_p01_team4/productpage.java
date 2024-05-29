@@ -49,6 +49,7 @@ public class productpage extends AppCompatActivity {
         foodAdapter = new FoodAdapter(new ArrayList<>(), this);
         setUpRecyclerView(R.id.productrecyclerView, foodAdapter);
 
+
         allRestaurantsText = findViewById(R.id.allRestaurantsText);
         sortedByText = findViewById(R.id.sortedByText);
 
@@ -67,6 +68,7 @@ public class productpage extends AppCompatActivity {
             Intent intent = new Intent(productpage.this, cartpage.class);
             startActivity(intent);
         });
+
 
         // Setup profile button
         ImageButton profilebtn = findViewById(R.id.account);
@@ -228,9 +230,25 @@ public class productpage extends AppCompatActivity {
         ImageView orderButton = findViewById(R.id.order);
         orderButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, Checkout.class)));
 
-        // Uncomment and setup if needed
-        // ImageView favouritesButton = findViewById(R.id.favourites);
-        // favouritesButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, FavouritesActivity.class)));
+
+      ImageView favouritesButton = findViewById(R.id.favourites);
+        favouritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to FavouritesActivity
+                startActivity(new Intent(productpage.this, favoritespage.class));
+            }
+        });
+
+//        ImageView accountButton = findViewById(R.id.account);
+//        accountButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Navigate to AccountActivity
+//                startActivity(new Intent(productpage.this, AccountActivity.class));
+//            }
+//        });
+
 
         // ImageView accountButton = findViewById(R.id.account);
         // accountButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, AccountActivity.class)));

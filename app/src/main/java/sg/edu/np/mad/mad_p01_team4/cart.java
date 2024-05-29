@@ -1,13 +1,16 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class cart {
     private static cart instance;
     private List<Food> cartitems;
 
     private cart() {
+
         cartitems = new ArrayList<>();
     }
 

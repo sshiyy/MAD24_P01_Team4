@@ -45,6 +45,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
                 .into(holder.ivcartImage);
 
         holder.tvcartQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
+        holder.tvcartitemttlprice.setText("$" + (price*food.getQuantity()));
     }
 
     @Override
@@ -53,7 +54,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
     }
 
     public static class cartViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvcartName, tvcartPrice, tvcartQuantity;
+        private TextView tvcartName, tvcartPrice, tvcartQuantity, tvcartitemttlprice;
         private ImageView ivcartImage;
 
         public cartViewHolder(@NonNull View itemView) {
@@ -62,6 +63,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             tvcartPrice = itemView.findViewById(R.id.tvcartPrice);
             ivcartImage = itemView.findViewById(R.id.ivcartImage);
             tvcartQuantity = itemView.findViewById(R.id.tvcartQuantity);
+            tvcartitemttlprice = itemView.findViewById(R.id.tvtotalpriceforitem);
         }
     }
 

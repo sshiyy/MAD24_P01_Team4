@@ -60,6 +60,7 @@
             android:layout_height="1dp"
             android:background="@color/black" /> <!-- Underline for the first Spinner -->
 
+
         <LinearLayout
             android:id="@+id/priceLayout"
             android:layout_width="match_parent"

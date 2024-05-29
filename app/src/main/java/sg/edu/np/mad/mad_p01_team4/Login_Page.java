@@ -2,7 +2,7 @@ package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,53 +11,83 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Login_Page extends AppCompatActivity {
 
-    private EditText username, password;
+    // Declare FirebaseAuth instance
+    private FirebaseAuth mAuth;
+    private EditText email, password;
     private Button loginBtn;
     private TextView signupRedirectText;
-
-    private DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        username = findViewById(R.id.et_username);
+        // Initialize FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        // Get references to the UI elements
+        email = findViewById(R.id.et_email);
         password = findViewById(R.id.et_password);
-        loginBtn = findViewById(R.id.btn_login);
+        loginBtn = findViewById(R.id.btn_editProfile);
         signupRedirectText = findViewById(R.id.tv_signup);
 
-        reference = FirebaseDatabase.getInstance().getReference("users");
-
-        // Combine login button click and validation
+        // Set OnClickListener for the login button
         loginBtn.setOnClickListener(v -> {
             if (validateInput()) {
-                checkUser();
+                String userEmail = email.getText().toString().trim();
+                String userPassword = password.getText().toString().trim();
+                loginUser(userEmail, userPassword);
             }
         });
 
+        // Set OnClickListener for the signup redirect text
         signupRedirectText.setOnClickListener(v -> startActivity(new Intent(this, Register_Page.class)));
+
+
+        // Inside onCreate method
+        TextView forgotPasswordText = findViewById(R.id.tv_forgot_password);
+        forgotPasswordText.setOnClickListener(v -> {
+            String userEmail = email.getText().toString().trim();
+            if (!userEmail.isEmpty()) {
+                mAuth.sendPasswordResetEmail(userEmail)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Login_Page.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Login_Page.this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                Toast.makeText(Login_Page.this, "Please enter your email address to reset your password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
+    // Function to validate user input
     private boolean validateInput() {
         boolean isValid = true;
 
-        if (username.getText().toString().trim().isEmpty()) {
-            username.setError("Username cannot be empty");
+        if (email.getText().toString().trim().isEmpty()) {
+            email.setError("Email cannot be empty");
+            Log.d("Login_Page","Email is empty");
+            isValid = false;
+        } else if (!isValidEmail(email.getText().toString().trim())) { // Call the isValidEmail function here
+            email.setError("Email is invalid");
+            Log.d("Login_Page","Email is invalid");
             isValid = false;
         } else {
-            username.setError(null);
+            email.setError(null);
         }
 
         if (password.getText().toString().trim().isEmpty()) {
@@ -70,37 +100,35 @@ public class Login_Page extends AppCompatActivity {
         return isValid;
     }
 
-    private void checkUser() {
-        String userUsername = username.getText().toString().trim();
-        String userPassword = password.getText().toString().trim();
-
-        Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
-
-        checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String passwordFromDB = snapshot.child(userUsername).child("password").getValue(String.class);
-
-                    if (Objects.equals(passwordFromDB, userPassword)) {
-                        // Login successful
-                        Toast.makeText(Login_Page.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login_Page.this, productpage.class);
-                        startActivity(intent);
-                    } else {
-                        password.setError("Invalid password");
-                        password.requestFocus();
+    // Function to log in the user using Firebase Authentication
+    private void loginUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            Log.d("Login_Page", "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                // Proceed to the next activity
+                                Intent intent = new Intent(Login_Page.this, productpage.class); // Replace Home_Page.class with your target activity
+                                startActivity(intent);
+                                finish(); // Finish the login activity so the user cannot navigate back to it
+                            }
+                        } else {
+                            // If sign in fails, display a message to the user
+                            Log.d("Login_Page", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(Login_Page.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                } else {
-                    username.setError("User does not exist");
-                    username.requestFocus();
-                }
-            }
+                });
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Login_Page.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)" +
+                "*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?(\\.[a-zA-Z]{2,})?$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        return pattern.matcher(email).matches();
     }
 }

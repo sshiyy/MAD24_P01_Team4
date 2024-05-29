@@ -10,14 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private ArrayList<Food> foodList;
+    private ArrayList<Food> filteredFoodList;
     private Context context;
 
     public FoodAdapter(ArrayList<Food> foodList, Context context) {
         this.foodList = foodList;
+        this.filteredFoodList = new ArrayList<>(foodList);
         this.context = context;
     }
 
@@ -30,11 +33,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        Food food = foodList.get(position);
+        Food food = filteredFoodList.get(position);
         holder.tvName.setText(food.getName());
         int price = (int) food.getPrice();
         holder.tvPrice.setText("$" + price);
-        holder.ivImage.setImageResource(food.getImageResourceId());
+
+        // Load image using Glide
+        Glide.with(context)
+                .load(food.getImg()) // Assuming img is a URL or path to the image
+                .into(holder.ivImage);
 
         holder.ivImage.setOnClickListener(v -> showFoodDetailDialog(food));
 
@@ -56,7 +63,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return filteredFoodList.size();
     }
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
@@ -75,8 +82,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         }
     }
 
-    private void showFoodDetailDialog(Food food){
-
+    private void showFoodDetailDialog(Food food) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_food_detail, null);
 
@@ -84,7 +90,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         TextView tvFoodDescription = dialogView.findViewById(R.id.tvFoodDescription);
         ImageButton btnFavorite = dialogView.findViewById(R.id.toggleFavorite);
 
-        ivFoodImage.setImageResource(food.getImageResourceId());
+        // Load image using Glide
+        Glide.with(context)
+                .load(food.getImg()) // Assuming img is a URL or path to the image
+                .into(ivFoodImage);
+
         tvFoodDescription.setText(food.getDescription());
 
         // Use an array to encapsulate the isFavorite variable
@@ -108,5 +118,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .setView(dialogView)
                 .setPositiveButton("Close", null)
                 .show();
+    }
+
+    // Method to update the data list of the adapter with filtered items
+    public void updateList(ArrayList<Food> newList) {
+        filteredFoodList.clear();
+        filteredFoodList.addAll(newList);
+        notifyDataSetChanged();
     }
 }

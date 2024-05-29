@@ -50,11 +50,18 @@ customer needs and feedback.
 ```
 Food & Drink
 ```
+# Stage 1
 
 **Task and features - one person one or more feature:**
 
 ```
-1. Log in - Jason
+1. Login/Register/Profile Page - Jason
+
+Our app will use Firebase Firestore and Firebase Authenticaton to handle user login and sign up. 
+Users will need to signup with a username,name,password and a unique email.
+When logging in, Users will use their email and password to login. If successful, Users will be allowed into the product page.
+If user is already logged in and the app is fully closed, user will be automatically logged in unless they log out
+
 
 We will have a log in page for owner and user. For user, there will be an additional 
 sign in page for the users to create an account with us but it will be static where we 

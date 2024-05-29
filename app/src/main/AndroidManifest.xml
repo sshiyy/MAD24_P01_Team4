@@ -16,11 +16,18 @@
             android:name=".favoritespage"
             android:exported="false" />
         <activity
+            android:name=".dialog_password_input"
+            android:exported="false" />
+        <activity
+            android:name=".ProfilePage"
+            android:exported="true" />
+        <activity
             android:name=".cartpage"
             android:exported="true" />
         <activity
             android:name=".productpage"
             android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Register_Page"
             android:exported="true" />

@@ -10,7 +10,7 @@
     >
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_editProfile"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginBottom="100dp"
@@ -24,16 +24,16 @@
 
 
     <EditText
-        android:id="@+id/et_username"
+        android:id="@+id/et_email"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:background="@drawable/jason_customedittext"
-        android:ems="16"
-        android:inputType="text"
         android:layout_marginTop="50dp"
-        android:hint="Username:"
+        android:background="@drawable/jason_customedittext"
         android:drawableStart="@drawable/person_logo"
         android:drawablePadding="5dp"
+        android:ems="16"
+        android:hint="Email:"
+        android:inputType="text"
         android:paddingStart="10dp"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_username" />
+        app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
     <TextView
         android:id="@+id/tv_Logintitle"
@@ -81,7 +81,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
 
     <TextView
         android:id="@+id/tv_signup"
@@ -96,7 +96,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_signuptext"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
 
     <ImageView
         android:id="@+id/mainLogo"
@@ -106,5 +106,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/mainlogo" />
+
+    <TextView
+        android:id="@+id/tv_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:textColor="#03A9F4"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_signup" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

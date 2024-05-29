@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder> {
@@ -36,7 +38,12 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         holder.tvcartName.setText(food.getName());
         int price = (int) food.getPrice();
         holder.tvcartPrice.setText("$" + price);
-        holder.ivcartImage.setImageResource(food.getImageResourceId());
+
+        // Load image using Glide
+        Glide.with(cartcontext)
+                .load(food.getImg()) // Assuming getImage() returns a string URL or path
+                .into(holder.ivcartImage);
+
         holder.tvcartQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
         holder.tvcartitemttlprice.setText("$" + (price*food.getQuantity()));
     }

@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_regusername"
+        android:id="@+id/regusername"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:background="@drawable/jason_customedittext"
@@ -39,7 +39,24 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_Registertitle"/>
 
     <EditText
-        android:id="@+id/et_regpassword"
+        android:id="@+id/regname"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/jason_customedittext"
+        android:drawableStart="@drawable/person_logo"
+        android:drawablePadding="5dp"
+        android:ems="16"
+        android:hint="Name:"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regusername" />
+
+    <EditText
+        android:id="@+id/regpassword"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
@@ -47,16 +64,16 @@
         android:drawableStart="@drawable/lock_logo"
         android:drawablePadding="5dp"
         android:ems="16"
+        android:hint="Password:"
         android:inputType="text"
         android:paddingStart="10dp"
-        android:hint="Password:"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_regusername" />
+        app:layout_constraintTop_toBottomOf="@+id/regname" />
 
     <EditText
-        android:id="@+id/et_regemail"
+        android:id="@+id/regemail"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:background="@drawable/jason_customedittext"
@@ -70,7 +87,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_regpassword"/>
+        app:layout_constraintTop_toBottomOf="@+id/regpassword"/>
 
     <Button
         android:id="@+id/btn_register"
@@ -82,5 +99,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_regemail"/>
+        app:layout_constraintTop_toBottomOf="@+id/regpassword"/>
+
+    <TextView
+        android:id="@+id/tv_AlreadyAccText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="100dp"
+        android:text="Already have an Account?"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+
+    <TextView
+        android:id="@+id/tv_LogInHereText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="80dp"
+        android:text="Log In Here!"
+        android:textColor="#03A9F4"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_AlreadyAccText"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

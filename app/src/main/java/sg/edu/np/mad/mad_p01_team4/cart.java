@@ -17,6 +17,7 @@ public class cart {
         }
         return instance;
     }
+
     public void additems(Food food) {
         for (Food item : cartitems) {
             if (item.getName().equals(food.getName())) {
@@ -38,6 +39,4 @@ public class cart {
     public boolean isCartempty() {
         return cartitems.isEmpty();
     }
-
-
 }

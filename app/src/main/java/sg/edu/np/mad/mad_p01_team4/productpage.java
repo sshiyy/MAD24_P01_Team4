@@ -1,276 +1,238 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-
 import android.content.Intent;
-import android.graphics.ImageDecoder;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Button;
-import android.content.Intent;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
 
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class productpage extends AppCompatActivity {
 
     private static final String TAG = "productpage";
 
     private FirebaseFirestore db;
+    private ArrayList<Food> allFoodList;
+    private FoodAdapter foodAdapter;
+    private TextView allRestaurantsText;
+    private TextView sortedByText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.productpage);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         db = FirebaseFirestore.getInstance();
+        allFoodList = new ArrayList<>();
 
-        ImageButton filterbutton = findViewById(R.id.filterbutton);
-        filterbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(productpage.this, FliteringPage.class);
-                startActivity(intent);
-            }
-        });
+        foodAdapter = new FoodAdapter(new ArrayList<>(), this);
+        setUpRecyclerView(R.id.productrecyclerView, foodAdapter);
 
+        allRestaurantsText = findViewById(R.id.allRestaurantsText);
+        sortedByText = findViewById(R.id.sortedByText);
 
+        fetchFoodItems();
+
+        // Setup filter buttons
+        ImageButton filbtn = findViewById(R.id.filterIcon);
+        filbtn.setOnClickListener(v -> showFilterPopup());
+
+        CardView filterbutton = findViewById(R.id.filtercard);
+        filterbutton.setOnClickListener(v -> showFilterPopup());
+
+        // Setup cart button
         FloatingActionButton cartbutton = findViewById(R.id.cart_button);
-
-        cartbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(productpage.this, cartpage.class);
-                startActivity(intent);
-            }
+        cartbutton.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, cartpage.class);
+            startActivity(intent);
         });
 
+        // Setup profile button
         ImageButton profilebtn = findViewById(R.id.account);
-
-        profilebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(productpage.this, ProfilePage.class);
-                startActivity(intent);
-            }
+        profilebtn.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, ProfilePage.class);
+            startActivity(intent);
         });
 
+        // Setup navigation buttons
+        setupNavigationButtons();
 
-        // for mains
-        ArrayList<Food> food_list = new ArrayList<>();
-        food_list.add(new Food("Carbonara", 13, R.drawable.pastacarbonara, "Creamy carbonara made with our homemade sauce"));
-        food_list.add(new Food("Bolognese", 11, R.drawable.pastabolognese, "Classic spaghetti bolognese with rich meat sauce"));
-        food_list.add(new Food("Aglio Olio", 10, R.drawable.aglioolio, "Simple and flavorful garlic and olive oil pasta"));
-        food_list.add(new Food("Baked Rice", 12, R.drawable.baakedrice, "Oven-baked rice with a crispy cheese topping"));
-        food_list.add(new Food("Chicken Chop", 13, R.drawable.chickenchop, "Juicy grilled chicken chop with sides"));
-        food_list.add(new Food("Fish & Chips", 14, R.drawable.fishnchips, "Crispy fried fish served with golden fries"));
-        food_list.add(new Food("Lasagna", 12, R.drawable.lasagna, "Layered pasta with rich meat sauce and cheese"));
-        food_list.add(new Food("Mac & Cheese", 10, R.drawable.macncheese, "Creamy and cheesy macaroni pasta"));
-        food_list.add(new Food("Risotto", 10, R.drawable.risotto, "Creamy Italian rice dish with vegetables"));
-        food_list.add(new Food("Steak with Rice", 16, R.drawable.steakwithegg, "Grilled steak served with seasoned rice"));
-        food_list.add(new Food("Steak with Potato", 16, R.drawable.steakwithpotato, "Grilled steak served with baked potato"));
+        // Setup clear filter button
+        ImageButton crossicon = findViewById(R.id.crossicon);
+        crossicon.setOnClickListener(v -> clearFilter());
+    }
 
-// for pizza
-        ArrayList<Food> pizza_list = new ArrayList<>();
-        pizza_list.add(new Food("Margherita Pizza", 10, R.drawable.marghertiapizza, "Classic pizza with fresh tomatoes and mozzarella"));
-        pizza_list.add(new Food("Pepperoni Pizza", 12, R.drawable.pepperonipizza, "Spicy pepperoni and melted cheese on a crispy crust"));
-        pizza_list.add(new Food("Cheese Pizza", 11, R.drawable.cheesepizza, "Loaded with a blend of gooey cheeses"));
-        pizza_list.add(new Food("Mushroom Pizza", 11, R.drawable.mushroompizza, "Savory mushrooms and herbs on a cheesy base"));
-
-// for appetizer
-        ArrayList<Food> appetizer_list = new ArrayList<>();
-        appetizer_list.add(new Food("Mushroom Soup", 9, R.drawable.mushroomsoupgarbread, "Creamy mushroom soup with garlic bread"));
-        appetizer_list.add(new Food("Cauliflower Soup", 7, R.drawable.cheesycauliflowersoup, "Smooth and creamy cauliflower soup"));
-        appetizer_list.add(new Food("Clam Chowder", 8, R.drawable.clamchowder, "Rich and hearty clam chowder"));
-        appetizer_list.add(new Food("Avocado Toast", 7, R.drawable.avocadotoast, "Toasted bread topped with fresh avocado"));
-        appetizer_list.add(new Food("Broccoli Toast", 6, R.drawable.broccoligarlictoastwithhoney, "Crispy toast with roasted broccoli and honey"));
-        appetizer_list.add(new Food("Cheese Bread Sticks", 7, R.drawable.cheesybreadsticks, "Cheesy and garlic-flavored bread sticks"));
-        appetizer_list.add(new Food("Poached Salmon", 15, R.drawable.poachedsalmon, "Delicate poached salmon with herbs"));
-        appetizer_list.add(new Food("Grilled Fish", 14, R.drawable.grilledfish, "Perfectly grilled fish with lemon butter"));
-        appetizer_list.add(new Food("Spicy Shrimp", 14, R.drawable.spicycaribbeanshrimp, "Spicy Caribbean-style shrimp"));
-        appetizer_list.add(new Food("Smoked Salmon Rosti", 12, R.drawable.smokesalmonrosti, "Crispy potato rosti topped with smoked salmon"));
-        appetizer_list.add(new Food("Salad", 6, R.drawable.salad, "Fresh garden salad with a variety of vegetables"));
-
-// for side dish
-        ArrayList<Food> sidedish_list = new ArrayList<>();
-        sidedish_list.add(new Food("BBQ Sausage", 8, R.drawable.bbqsausage, "Grilled BBQ sausages with a smoky flavor"));
-        sidedish_list.add(new Food("Buffalo Wings", 9, R.drawable.buffalowings, "Spicy and tangy buffalo chicken wings"));
-        sidedish_list.add(new Food("Calamari", 8, R.drawable.calamari, "Crispy fried calamari rings with dipping sauce"));
-        sidedish_list.add(new Food("Curly Fries", 7, R.drawable.curlyfries, "Seasoned and crispy curly fries"));
-        sidedish_list.add(new Food("Fries", 6, R.drawable.fries, "Classic golden fries, perfect for snacking"));
-        sidedish_list.add(new Food("Honey Chicken Wings", 9, R.drawable.honeychickenwings, "Sweet and sticky honey-glazed wings"));
-        sidedish_list.add(new Food("Meatball & Cheese", 8, R.drawable.meatballandmozzarella, "Juicy meatballs topped with melted cheese"));
-        sidedish_list.add(new Food("Onion Ring", 5, R.drawable.onionrings, "Crispy and golden onion rings"));
-        sidedish_list.add(new Food("Popcorn Chicken", 7, R.drawable.popcornchick, "Bite-sized crispy popcorn chicken"));
-
-// for dessert
-        ArrayList<Food> dessert_list = new ArrayList<>();
-        dessert_list.add(new Food("Tiramisu Crepe Cake", 6, R.drawable.tiramisucrepecake, "Layered crepe cake with tiramisu flavors"));
-        dessert_list.add(new Food("Tiramisu", 7, R.drawable.tiramisu, "Classic Italian tiramisu with coffee and mascarpone"));
-        dessert_list.add(new Food("Strawberry Shortcake", 6, R.drawable.strawberryshortcake, "Light and fluffy cake with strawberries and cream"));
-        dessert_list.add(new Food("Rainbow Crepe Cake", 6, R.drawable.rainbowcrepecake, "Colorful layered crepe cake with a sweet filling"));
-        dessert_list.add(new Food("Ice Cream Waffle", 7, R.drawable.icecreamwaffle, "Warm waffle topped with ice cream"));
-        dessert_list.add(new Food("Ice Cream Croissant", 8, R.drawable.icecreamcroissant, "Buttery croissant filled with ice cream"));
-        dessert_list.add(new Food("Chocolate Cake", 6, R.drawable.chococake, "Rich and moist chocolate cake"));
-        dessert_list.add(new Food("Banana Split", 7, R.drawable.bananasplit, "Classic banana split with ice cream and toppings"));
-
-// for beverage
-        ArrayList<Food> beverage_list = new ArrayList<>();
-        beverage_list.add(new Food("Apple Juice", 4, R.drawable.applejuice, "Fresh and crisp apple juice"));
-        beverage_list.add(new Food("Avocado Milkshake", 5, R.drawable.avocadomilkshake, "Creamy avocado milkshake"));
-        beverage_list.add(new Food("Coffee", 4, R.drawable.coffee, "Freshly brewed coffee"));
-        beverage_list.add(new Food("Hot Chocolate", 4, R.drawable.hotchoco, "Rich and creamy hot chocolate"));
-        beverage_list.add(new Food("Lemonade", 3, R.drawable.lemonade, "Refreshing homemade lemonade"));
-        beverage_list.add(new Food("Mocha", 4, R.drawable.mocha, "Chocolate-flavored coffee"));
-        beverage_list.add(new Food("Orange Juice", 4, R.drawable.orangejuice, "Freshly squeezed orange juice"));
-        beverage_list.add(new Food("Root Beer", 5, R.drawable.rootbeer, "Classic root beer soda"));
-        beverage_list.add(new Food("Strawberry Smoothie", 5, R.drawable.strawberrysmoothie, "Sweet and creamy strawberry smoothie"));
-
-
-        // recyclerview for mains
-        FoodAdapter foodAdapter = new FoodAdapter(food_list, this);
-        RecyclerView recyclerView = findViewById(R.id.productpagerv);
-        GridLayoutManager gridlayoutman = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridlayoutman);
+    private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
+        RecyclerView recyclerView = findViewById(recyclerViewId);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(foodAdapter);
+        recyclerView.setAdapter(adapter);
+    }
 
-        // recyclerview for pizza
-        FoodAdapter pizzaAdapter = new FoodAdapter(pizza_list, this);
-        RecyclerView pizzaRecyclerView = findViewById(R.id.pizzapagerv);
-        GridLayoutManager pizzaLayoutManager = new GridLayoutManager(this, 2);
-        pizzaRecyclerView.setLayoutManager(pizzaLayoutManager);
-        pizzaRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        pizzaRecyclerView.setAdapter(pizzaAdapter);
+    private void fetchFoodItems() {
+        db.collection("Food_Items")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        allFoodList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Food food = document.toObject(Food.class);
+                            allFoodList.add(food);
+                        }
+                        updateAllAdapters(allFoodList);
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+    }
 
-        // recyclerview for appetizer
-        FoodAdapter appetizerAdapter = new FoodAdapter(appetizer_list, this);
-        RecyclerView appetizerRecyclerView = findViewById(R.id.appetizerpagerv);
-        GridLayoutManager appetizerLayoutManager = new GridLayoutManager(this, 2);
-        appetizerRecyclerView.setLayoutManager(appetizerLayoutManager);
-        appetizerRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        appetizerRecyclerView.setAdapter(appetizerAdapter);
+    private void updateAllAdapters(ArrayList<Food> foodList) {
+        foodAdapter.updateList(foodList);
+    }
 
-        // recyclerview for side dish
-        FoodAdapter sidedishAdapter = new FoodAdapter(sidedish_list, this);
-        RecyclerView sidedishRecyclerView = findViewById(R.id.sidedishpagerv);
-        GridLayoutManager sidedishLayoutManager = new GridLayoutManager(this, 2);
-        sidedishRecyclerView.setLayoutManager(sidedishLayoutManager);
-        sidedishRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        sidedishRecyclerView.setAdapter(sidedishAdapter);
+    private void showFilterPopup() {
+        try {
+            // Inflate the popup_filter.xml layout
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.activity_flitering_page, null);
 
-        // recyclerview for dessert
-        FoodAdapter dessertAdapter = new FoodAdapter(dessert_list, this);
-        RecyclerView dessertRecyclerView = findViewById(R.id.dessertpagerv);
-        GridLayoutManager dessertLayoutManager = new GridLayoutManager(this, 2);
-        dessertRecyclerView.setLayoutManager(dessertLayoutManager);
-        dessertRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        dessertRecyclerView.setAdapter(dessertAdapter);
+            // Create a PopupWindow object
+            int width = LinearLayout.LayoutParams.MATCH_PARENT;
+            int height = LinearLayout.LayoutParams.MATCH_PARENT;
+            boolean focusable = true; // Allows taps outside the PopupWindow to dismiss it
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-        // recyclerview for beverage
-        FoodAdapter beverageAdapter = new FoodAdapter(beverage_list, this);
-        RecyclerView beverageRecyclerView = findViewById(R.id.beveragepagerv);
-        GridLayoutManager beverageLayoutManager = new GridLayoutManager(this, 2);
-        beverageRecyclerView.setLayoutManager(beverageLayoutManager);
-        beverageRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        beverageRecyclerView.setAdapter(beverageAdapter);
+            // Show the popup window
+            View mainLayout = findViewById(android.R.id.content).getRootView(); // Get the root view of the current activity
+            popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+            // Setup apply button click event
+            Button applyButton = popupView.findViewById(R.id.applyButton);
+            applyButton.setOnClickListener(v -> {
+                // Get selected category and price range
+                Spinner categorySpinner = popupView.findViewById(R.id.spinnerCategory);
+                Spinner priceSpinner = popupView.findViewById(R.id.spinnerPrice);
+                String selectedCategory = categorySpinner.getSelectedItem().toString();
+                String selectedPriceRange = priceSpinner.getSelectedItem().toString();
 
-        //adding prodyct to firestore
-        addProductsToFirestore(food_list, "mains");
-        addProductsToFirestore(pizza_list, "pizza");
-        addProductsToFirestore(appetizer_list, "appetizers");
-        addProductsToFirestore(sidedish_list, "sidedishes");
-        addProductsToFirestore(dessert_list, "desserts");
-        addProductsToFirestore(beverage_list, "beverages");
+                // Apply filter
+                applyFilter(selectedCategory, selectedPriceRange);
 
+                // Dismiss the popup window
+                popupWindow.dismiss();
+            });
 
+            // Setup close button click event
+            Button closeButton = popupView.findViewById(R.id.cancelButton);
+            closeButton.setOnClickListener(v -> popupWindow.dismiss());
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing filter popup", e);
+        }
+    }
 
-        // Set click listeners for other ImageButtons (assuming you have them in your layout)
-        ImageView homeButton = findViewById(R.id.home);
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to HomeActivity
-                startActivity(new Intent(productpage.this, productpage.class));
+    private void applyFilter(String selectedCategory, String selectedPriceRange) {
+        ArrayList<Food> filteredList = new ArrayList<>();
+
+        // Get min and max prices from the selected price range
+        double[] priceRange = getPriceRange(selectedPriceRange);
+        double minPrice = priceRange[0];
+        double maxPrice = priceRange[1];
+
+        // Loop through all products and filter based on selected category and price range
+        for (Food food : allFoodList) {
+            boolean matchesCategory = selectedCategory.equals("All") || food.getCategory().equals(selectedCategory);
+            boolean matchesPrice = food.getPrice() >= minPrice && food.getPrice() <= maxPrice;
+
+            if (matchesCategory && matchesPrice) {
+                filteredList.add(food);
             }
-        });
+        }
+
+        // Update RecyclerView adapters with filtered list
+        updateAllAdapters(filteredList);
+
+        // Update the filter title
+        if (selectedCategory.equals("All") && selectedPriceRange.equals("All")) {
+            allRestaurantsText.setText("All Category");
+            sortedByText.setText("sorted by category");
+        } else {
+            allRestaurantsText.setText(selectedCategory);
+            sortedByText.setText("sorted by " + selectedCategory + "," + getPriceRangeSymbol(selectedPriceRange));
+        }
+    }
+
+    private double[] getPriceRange(String priceRange) {
+        // Convert price range string to min and max price values
+        switch (priceRange) {
+            case "$":
+                return new double[]{0, 10.0};
+            case "$$":
+                return new double[]{10.0, 20.0};
+            case "$$$":
+                return new double[]{20.0, Double.MAX_VALUE};
+            default:
+                return new double[]{0, Double.MAX_VALUE};
+        }
+    }
+
+    private String getPriceRangeSymbol(String priceRange) {
+        // Convert price range string to symbol
+        switch (priceRange) {
+            case "$":
+                return "$";
+            case "$$":
+                return "$$";
+            case "$$$":
+                return "$$$";
+            default:
+                return "";
+        }
+    }
+
+    private void clearFilter() {
+        // Reset the filter title
+        allRestaurantsText.setText("All Category");
+        sortedByText.setText("sorted by category");
+
+        // Update RecyclerView adapters with the full list
+        updateAllAdapters(allFoodList);
+    }
+
+    private void setupNavigationButtons() {
+        ImageView homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
 
         ImageView orderButton = findViewById(R.id.order);
-        orderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to OrderActivity
-                startActivity(new Intent(productpage.this, Checkout.class));
-            }
-        });
+        orderButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, Checkout.class)));
 
-        // Set click listeners for favouritesButton and accountButton if you uncomment them
+        // Uncomment and setup if needed
+        // ImageView favouritesButton = findViewById(R.id.favourites);
+        // favouritesButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, FavouritesActivity.class)));
 
-        //        ImageView favouritesButton = findViewById(R.id.favourites);
-//        favouritesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to FavouritesActivity
-//                startActivity(new Intent(productpage.this, FavouritesActivity.class));
-//            }
-//        });
-
-//        ImageView accountButton = findViewById(R.id.account);
-//        accountButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to AccountActivity
-//                startActivity(new Intent(productpage.this, AccountActivity.class));
-//            }
-//        });
-
-    }
-    private void addProductsToFirestore(ArrayList<Food> productList, String collectionName) {
-        for (Food product : productList) {
-            db.collection(collectionName)
-                    .add(product)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                        }
-                    });
-        }
+        // ImageView accountButton = findViewById(R.id.account);
+        // accountButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, AccountActivity.class)));
     }
 }

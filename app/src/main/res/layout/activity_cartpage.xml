@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="Cart"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/crossImage"
+            app:layout_constraintStart_toEndOf="@id/crossicon"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
             android:gravity="center"

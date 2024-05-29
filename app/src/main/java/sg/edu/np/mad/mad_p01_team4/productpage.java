@@ -63,7 +63,7 @@ public class productpage extends AppCompatActivity {
         filterbutton.setOnClickListener(v -> showFilterPopup());
 
         // Setup cart button
-        FloatingActionButton cartbutton = findViewById(R.id.cart_button);
+        ImageButton cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, cartpage.class);
             startActivity(intent);

@@ -76,15 +76,29 @@ public class Checkout extends AppCompatActivity {
         dialog.show();
 
 
-        //for naviagtion bar - Bottom
+        ImageView cartcrossbtn = findViewById(R.id.crossicon);
+        cartcrossbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent crossintent = new Intent(Checkout.this, productpage.class);
+                startActivity(crossintent);
+            }
+        });
 
-        // Set click listeners for other ImageButtons (assuming you have them in your layout)
         ImageView homeButton = findViewById(R.id.home);
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Navigate to HomeActivity
                 startActivity(new Intent(Checkout.this, productpage.class));
+            }
+        });
+
+        ImageView cartbutton = findViewById(R.id.cart_button);
+        cartbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Checkout.this, cartpage.class));
             }
         });
 
@@ -97,26 +111,14 @@ public class Checkout extends AppCompatActivity {
             }
         });
 
-        // Set click listeners for favouritesButton and accountButton if you uncomment them
-
-        //        ImageView favouritesButton = findViewById(R.id.favourites);
-//        favouritesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to FavouritesActivity
-//                startActivity(new Intent(Checkout.this, FavouritesActivity.class));
-//            }
-//        });
-
-//        ImageView accountButton = findViewById(R.id.account);
-//        accountButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to AccountActivity
-//                startActivity(new Intent(Checkout.this, AccountActivity.class));
-//            }
-//        });
-
+        ImageView favouritesButton = findViewById(R.id.favourites);
+        favouritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to FavouritesActivity
+                startActivity(new Intent(Checkout.this, favoritespage.class));
+            }
+        });
 
 
     }

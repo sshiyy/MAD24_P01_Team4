@@ -1,6 +1,7 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +53,14 @@ public class favoritespage extends AppCompatActivity {
             public void onClick(View v) {
                 // Navigate to HomeActivity
                 startActivity(new Intent(favoritespage.this, productpage.class));
+            }
+        });
+
+        ImageView cartbutton = findViewById(R.id.cart_button);
+        cartbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(favoritespage.this, cartpage.class));
             }
         });
 

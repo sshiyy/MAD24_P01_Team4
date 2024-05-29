@@ -23,7 +23,7 @@
             android:layout_width="30dp"
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="35dp"
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,12 +40,24 @@
             android:text="Cart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/crossImage"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="26dp"
             android:layout_marginLeft="30dp"
             android:gravity="center"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="164dp"
+            android:layout_marginTop="23dp"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:text="@string/underline_clear_all"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView

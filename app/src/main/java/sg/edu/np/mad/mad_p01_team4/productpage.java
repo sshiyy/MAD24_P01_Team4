@@ -201,16 +201,14 @@ public class productpage extends AppCompatActivity {
             }
         });
 
-        // Set click listeners for favouritesButton and accountButton if you uncomment them
-
-        //        ImageView favouritesButton = findViewById(R.id.favourites);
-//        favouritesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to FavouritesActivity
-//                startActivity(new Intent(productpage.this, FavouritesActivity.class));
-//            }
-//        });
+      ImageView favouritesButton = findViewById(R.id.favourites);
+        favouritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to FavouritesActivity
+                startActivity(new Intent(productpage.this, favoritespage.class));
+            }
+        });
 
 //        ImageView accountButton = findViewById(R.id.account);
 //        accountButton.setOnClickListener(new View.OnClickListener() {

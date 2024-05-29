@@ -87,15 +87,23 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         ivFoodImage.setImageResource(food.getImageResourceId());
         tvFoodDescription.setText(food.getDescription());
 
+        // Use an array to encapsulate the isFavorite variable
+        final boolean[] isFavorite = {FavoritesManager.isFavorite(food)};
+        btnFavorite.setImageResource(isFavorite[0] ? R.drawable.redhearticon : R.drawable.hearticon);
+
         btnFavorite.setOnClickListener(new View.OnClickListener() {
-            private boolean isFavorite = false;
             @Override
             public void onClick(View v) {
-                isFavorite = !isFavorite;
-                btnFavorite.setImageResource(isFavorite ? R.drawable.redhearticon : R.drawable.hearticon);
+                if (isFavorite[0]) {
+                    FavoritesManager.removeFromFavorites(food);
+                    btnFavorite.setImageResource(R.drawable.hearticon);
+                } else {
+                    FavoritesManager.addToFavorites(food);
+                    btnFavorite.setImageResource(R.drawable.redhearticon);
+                }
+                isFavorite[0] = !isFavorite[0];  // Toggle favorite status
             }
         });
-
         new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setPositiveButton("Close", null)

@@ -23,6 +23,8 @@ import java.util.List;
 
 public class cartpage extends AppCompatActivity {
 
+    private TextView tvitemstotalprice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class cartpage extends AppCompatActivity {
 
 
         RecyclerView recyclerview = findViewById(R.id.cartrv);
+        tvitemstotalprice = findViewById(R.id.tvitemstotalprice);
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
@@ -66,12 +69,12 @@ public class cartpage extends AppCompatActivity {
 
         if(cart.getInstance().isCartempty()){
             showAlertDialog();
+        } else {
+            updateItemstotalPrice();
         }
-
 
     }
 
-    
 
     private void showAlertDialog() {
         new AlertDialog.Builder(this)
@@ -84,6 +87,20 @@ public class cartpage extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void updateItemstotalPrice() {
+        double totalprice = calculateTotalPrice();
+        tvitemstotalprice.setText(String.format("$%.0f", totalprice));
+    }
+
+    private double calculateTotalPrice() {
+        List<Food> cartitems = cart.getInstance().getCartitems();
+        double totalprice = 0;
+        for (Food food : cartitems) {
+            totalprice += food.getPrice() * food.getQuantity();
+        }
+        return totalprice;
     }
 
 

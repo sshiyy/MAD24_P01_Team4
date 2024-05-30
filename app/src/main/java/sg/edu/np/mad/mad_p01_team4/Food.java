@@ -18,7 +18,7 @@ public class Food {
         this.price = price;
         this.img = img;
         this.description = description;
-        this.quantity = quantity;
+        this.quantity = 0;
         this.category = category;
         this.imageResourceId = imageResourceId;
     }

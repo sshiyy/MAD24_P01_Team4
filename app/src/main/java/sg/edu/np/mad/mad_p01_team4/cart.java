@@ -31,6 +31,15 @@ public class cart {
         cartitems.add(food);
     }
 
+    public void updateCart(Food food) {
+        for (Food item : cartitems) {
+            if (item.getName().equals(food.getName())) {
+                item.setQuantity(food.getQuantity());
+                return;
+            }
+        }
+    }
+
     public List<Food> getCartitems() {
         return cartitems;
     }

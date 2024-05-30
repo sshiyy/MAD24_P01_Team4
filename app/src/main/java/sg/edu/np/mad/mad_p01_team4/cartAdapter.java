@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,15 +40,44 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         int price = (int) food.getPrice();
         holder.tvcartPrice.setText("$" + price);
         holder.tvcartQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
-        holder.tvcartitemttlprice.setText("$" + (food.getPrice()* food.getQuantity()));
+
+
+
+        holder.tvQuantity.setText(String.valueOf(food.getQuantity()));
+
+        holder.btnIncrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
+            quantity++;
+            holder.tvQuantity.setText(String.valueOf(quantity));
+            food.setQuantity(quantity);
+            cart.getInstance().updateCart(food);
+            notifyDataSetChanged(); // Notify adapter of data change
+            ((cartpage) cartcontext).restartActivity();
+
+        });
+
+        holder.btnDecrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
+            if (quantity > 0) {
+                quantity--;
+                holder.tvQuantity.setText(String.valueOf(quantity));
+                food.setQuantity(quantity);
+                cart.getInstance().updateCart(food);
+                notifyDataSetChanged(); // Notify adapter of data change
+                ((cartpage) cartcontext).restartActivity();
+            }
+        });
+
 
         // Load image using Glide
         Glide.with(cartcontext)
                 .load(food.getImg()) // Assuming getImage() returns a string URL or path
                 .into(holder.ivcartImage);
 
-
+        int totalItemPrice = food.getPrice() * food.getQuantity();
+        holder.tvcartitemttlprice.setText("$" + totalItemPrice);
     }
+
 
     @Override
     public int getItemCount() {
@@ -55,8 +85,9 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
     }
 
     public static class cartViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvcartName, tvcartPrice, tvcartQuantity, tvcartitemttlprice;
+        private TextView tvcartName, tvcartPrice, tvcartQuantity, tvcartitemttlprice,tvQuantity;
         private ImageView ivcartImage;
+        private ImageButton btnIncrease,btnDecrease;
 
         public cartViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,13 +96,11 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             ivcartImage = itemView.findViewById(R.id.ivcartImage);
             tvcartQuantity = itemView.findViewById(R.id.tvcartQuantity);
             tvcartitemttlprice = itemView.findViewById(R.id.tvtotalpriceforitem);
+            tvQuantity = itemView.findViewById(R.id.tvQuantity);
+            btnIncrease = itemView.findViewById(R.id.btnIncrease);
+            btnDecrease = itemView.findViewById(R.id.btnDecrease);
         }
+
     }
-
-
-
-
-
-
 }
 

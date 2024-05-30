@@ -39,5 +39,16 @@ public class cart {
         return cartitems.isEmpty();
     }
 
+    // calculate total price for checkout
+    public double getItemsTotal() {
+        double total = 0 ;
+        for (Food item : cartitems) {
+            total += item.getPrice() * item.getQuantity();
+        }
+        return total;
+    }
 
+    public double getGST() {
+        return getItemsTotal() * 0.09;
+    }
 }

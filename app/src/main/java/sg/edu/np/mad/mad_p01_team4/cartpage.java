@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +19,20 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class cartpage extends AppCompatActivity {
 
     private TextView tvitemstotalprice;
     private cartAdapter cartAdapter;
     private List<Food> cartitems;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,8 @@ public class cartpage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
 
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(new View.OnClickListener() {
@@ -56,28 +67,14 @@ public class cartpage extends AppCompatActivity {
 
         RecyclerView recyclerview = findViewById(R.id.cartrv);
         tvitemstotalprice = findViewById(R.id.tvitemstotalprice);
-        Button clearButton = findViewById(R.id.clearButton);
+
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         cartitems = cart.getInstance().getCartitems();
         cartAdapter = new cartAdapter(cartitems, this);
         recyclerview.setAdapter(cartAdapter);
-
-        cartAdapter.notifyDataSetChanged();
-
-        if (cart.getInstance().isCartempty()) {
-            showAlertDialog();
-        } else {
-            updateItemstotalPrice();
-        }
-
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearCart();
-            }
-        });
+        updateItemstotalPrice();
     }
 
     private void showAlertDialog() {
@@ -107,11 +104,5 @@ public class cartpage extends AppCompatActivity {
         return totalprice;
     }
 
-    private void clearCart() {
-        cart.getInstance().clearCart();
-        cartitems.clear();
-        cartAdapter.notifyDataSetChanged();
-        updateItemstotalPrice();
-        showAlertDialog();
-    }
+
 }

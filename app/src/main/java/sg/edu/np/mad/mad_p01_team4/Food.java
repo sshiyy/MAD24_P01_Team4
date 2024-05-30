@@ -1,34 +1,59 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 public class Food {
-    public String name;
-    public int price;
-    public int img;
-
+    private String name;
+    private int price;
+    private String img;
     private String description;
     private int quantity;
+    private String category;
+    private int imageResourceId; // Add imageResourceId field
 
-    public Food(String name, int price, int img, String description){
+    // No-argument constructor required for Firestore deserialization
+    public Food() {
+    }
+
+    public Food(String name, int price, String img, String description, int quantity, String category, int imageResourceId) {
         this.name = name;
         this.price = price;
         this.img = img;
         this.description = description;
-        this.quantity = 1;
+        this.quantity = 0;
+        this.category = category;
+        this.imageResourceId = imageResourceId;
     }
+
+    // Getters and setters for all fields
     public String getName() {
         return name;
     }
 
-    public double getPrice() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
         return price;
     }
 
-    public int getImageResourceId() {
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getImg() {
         return img;
     }
 
-    public String getDescription(){
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getQuantity() {
@@ -39,7 +64,22 @@ public class Food {
         this.quantity = quantity;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public int getImageResourceId() {
+        return imageResourceId;
+    }
+
+    public void setImageResourceId(int imageResourceId) {
+        this.imageResourceId = imageResourceId;
+    }
+
     public void incrementQuantity() {
-        this.quantity++;
     }
 }

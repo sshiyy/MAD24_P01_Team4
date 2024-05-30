@@ -2,128 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/background"
+    tools:context=".favoritespage">
 
-
-
-    <!-- All Restaurants Section -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/allRestaurantsLayout"
-
+    <LinearLayout
+        android:id="@+id/favoritelayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:padding="0dp"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
-        app:layout_constraintEnd_toEndOf="parent">
-
+        <ImageView
+            android:id="@+id/crossicon"
+            app:srcCompat="@drawable/cross"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="35dp"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerInside"/>
 
         <TextView
-            android:id="@+id/logo"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:text="Menu"
-            android:textColor="@color/black"
-            android:textSize="35sp"
-            android:textStyle="bold"
-            android:paddingLeft="10dp"
-            android:paddingTop="40dp"
-            android:background="@color/background"
+            android:id="@+id/favoritetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorites"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/crossicon"
+            android:layout_marginTop="34dp"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/filtercard"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="0dp">
+    </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/filterIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/filter"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:padding="0dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerInside"
-                    android:contentDescription="filter button" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp">
-
-                    <TextView
-                        android:id="@+id/allRestaurantsText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="All Category"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingStart="20dp"
-                        android:gravity="center_vertical" />
-
-                    <TextView
-                        android:id="@+id/sortedByText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="sorted by category"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp"
-                        android:paddingStart="20dp"
-                        android:gravity="center_vertical" />
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/crossicon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/cross"
-                    android:background="@color/white"
-                    android:layout_marginLeft="159dp"
-                    android:padding="0dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerInside"
-                    android:contentDescription="filter button" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- RecyclerView for combined sections and items -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/productrecyclerView"
+        android:id="@+id/favoritesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/background"
-        android:paddingTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/allRestaurantsLayout"
-        app:layout_constraintBottom_toTopOf="@id/bottomLinear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/favoritelayout"
+        />
 
-    <!-- Navigation bar -->
     <LinearLayout
         android:id="@+id/bottomLinear"
         android:layout_width="match_parent"
@@ -274,6 +210,4 @@
         </LinearLayout>
     </LinearLayout>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-

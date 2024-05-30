@@ -13,6 +13,9 @@
         android:theme="@style/Theme.madAssignment1"
         tools:targetApi="31">
         <activity
+            android:name=".favoritespage"
+            android:exported="false" />
+        <activity
             android:name=".dialog_password_input"
             android:exported="false" />
         <activity
@@ -23,7 +26,9 @@
             android:exported="true" />
         <activity
             android:name=".productpage"
-            android:exported="true" />
+            android:exported="true">
+        </activity>
+
         <activity
             android:name=".Register_Page"
             android:exported="true" />

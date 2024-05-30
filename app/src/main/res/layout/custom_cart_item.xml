@@ -60,6 +60,17 @@
                     android:text="Quantity"
                     android:textColor="@color/black" />
 
+                <TextView
+                    android:id="@+id/tvtotalpriceforitem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="10dp"
+                    android:text="Total Price"
+                    android:textColor="@color/black"
+                    />
+
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

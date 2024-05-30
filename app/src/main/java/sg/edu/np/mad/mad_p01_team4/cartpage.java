@@ -77,6 +77,12 @@ public class cartpage extends AppCompatActivity {
         updateItemstotalPrice();
     }
 
+    public void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
     private void showAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
@@ -94,6 +100,7 @@ public class cartpage extends AppCompatActivity {
         double totalprice = calculateTotalPrice();
         tvitemstotalprice.setText(String.format("$%.0f", totalprice));
     }
+
 
     private double calculateTotalPrice() {
         List<Food> cartitems = cart.getInstance().getCartitems();

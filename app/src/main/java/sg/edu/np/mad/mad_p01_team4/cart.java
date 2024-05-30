@@ -24,7 +24,7 @@ public class cart {
     public void additems(Food food) {
         for (Food item : cartitems) {
             if (item.getName().equals(food.getName())) {
-                item.incrementQuantity();
+                item.setQuantity(item.getQuantity() + food.getQuantity());
                 return;
             }
         }
@@ -35,11 +35,4 @@ public class cart {
         return cartitems;
     }
 
-    public void clearCart() {
-        cartitems.clear();
-    }
-
-    public boolean isCartempty() {
-        return cartitems.isEmpty();
-    }
 }

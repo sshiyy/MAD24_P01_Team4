@@ -63,27 +63,30 @@ public class cartpage extends AppCompatActivity {
 
         Button cfmbtn = findViewById(R.id.btnConfirm);
         cfmbtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                showPayment();
+                Intent intent = new Intent(cartpage.this, Checkout.class);
+                startActivity(intent);
             }
         });
 
         RecyclerView recyclerview = findViewById(R.id.cartrv);
+        tvitemstotalprice = findViewById(R.id.tvitemstotalprice);
+
+
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Food> cartitems = cart.getInstance().getCartitems();
-        cartAdapter cartAdapter = new cartAdapter(cartitems, this);
+        cartitems = cart.getInstance().getCartitems();
+        cartAdapter = new cartAdapter(cartitems, this);
         recyclerview.setAdapter(cartAdapter);
-
-        cartAdapter.notifyDataSetChanged();
-
-        if (cart.getInstance().isCartempty()) {
-            showAlertDialog();
-        }
+        updateItemstotalPrice();
     }
 
+    public void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
     private void showAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
@@ -95,6 +98,21 @@ public class cartpage extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void updateItemstotalPrice() {
+        double totalprice = calculateTotalPrice();
+        tvitemstotalprice.setText(String.format("$%.0f", totalprice));
+    }
+
+
+    private double calculateTotalPrice() {
+        List<Food> cartitems = cart.getInstance().getCartitems();
+        double totalprice = 0;
+        for (Food food : cartitems) {
+            totalprice += food.getPrice() * food.getQuantity();
+        }
+        return totalprice;
     }
 
     // method to calculate and update the cart summary

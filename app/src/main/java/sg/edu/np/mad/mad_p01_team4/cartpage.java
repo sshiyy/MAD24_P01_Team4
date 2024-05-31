@@ -63,30 +63,27 @@ public class cartpage extends AppCompatActivity {
 
         Button cfmbtn = findViewById(R.id.btnConfirm);
         cfmbtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(cartpage.this, Checkout.class);
-                startActivity(intent);
+                showPayment();
             }
         });
 
         RecyclerView recyclerview = findViewById(R.id.cartrv);
-        tvitemstotalprice = findViewById(R.id.tvitemstotalprice);
-
-
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
-        cartitems = cart.getInstance().getCartitems();
-        cartAdapter = new cartAdapter(cartitems, this);
+        List<Food> cartitems = cart.getInstance().getCartitems();
+        cartAdapter cartAdapter = new cartAdapter(cartitems, this);
         recyclerview.setAdapter(cartAdapter);
-        updateItemstotalPrice();
+
+        cartAdapter.notifyDataSetChanged();
+
+        if (cart.getInstance().isCartempty()) {
+            showAlertDialog();
+        }
     }
 
-    public void restartActivity() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
-    }
     private void showAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
@@ -98,21 +95,6 @@ public class cartpage extends AppCompatActivity {
                     }
                 })
                 .show();
-    }
-
-    private void updateItemstotalPrice() {
-        double totalprice = calculateTotalPrice();
-        tvitemstotalprice.setText(String.format("$%.0f", totalprice));
-    }
-
-
-    private double calculateTotalPrice() {
-        List<Food> cartitems = cart.getInstance().getCartitems();
-        double totalprice = 0;
-        for (Food food : cartitems) {
-            totalprice += food.getPrice() * food.getQuantity();
-        }
-        return totalprice;
     }
 
     // method to calculate and update the cart summary
@@ -132,58 +114,66 @@ public class cartpage extends AppCompatActivity {
 
     // method to show payments options
     private void showPayment() {
-
         View view = getLayoutInflater().inflate(R.layout.activity_payment_method, null);
 
+        RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
-
-        Button payButton = dialog.findViewById(R.id.payButton);
-        RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);  // Get RadioGroup reference
-
-        paymentGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                payButton.setEnabled(checkedId != -1);
-            }
-        });
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
-                cart.getInstance().clearCart();
-                Intent intent = new Intent(v.getContext(), productpage.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-        Button cancelButton = dialog.findViewById(R.id.cancelButton);
-        if (cancelButton != null) {
-            cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss(); // Dismiss the dialog when cancel button is clicked
-                }
-            });
-        }
-
-        ImageView cross = dialog.findViewById(R.id.cross);
-        cross.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss(); // Dismiss the dialog when cancel button is clicked
-            }
-        });
+        Button payButton = view.findViewById(R.id.payButton);
 
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
         bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height));
         bottomSheetBehavior.setHideable(false);
 
-        dialog.show();
+        paymentGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId != -1) {
+                payButton.setEnabled(true);
+            } else {
+                payButton.setEnabled(false);
+            }
+        });
+
+
+        if (payButton != null) {
+            payButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+                    cart.getInstance().clearCart();
+                    Intent intent = new Intent(v.getContext(), productpage.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            dialog.show();
+        }
+
+        // cancel button
+        Button cancelButton = dialog.findViewById(R.id.cancelButton);
+        if (cancelButton != null) {
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        // cross
+        ImageView cross = dialog.findViewById(R.id.cross);
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
-
+    public void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 }
+

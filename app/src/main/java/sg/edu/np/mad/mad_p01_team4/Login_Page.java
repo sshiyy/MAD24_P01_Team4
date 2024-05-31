@@ -2,60 +2,133 @@ package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.regex.Pattern;
 
 public class Login_Page extends AppCompatActivity {
+
+    // Declare FirebaseAuth instance
+    private FirebaseAuth mAuth;
+    private EditText email, password;
+    private Button loginBtn;
+    private TextView signupRedirectText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login_page);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
+        // Initialize FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
 
-        Button login_btn = findViewById(R.id.btn_login);
+        // Get references to the UI elements
+        email = findViewById(R.id.et_email);
+        password = findViewById(R.id.et_password);
+        loginBtn = findViewById(R.id.btn_editProfile);
+        signupRedirectText = findViewById(R.id.tv_signup);
 
-        login_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get references to EditTexts
-                EditText username = findViewById(R.id.et_username);
-                EditText password = findViewById(R.id.et_password);
-
-                // Get the text entered in EditTexts
-                String usernameText = username.getText().toString().trim();
-                String passwordText = password.getText().toString().trim();
-
-                // Check if username or password is empty
-                if (usernameText.isEmpty() || passwordText.isEmpty()) {
-                    // Show a Toast message (or any other popup)
-                    Toast.makeText(v.getContext(), "Username or Password cannot be empty!",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    // Username and password are not empty, proceed with login logic (optional)
-                    // ... (e.g., validate credentials with server)
-
-                    // Start Product Page ( ADD THIS BACK )
-                    Intent intent = new Intent(v.getContext(), productpage.class);
-                    v.getContext().startActivity(intent);
-                }
+        // Set OnClickListener for the login button
+        loginBtn.setOnClickListener(v -> {
+            if (validateInput()) {
+                String userEmail = email.getText().toString().trim();
+                String userPassword = password.getText().toString().trim();
+                loginUser(userEmail, userPassword);
             }
         });
 
+        // Set OnClickListener for the signup redirect text
+        signupRedirectText.setOnClickListener(v -> startActivity(new Intent(this, Register_Page.class)));
 
+
+        // Inside onCreate method
+        TextView forgotPasswordText = findViewById(R.id.tv_forgot_password);
+        forgotPasswordText.setOnClickListener(v -> {
+            String userEmail = email.getText().toString().trim();
+            if (!userEmail.isEmpty()) {
+                mAuth.sendPasswordResetEmail(userEmail)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Login_Page.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Login_Page.this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                Toast.makeText(Login_Page.this, "Please enter your email address to reset your password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    // Function to validate user input
+    private boolean validateInput() {
+        boolean isValid = true;
+
+        if (email.getText().toString().trim().isEmpty()) {
+            email.setError("Email cannot be empty");
+            Log.d("Login_Page","Email is empty");
+            isValid = false;
+        } else if (!isValidEmail(email.getText().toString().trim())) { // Call the isValidEmail function here
+            email.setError("Email is invalid");
+            Log.d("Login_Page","Email is invalid");
+            isValid = false;
+        } else {
+            email.setError(null);
+        }
+
+        if (password.getText().toString().trim().isEmpty()) {
+            password.setError("Password cannot be empty");
+            isValid = false;
+        } else {
+            password.setError(null);
+        }
+
+        return isValid;
+    }
+
+    // Function to log in the user using Firebase Authentication
+    private void loginUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            Log.d("Login_Page", "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                // Proceed to the next activity
+                                Intent intent = new Intent(Login_Page.this, productpage.class); // Replace Home_Page.class with your target activity
+                                startActivity(intent);
+                                finish(); // Finish the login activity so the user cannot navigate back to it
+                            }
+                        } else {
+                            // If sign in fails, display a message to the user
+                            Log.d("Login_Page", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(Login_Page.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)" +
+                "*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?(\\.[a-zA-Z]{2,})?$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        return pattern.matcher(email).matches();
     }
 }

@@ -7,7 +7,7 @@
     android:padding="0dp">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="215dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         app:cardCornerRadius="8dp"
@@ -17,12 +17,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivImage"
-                android:layout_width="match_parent"
-                android:layout_height="215dp"
+                android:id="@+id/ivcartImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/pastacarbonara"
                 android:onClick="showFoodDetail"/>
@@ -34,8 +34,8 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvcartName"
+                    android:layout_width="400dp"
                     android:layout_height="wrap_content"
                     android:text="Name"
                     android:textSize="20sp"
@@ -43,19 +43,28 @@
                     android:paddingTop="8dp"
                     />
 
+                <TextView
+                    android:id="@+id/tvcartPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Price"
+                    android:textSize="18sp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="10dp"/>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tvPrice"
-                        android:layout_width="90dp"
+                        android:id="@+id/tvcartQuantity"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price"
-                        android:textSize="18sp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="20dp"/>
+                        android:textSize="14sp"
+                        android:text="Quantity"
+                        android:paddingRight="100dp"
+                        android:textColor="@color/black" />
 
                     <ImageButton
                         android:id="@+id/btnIncrease"
@@ -86,10 +95,22 @@
                         android:padding="8dp"
                         android:background="@color/white"
                         />
-
                 </LinearLayout>
+
+
+
+                <TextView
+                    android:id="@+id/tvtotalpriceforitem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="0dp"
+                    android:text="Total Price"
+                    android:textColor="@color/black"
+                    />
+
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
-

@@ -24,22 +24,25 @@ public class cart {
     public void additems(Food food) {
         for (Food item : cartitems) {
             if (item.getName().equals(food.getName())) {
-                item.incrementQuantity();
+                item.setQuantity(item.getQuantity() + food.getQuantity());
                 return;
             }
         }
         cartitems.add(food);
     }
 
+    public void updateCart(Food food) {
+        for (Food item : cartitems) {
+            if (item.getName().equals(food.getName())) {
+                item.setQuantity(food.getQuantity());
+                return;
+            }
+        }
+    }
+
     public List<Food> getCartitems() {
         return cartitems;
     }
 
-    public void clearCart() {
-        cartitems.clear();
-    }
-
-    public boolean isCartempty() {
-        return cartitems.isEmpty();
-    }
 }
+

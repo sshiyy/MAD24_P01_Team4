@@ -69,6 +69,13 @@ public class productpage extends AppCompatActivity {
             startActivity(intent);
         });
 
+        ImageButton starbutton = findViewById(R.id.points);
+        starbutton.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, Points_Page.class);
+            startActivity(intent);
+        });
+
+
         // Setup profile button
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {
@@ -226,8 +233,6 @@ public class productpage extends AppCompatActivity {
         ImageView homeButton = findViewById(R.id.home);
         homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
 
-        ImageView orderButton = findViewById(R.id.order);
-        orderButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, Checkout.class)));
 
 
     }

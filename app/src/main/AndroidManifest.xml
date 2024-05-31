@@ -21,6 +21,11 @@
         <activity
             android:name=".productpage"
             android:exported="true"></activity>
+            android:name=".VoucherListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Points_Page"
+            android:exported="true" />
         <activity
             android:name=".Register_Page"
             android:exported="true" />

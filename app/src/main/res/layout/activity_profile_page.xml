@@ -272,7 +272,7 @@
                 android:orientation="vertical">
 
                 <ImageButton
-                    android:id="@+id/favourites"
+                    android:id="@+id/cart"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:adjustViewBounds="true"
@@ -280,14 +280,14 @@
                     android:contentDescription="Favourites Image"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/favourite" />
+                    app:srcCompat="@drawable/shoppingcartimg" />
 
                 <TextView
-                    android:id="@+id/favouritesText"
+                    android:id="@+id/cartText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Favourites"
+                    android:text="Cart"
                     android:textSize="12sp" />
             </LinearLayout>
 

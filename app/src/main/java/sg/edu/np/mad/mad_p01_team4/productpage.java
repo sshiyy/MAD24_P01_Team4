@@ -69,7 +69,6 @@ public class productpage extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         // Setup profile button
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {

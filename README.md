@@ -111,8 +111,9 @@ real time user n owner - order
 
 ```
 ```
-2. Payment Notification
+2. Payment Notification - MingQi
 
+after payment, notification for users to add widget. (orders preparing)
 notification popup
 
 ```
@@ -135,4 +136,6 @@ Hamburger , or bottom buttom popup? Fragment, or smth
 when type a letter 
 
 ```
+
+
 

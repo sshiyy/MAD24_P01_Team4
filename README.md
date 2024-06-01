@@ -133,9 +133,11 @@ they want to remove they can click on the 'X' button.
 ```
 2. Widget and searchbar  - MingQi
 
-notification for users to add widget. (orders preparing)
-Search Bar 
+        - Widget : 1. Allows user to know their order status (confirmed, preparing, ready, picked up)
+                   2. A notification will be prompt after payment asking user whether they want
+                      to have a widget on their home screen so that they know when their order is ready       
 
+        - Search Bar : 1. Allows user to search for items without having to key in the full spelling 
 ```
 ```
 3. Advance cart UI feature - Shiying 

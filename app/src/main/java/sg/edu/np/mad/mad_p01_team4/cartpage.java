@@ -76,8 +76,11 @@ public class cartpage extends AppCompatActivity {
         recyclerView = findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // gets the list of cart items from cart instance
         List<Food> cartitems = cart.getInstance().getCartitems();
+        // creates an adapter
         cartAdapter cartAdapter = new cartAdapter(cartitems, this);
+        // notify adapter of data changes
         recyclerView.setAdapter(cartAdapter);
 
         cartAdapter.notifyDataSetChanged();
@@ -88,41 +91,40 @@ public class cartpage extends AppCompatActivity {
         updateCartSummary();
     }
 
-    // Method to calculate and update the cart summary
+    // method to calculate and update the cart summary
     public void updateCartSummary() {
-        // Get total price and GST from cart instance
-        double total = cart.getInstance().getItemsTotal();
-        double gst = cart.getInstance().getGST();
+        // get total price and GST from cart instance
+        double total = cart.getInstance().getItemsTotal(); // total price of all items in cart
+        double gst = cart.getInstance().getGST(); // GST amt
 
-        // Display total price and GST in TextViews
+        // display total price and GST in TextViews & format as currency values
         itemsTotalamt.setText(String.format("$%.2f", total));
         GSTamt.setText(String.format("$%.2f", gst));
 
-        // Calculate total amount
+        // calculate total amount
         double totalAmount = total + gst;
-        if (discountAmount > 0) {
-            findViewById(R.id.discount).setVisibility(View.VISIBLE);
-            discountAmt.setText(String.format("-$%.2f", discountAmount));
-        } else {
-            findViewById(R.id.discount).setVisibility(View.VISIBLE);
-        }
-        totalamt.setText(String.format("$%.2f", totalAmount - discountAmount)); // Apply discount
-        totalPrice = totalAmount - discountAmount; // Update the totalPrice field with discount applied
+        totalamt.setText(String.format("$%.2f", totalAmount));
     }
 
-    // Method to show payment options
+
+    // method to show payments options
     private void showPayment() {
         View view = getLayoutInflater().inflate(R.layout.activity_payment_method, null);
 
+        // finds 'RadioGroup' in the inflated view & stores as paymentGroup
         RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
         BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(view);
-        Button payButton = view.findViewById(R.id.payButton);
+        dialog.setContentView(view); // sets content view of dialog to the inflated view
+        Button payButton = view.findViewById(R.id.payButton); // finds the payButton
 
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
-        bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height));
+        bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)); // sets peak height of the bottom sheet behavior
+        // // makes the bottom sheet non-hideable -> appear to user for payment selection
         bottomSheetBehavior.setHideable(false);
 
+        // check if a radio button is selected
+        // yes (checkedId != 1) -> pay button is enable, user can click on it
+        // no (checkedId == -1) -> pay button remains disabled, user cannot click on it
         paymentGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != -1) {
                 payButton.setEnabled(true);
@@ -133,33 +135,47 @@ public class cartpage extends AppCompatActivity {
 
 
         if (payButton != null) {
-            payButton.setOnClickListener(v -> {
-                Toast.makeText(v.getContext(), "Payment Successful! You saved $" + discountAmount, Toast.LENGTH_SHORT).show();
-                cart.getInstance().clearCart();
-                convertToPoints(totalPrice); // Convert total amount to points
-                // Clear the discount after payment
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("discount");
-                editor.apply();
-                discountAmount = 0; // Reset the discount amount
-
-                Intent intent = new Intent(v.getContext(), productpage.class);
-                startActivity(intent);
-                finish();
+            payButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // once payButton is click, shows toast message
+                    Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+                    cart.getInstance().clearCart(); // clears cart
+                    Intent intent = new Intent(v.getContext(), productpage.class);
+                    // starts productpage activity -> direct user back to product page
+                    // and finish current event
+                    startActivity(intent);
+                    finish();
+                }
             });
 
             dialog.show();
         }
 
-        // Cancel button
+        // cancel button
+        // finds cancel button in the dialog
         Button cancelButton = dialog.findViewById(R.id.cancelButton);
         if (cancelButton != null) {
-            cancelButton.setOnClickListener(v -> dialog.dismiss());
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                // when clicked on 'cancel' it dismiss the dialog
+                // dialog will be hidden from user
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
         }
 
-        // Cross icon to close the dialog
+        // cross
+        // finds cross button in the dialog
         ImageView cross = dialog.findViewById(R.id.cross);
-        cross.setOnClickListener(v -> dialog.dismiss());
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked on 'x' it dismiss the dialog
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void convertToPoints(double totalAmount) {
@@ -203,13 +219,20 @@ public class cartpage extends AppCompatActivity {
     }
 
     private void showAlertDialog() {
-        new AlertDialog.Builder(this)
+        new android.app.AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
                 .setMessage("Cart is empty. Please add items before proceeding.")
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> finish())
-                .show();
-    }
 
+                // adds a positive button (ok) to dialog
+                // when button is clicked, it calls the 'finish' method to close the activity
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show(); // show alert dialog
+    }
     private void redeemPoints(int pointsRequired, double discount) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -260,3 +283,5 @@ public class cartpage extends AppCompatActivity {
         }
     }
 }
+
+

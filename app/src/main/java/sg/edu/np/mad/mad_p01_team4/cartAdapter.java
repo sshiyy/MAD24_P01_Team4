@@ -76,9 +76,18 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         return cartItems.size();
     }
 
+    // update price & quantity in the cart page
+    // holder -> instance of cartViewHolder that holds the views for a single cart item
+    // food -> an instance of the food class representing the food item in the cart
     private void updatePriceQuantity(cartViewHolder holder, Food food) {
+        // retrives the current quantity of the food which displays the quantity as text
+        // converts text to an int & assign to var quantity
         int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
+        // calculate total price of the food
+        // assigns the result to var totalPrice
         double totalPrice = quantity * food.getPrice();
+
+        // updates tcartQuality & tvcartitemttlprice to display new quantity and price
         holder.tvcartQuantity.setText("Quantity: " + String.valueOf(quantity));
         holder.tvcartitemttlprice.setText(String.format("$%.0f", totalPrice));
     }

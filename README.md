@@ -184,6 +184,18 @@ Coffee: https://boston.eater.com/maps/best-cafes-boston
 Curly fries: https://www.bataviarestaurantsupply.com/product/french-fries-curly-q-65/
 Fish n chips: https://www.thespruceeats.com/best-fish-and-chips-recipe-434856
 Fries: https://www.bbcgoodfood.com/recipes/french-fries
+Grilled fish: https://www.lanascooking.com/simple-grilled-fish/
+Honey chicken wing: https://twoplaidaprons.com/honey-garlic-chicken-wings-air-fryer/
+Hot chocolate: https://jessicainthekitchen.com/vegan-hot-chocolate-simple-creamy/
+Ice cream croissant: https://www.sainsburysmagazine.co.uk/recipes/desserts/peanut-butter-jelly-ice-cream-croissant-sandwich
+Ice cream waffle: https://hillstreetgrocer.com/recipes/dessert/homemade-waffles-valhalla-ice-cream
+Lasagna: https://newmansown.com/recipes/homestyle-lasagna/
+Lemonade: https://lmld.org/simple-lemonade/
+Mac n cheese: https://www.allrecipes.com/recipe/238691/simple-macaroni-and-cheese/
+Margherita pizza: https://uk.ooni.com/blogs/recipes/margherita-pizza
+Meatballs with mozzarella: https://www.bellandevans.com/recipe/skillet-meatballs-with-marinara-and-mozzarella/
+Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
+Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
 
 ```
 #References

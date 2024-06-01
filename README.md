@@ -160,4 +160,18 @@ organize the app sections efficiently.
 ```
 
 
+#References
+```
+Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
+Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
+Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
+Avocado toast: https://yejiskitchenstories.com/smoked-salmon-avocado-toast/
+Baked rice: https://easygourmet.com.sg/nacho-cheese-chicken-ham-baked-rice
+Banana split: https://www.twopeasandtheirpod.com/banana-split/
+BBQ sausage: https://www.epicurious.com/recipes/food/views/beer-simmered-grilled-sausages-105455
+Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-and-garlic-ricotta-toasts-with-hot-honey
+Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
+Calamari: https://apronandwhisk.com/easy-fried-calamari/
+Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
 
+```

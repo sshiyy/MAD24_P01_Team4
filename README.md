@@ -93,47 +93,46 @@ to become gold. Can have a reedem points page? so users can redeem voucher.
 This will be at the top of the productpage where users can click on the button and a popup filter
 will appear for users to choose their category and price range. The cateogry will include Mains,Pizza,
 Appetizer,Sidedish,Dessert,Beverages. For the price, it is seperate into $, $$, $$$ where $: $0 to $10
-$$: $10 to $20 $$$: $20 and above. 
+$$: $10 to $20 $$$: $20 and above. Users will then be able to filter according to what they prefer and if
+they want to remove they can click on the 'X' button. 
 ```
 
 # Stage 2 
 
-**Planned task and feature - one person one or more feature: [continuous from stage 1]**
+**Planned task and feature - one person one or more feature**
 
 ```
-1. Log in - owner and user (dynamic - database)
+1. Owner role
 
-We will implement the using of database for our log in page so that users and owners can sign up
-and log in with. The information that users and owners provided will be stored in the database
-for future log ins and also syncing of data.
-```
-```
-2. Real time order tracking
+image upload for profile icon
+a owner page where they can see orders they have 
+and a verification for email address
+real time user n owner - order
 
-There will be a page that consists of real time order tracking so that users are able to track where
-their order are specifically and also get an estimate of the duration it will take for the order to
-reach their door step.
 ```
 ```
-3. Preference function
+2. Payment Notification
 
-There will be a preference function in the main page which makes use of database to collect what
-users order. With this information, the system will gather what users frequently order and add it
-into the preference of the user. This will make ordering more convenient and fast as user can just
-tap on the preference button and get it added to the cart.
-```
-```
-4. Notifications
+notification popup
 
-There will be a notification function whereby users can get notification regarding their orders.
-For example, when their orders are arriving, there will be a notification to inform users. The
-notification will also appear when new items are added in the menu.
 ```
 ```
-5.  Statistics
+3. Advance cart UI feature - Shiying 
 
-There will be a statistics page for owner to track the business. Some statistics includes the
-demand for each food, delivery ratings as well as overall food rating. There will also be a
-statistics involving the category of reviews that were made by customers.
+Favourites, remove and view more. 
+
+```
+```
+4. Navigation Bar - Raeann 
+
+Hamburger , or bottom buttom popup? Fragment, or smth
+
+```
+
+```
+5.  Search Bar 
+
+when type a letter 
+
 ```
 

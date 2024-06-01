@@ -164,6 +164,9 @@ organize the app sections efficiently.
 
 #References
 ```
+Icon Images : https://thenounproject.com/
+Logo: https://www.canva.com/
+
 Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
 Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
 Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
@@ -198,4 +201,4 @@ Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
 Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
 
 ```
-#References
+

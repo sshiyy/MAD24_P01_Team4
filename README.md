@@ -103,11 +103,11 @@ they want to remove they can click on the 'X' button.
 
 ```
 1. User authentication - Jason
+        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
+        - When a new user sign up, there will be verification to confirm the email is valid 
 
-image upload for profile icon
-a owner page where they can see orders they have 
-and a verification for email address
-real time user n owner - order
+1.1 Image Upload 
+        - Users can now upload a custom profile image to their profile
 
 ```
 ```

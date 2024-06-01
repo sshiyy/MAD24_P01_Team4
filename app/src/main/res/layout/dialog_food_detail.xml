@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- This page is how the dialog that would pop up upon users clicking on the item cardview from product page look like -->
     <ImageView
         android:id="@+id/ivFoodImage"
         android:layout_width="350dp"

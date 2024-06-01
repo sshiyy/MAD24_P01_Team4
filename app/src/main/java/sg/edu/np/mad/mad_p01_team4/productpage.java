@@ -55,42 +55,40 @@ public class productpage extends AppCompatActivity {
 
         fetchFoodItems();
 
-        // Setup filter buttons
+        // Setup filter buttons to enter filter page
         ImageButton filbtn = findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
 
         CardView filterbutton = findViewById(R.id.filtercard);
         filterbutton.setOnClickListener(v -> showFilterPopup());
 
-        // Setup cart button
+        // Setup cart button to navigate to cart page
         ImageButton cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, cartpage.class);
             startActivity(intent);
         });
 
+        // Setup points button to navigate to points page
         ImageButton starbutton = findViewById(R.id.points);
         starbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, Points_Page.class);
             startActivity(intent);
         });
 
-
-        // Setup profile button
+        // Setup profile button to enter profile/account page
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, ProfilePage.class);
             startActivity(intent);
         });
 
-        // Setup navigation buttons
-        setupNavigationButtons();
-
         // Setup clear filter button
         ImageButton crossicon = findViewById(R.id.crossicon);
         crossicon.setOnClickListener(v -> clearFilter());
     }
 
+    // To set recyclerview to grid format
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
         RecyclerView recyclerView = findViewById(recyclerViewId);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -99,6 +97,7 @@ public class productpage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    // For retrieving food items from database
     private void fetchFoodItems() {
         db.collection("Food_Items")
                 .get()

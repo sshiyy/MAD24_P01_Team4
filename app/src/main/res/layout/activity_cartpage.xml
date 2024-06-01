@@ -44,6 +44,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Nested scroll view and recyclerview to display the items that were added to cart -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/cartpagesv"
         android:layout_width="match_parent"
@@ -67,6 +68,7 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <!-- For displaying the GST, total price of items before GST and total price of items with GST -->
     <LinearLayout
         android:id="@+id/cartSummaryLayout"
         android:layout_width="match_parent"

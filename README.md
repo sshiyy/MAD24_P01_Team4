@@ -85,11 +85,19 @@ This is a stimulated payment so no real money will be involved in the process. P
 After successfully paying, there will be a pop up message saying that payment is successful and reset the cart to empty.
 ```
 ```
-4. Point system - Kaylea
+4. Point system - Kaylea (only did UI) 
 
 There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
 when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
-to become gold. Can have a reedem points page? so users can redeem voucher. 
+to become gold. Can have a reedem points page? so users can redeem voucher.
+
+Raeann:
+- Implement database for the points and tier to be in the account firestore
+- Fetch and match the logged in user by email so that we can update the points to the correct
+user
+- Updated points - making it when redeem voucher it will deduct the points and when payment is done
+it will also add the points into the firestore.
+
 ```
 ```
 5. Filtering page - Raeann
@@ -136,7 +144,8 @@ and also finding other relevant items in the same category.
 ```
 4. Navigation Bar - Raeann 
 
-Hamburger , or bottom buttom popup? Fragment, or smth
+a hamburger menu and a bottom button popup for the navigation using fragments to
+organize the app sections efficiently.
 
 ```
 

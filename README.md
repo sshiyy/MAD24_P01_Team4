@@ -173,6 +173,15 @@ Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-an
 Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
 Calamari: https://apronandwhisk.com/easy-fried-calamari/
 Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
+Cheesy bread sticks: https://www.jocooks.com/recipes/cheesy-breadsticks/
+Cheesy cauliflower soup: https://www.kitchensanctuary.com/creamy-cauliflower-soup/
+Chicken chop: https://www.sidechef.com/recipes/6106/chicken_chop_with_black_pepper_sauce/
+Chocolate cake: https://sugargeekshow.com/recipe/easy-chocolate-cake/
+Clam chowder: https://handletheheat.com/new-england-clam-chowder/
+Coffee: https://boston.eater.com/maps/best-cafes-boston
+Curly fries: https://www.bataviarestaurantsupply.com/product/french-fries-curly-q-65/
+Fish n chips: https://www.thespruceeats.com/best-fish-and-chips-recipe-434856
+Fries: https://www.bbcgoodfood.com/recipes/french-fries
 
 ```
 #References

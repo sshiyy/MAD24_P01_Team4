@@ -102,7 +102,7 @@ they want to remove they can click on the 'X' button.
 **Planned task and feature - one person one or more feature**
 
 ```
-1. Owner role
+1. User authentication - Jason
 
 image upload for profile icon
 a owner page where they can see orders they have 
@@ -111,10 +111,10 @@ real time user n owner - order
 
 ```
 ```
-2. Payment Notification - MingQi
+2. Widget and searchbar  - MingQi
 
-after payment, notification for users to add widget. (orders preparing)
-notification popup
+notification for users to add widget. (orders preparing)
+Search Bar 
 
 ```
 ```
@@ -131,9 +131,9 @@ Hamburger , or bottom buttom popup? Fragment, or smth
 ```
 
 ```
-5.  Search Bar 
+5.  External notification - Kaylea
 
-when type a letter 
+
 
 ```
 

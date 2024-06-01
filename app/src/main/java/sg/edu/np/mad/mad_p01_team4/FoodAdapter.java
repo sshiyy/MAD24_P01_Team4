@@ -88,7 +88,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         ImageView ivFoodImage = dialogView.findViewById(R.id.ivFoodImage);
         TextView tvFoodDescription = dialogView.findViewById(R.id.tvFoodDescription);
-        ImageButton btnFavorite = dialogView.findViewById(R.id.toggleFavorite);
 
         // Load image using Glide
         Glide.with(context)
@@ -97,23 +96,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         tvFoodDescription.setText(food.getDescription());
 
-        // Use an array to encapsulate the isFavorite variable
-        final boolean[] isFavorite = {FavoritesManager.isFavorite(food)};
-        btnFavorite.setImageResource(isFavorite[0] ? R.drawable.redhearticon : R.drawable.hearticon);
 
-        btnFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFavorite[0]) {
-                    FavoritesManager.removeFromFavorites(food);
-                    btnFavorite.setImageResource(R.drawable.hearticon);
-                } else {
-                    FavoritesManager.addToFavorites(food);
-                    btnFavorite.setImageResource(R.drawable.redhearticon);
-                }
-                isFavorite[0] = !isFavorite[0];  // Toggle favorite status
-            }
-        });
+
         new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setPositiveButton("Close", null)

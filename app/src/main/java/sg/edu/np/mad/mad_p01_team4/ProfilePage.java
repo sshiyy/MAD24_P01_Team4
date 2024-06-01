@@ -60,8 +60,8 @@ public class ProfilePage extends AppCompatActivity {
 
         // Get References
         ImageButton homebtn = findViewById(R.id.home);
-        ImageButton orderbtn = findViewById(R.id.order);
-        ImageButton favouritebtn = findViewById(R.id.favourites);
+        ImageButton starbtn = findViewById(R.id.point);
+        ImageButton cartbtn = findViewById(R.id.cart_button);
         ImageButton profilebtn = findViewById(R.id.account);
         ImageView logoutbtn = findViewById(R.id.iv_logout);
         usernameTitle = findViewById(R.id.titleUsername);
@@ -74,7 +74,9 @@ public class ProfilePage extends AppCompatActivity {
 
         // Navbar
         homebtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, productpage.class)));
-        orderbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, Checkout.class)));
+        cartbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, cartpage.class)));
+        profilebtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, ProfilePage.class)));
+        starbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, Points_Page.class)));
 
         // Handle logout
         logoutbtn.setOnClickListener(v -> {

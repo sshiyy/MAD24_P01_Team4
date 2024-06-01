@@ -162,7 +162,7 @@ organize the app sections efficiently.
 ```
 
 
-#References
+References
 ```
 Icon Images : https://thenounproject.com/
 Logo: https://www.canva.com/
@@ -199,6 +199,26 @@ Margherita pizza: https://uk.ooni.com/blogs/recipes/margherita-pizza
 Meatballs with mozzarella: https://www.bellandevans.com/recipe/skillet-meatballs-with-marinara-and-mozzarella/
 Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
 Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
+Mushroom soup with garlic bread: https://www.nommygod.com/recipes/cream-of-mushroom
+Onion rings: https://kristineskitchenblog.com/air-fryer-onion-rings/
+Orange juice: https://en.wikipedia.org/wiki/Orange_juice
+Bolognese: https://www.bonappetit.com/recipe/bas-best-bolognese
+Carbonara: https://www.bonappetit.com/recipe/simple-carbonara
+Pepperoni pizza: https://www.thecountrycook.net/smoked-pepperoni-pizza/
+Poached salmon: https://downshiftology.com/recipes/poached-salmon/
+Popcorn chicken: https://thecozycook.com/popcorn-chicken/
+Rainbow crepe cake: https://suncorefoods.com/blogs/recipes/rainbow-crepes-cake
+Risotto: https://cooking.nytimes.com/recipes/1017022-mushroom-risotto-with-peas
+Root beer: https://shop.scentbridge.com/products/root-beer-float-120-ml-for-scentfit
+Salad: https://www.eatingwell.com/recipe/7917784/chopped-power-salad-with-chicken/
+Smoked salmon rosti: https://www.recipetineats.com/smoked-salmon-potato-rosti-stack/
+Spicy shrimp: https://anaffairfromtheheart.com/spicy-caribbean-shrimp-appetizer/
+Steak with rice: https://www.hellofresh.co.uk/recipes/sirloin-steak-and-black-garlic-butter-5f101be30f472c292d5da9f6
+Steak with potato: https://fantabulosity.com/easy-steak-recipe-pan-seared-in-the-oven/
+Strawberry shortcake: https://www.foodelicacy.com/japanese-strawberry-shortcake/
+Strawberry smoothie: https://www.acouplecooks.com/perfect-strawberry-smoothie/
+Tiramisu: https://www.foodnetwork.com/recipes/food-network-kitchen/tiramisu-recipe-2131631
+Tiramisu crepe cake: https://momsdish.com/tiramisu-crepe-cake
 
 ```
 

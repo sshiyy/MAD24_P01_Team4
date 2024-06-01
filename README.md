@@ -133,9 +133,11 @@ they want to remove they can click on the 'X' button.
 ```
 2. Widget and searchbar  - MingQi
 
-notification for users to add widget. (orders preparing)
-Search Bar 
+        - Widget : 1. Allows user to know their order status (confirmed, preparing, ready, picked up)
+                   2. A notification will be prompt after payment asking user whether they want
+                      to have a widget on their home screen so that they know when their order is ready       
 
+        - Search Bar : 1. Allows user to search for items without having to key in the full spelling 
 ```
 ```
 3. Advance cart UI feature - Shiying 
@@ -173,5 +175,27 @@ Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-an
 Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
 Calamari: https://apronandwhisk.com/easy-fried-calamari/
 Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
+Cheesy bread sticks: https://www.jocooks.com/recipes/cheesy-breadsticks/
+Cheesy cauliflower soup: https://www.kitchensanctuary.com/creamy-cauliflower-soup/
+Chicken chop: https://www.sidechef.com/recipes/6106/chicken_chop_with_black_pepper_sauce/
+Chocolate cake: https://sugargeekshow.com/recipe/easy-chocolate-cake/
+Clam chowder: https://handletheheat.com/new-england-clam-chowder/
+Coffee: https://boston.eater.com/maps/best-cafes-boston
+Curly fries: https://www.bataviarestaurantsupply.com/product/french-fries-curly-q-65/
+Fish n chips: https://www.thespruceeats.com/best-fish-and-chips-recipe-434856
+Fries: https://www.bbcgoodfood.com/recipes/french-fries
+Grilled fish: https://www.lanascooking.com/simple-grilled-fish/
+Honey chicken wing: https://twoplaidaprons.com/honey-garlic-chicken-wings-air-fryer/
+Hot chocolate: https://jessicainthekitchen.com/vegan-hot-chocolate-simple-creamy/
+Ice cream croissant: https://www.sainsburysmagazine.co.uk/recipes/desserts/peanut-butter-jelly-ice-cream-croissant-sandwich
+Ice cream waffle: https://hillstreetgrocer.com/recipes/dessert/homemade-waffles-valhalla-ice-cream
+Lasagna: https://newmansown.com/recipes/homestyle-lasagna/
+Lemonade: https://lmld.org/simple-lemonade/
+Mac n cheese: https://www.allrecipes.com/recipe/238691/simple-macaroni-and-cheese/
+Margherita pizza: https://uk.ooni.com/blogs/recipes/margherita-pizza
+Meatballs with mozzarella: https://www.bellandevans.com/recipe/skillet-meatballs-with-marinara-and-mozzarella/
+Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
+Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
 
 ```
+#References

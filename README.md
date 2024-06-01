@@ -66,10 +66,11 @@ Users require a Username, name, password and a unique email.
 - Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
 ```
 ```
-2. Take orders - Shi Ying
+2. Cart/Product page - Shi Ying
 
-There will be a product page with all the items displayed and a add to cart button so that 
-users will be able to take their orders and make payment. 
+There will be a product page with all the items displayed and a + - button for users to add the quantity
+they want into the cart. The items added into the cart will then appear in the cart page with the
+quantities and prices. Users can also increase or decrease the quanitity of the items in the cart page.
 ```
 ```
 3. Make payment - Ming Qi
@@ -118,7 +119,8 @@ Search Bar
 ```
 3. Advance cart UI feature - Shiying 
 
-Favourites, remove and view more. 
+Users can now swipe left on the item to add it to favorites/unfavorite, view more
+and also finding other relevant items.
 
 ```
 ```

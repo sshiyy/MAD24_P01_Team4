@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-
 
 public class productpage extends AppCompatActivity {
 
@@ -53,7 +53,6 @@ public class productpage extends AppCompatActivity {
         allRestaurantsText = findViewById(R.id.allRestaurantsText);
         sortedByText = findViewById(R.id.sortedByText);
 
-
         fetchFoodItems();
 
         // Setup filter buttons
@@ -67,6 +66,12 @@ public class productpage extends AppCompatActivity {
         ImageButton cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, cartpage.class);
+            startActivity(intent);
+        });
+
+        ImageButton starbutton = findViewById(R.id.points);
+        starbutton.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, Points_Page.class);
             startActivity(intent);
         });
 
@@ -84,9 +89,6 @@ public class productpage extends AppCompatActivity {
         // Setup clear filter button
         ImageButton crossicon = findViewById(R.id.crossicon);
         crossicon.setOnClickListener(v -> clearFilter());
-
-        // Set cart update listener
-        cart.getInstance().setCartUpdateListener(() -> foodAdapter.notifyDataSetChanged());
     }
 
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
@@ -231,30 +233,7 @@ public class productpage extends AppCompatActivity {
         ImageView homeButton = findViewById(R.id.home);
         homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
 
-        ImageView orderButton = findViewById(R.id.order);
-        orderButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, cartpage.class)));
 
 
-      ImageView favouritesButton = findViewById(R.id.favourites);
-        favouritesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to FavouritesActivity
-                startActivity(new Intent(productpage.this, favoritespage.class));
-            }
-        });
-
-//        ImageView accountButton = findViewById(R.id.account);
-//        accountButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to AccountActivity
-//                startActivity(new Intent(productpage.this, AccountActivity.class));
-//            }
-//        });
-
-
-        // ImageView accountButton = findViewById(R.id.account);
-        // accountButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, AccountActivity.class)));
     }
 }

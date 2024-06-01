@@ -172,51 +172,25 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/order"
+                android:id="@+id/points"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
-                android:contentDescription="Order Image"
+                android:contentDescription="Home Image"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/order" />
+                app:srcCompat="@drawable/star" />
 
             <TextView
-                android:id="@+id/orderText"
+                android:id="@+id/pointsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Order"
+                android:text="Points"
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/favourites"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Favourites Image"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/favourite" />
-
-            <TextView
-                android:id="@+id/favouritesText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Favourites"
-                android:textSize="12sp" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"

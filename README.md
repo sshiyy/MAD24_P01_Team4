@@ -75,11 +75,14 @@ increase or decrease the quanitity of the items in the cart page. If users wants
 can do so by pressing the 'X' button which leads them back into the product page.
 ```
 ```
-3. Make payment - Ming Qi
+3. Price/Make payment - Ming Qi
 
-There will be multiple payment method like QR code and credit card. For QR, we can make it static 
-where we will leave it there for 5 seconds and it will pay automatically and for credit card we can 
-just let them key in the details and will display the last 4 digit and proceed to payment. 
+After user adds product to cart, there will be a summary of the total price at the bottom of the page.
+Also, prices will be updated immediately once user increase or decrease an item.
+To pay for the items, user can click on the confirm button and there will be multiple payment methods for user to choose from.
+User must select one payment method to enable the "pay' button or can press "cancel" to cancel payment and continue surfing the app.
+This is a stimulated payment so no real money will be involved in the process. Payment will be always be successful once user click pay.
+After successfully paying, there will be a pop up message saying that payment is successful and reset the cart to empty.
 ```
 ```
 4. Point system - Kaylea

@@ -50,6 +50,7 @@ public class cartpage extends AppCompatActivity {
         GSTamt = findViewById(R.id.GSTamt);
         totalamt = findViewById(R.id.totalamt);
 
+        // Set up cross button to navigate back to product page
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +60,10 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
+        /// update cart
         updateCartSummary();
 
+        // set up confirm button
         Button cfmbtn = findViewById(R.id.btnConfirm);
         cfmbtn.setOnClickListener(new View.OnClickListener() {
 
@@ -70,13 +73,16 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
+        // set up recyclerview for displaying cart items
         RecyclerView recyclerview = findViewById(R.id.cartrv);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
+        // get list of cart items
         List<Food> cartitems = cart.getInstance().getCartitems();
         cartAdapter cartAdapter = new cartAdapter(cartitems, this);
         recyclerview.setAdapter(cartAdapter);
 
+        // notify adapter that data set has changed
         cartAdapter.notifyDataSetChanged();
 
         if (cart.getInstance().isCartempty()) {
@@ -84,6 +90,7 @@ public class cartpage extends AppCompatActivity {
         }
     }
 
+    // method to show an alert dialog if cart is empty
     private void showAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
@@ -133,7 +140,7 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
-
+        // Set up pay button to handle payment confirmation
         if (payButton != null) {
             payButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -149,7 +156,7 @@ public class cartpage extends AppCompatActivity {
             dialog.show();
         }
 
-        // cancel button
+        // Set up the cancel button
         Button cancelButton = dialog.findViewById(R.id.cancelButton);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +167,7 @@ public class cartpage extends AppCompatActivity {
             });
         }
 
-        // cross
+        // Set up cross icon
         ImageView cross = dialog.findViewById(R.id.cross);
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +177,7 @@ public class cartpage extends AppCompatActivity {
         });
     }
 
+    // Method to restart activity
     public void restartActivity() {
         Intent intent = getIntent();
         finish();

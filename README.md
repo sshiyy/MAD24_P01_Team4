@@ -93,7 +93,12 @@ This will be at the top of the productpage where users can click on the button a
 will appear for users to choose their category and price range. The cateogry will include Mains,Pizza,
 Appetizer,Sidedish,Dessert,Beverages. For the price, it is seperate into $, $$, $$$ where $: $0 to $10
 $$: $10 to $20 $$$: $20 and above. Users will then be able to filter according to what they prefer and if
-they want to remove they can click on the 'X' button. 
+they want to remove they can click on the 'X' button.
+
+- Implemented firebase for productpage
+- Fetching the product from firestore for filtering and displaying products
+- used Category and Price for filtering
+
 ```
 
 # Stage 2 

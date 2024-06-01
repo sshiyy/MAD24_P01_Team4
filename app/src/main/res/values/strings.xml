@@ -11,7 +11,7 @@
 
 
         <string-array name="category_array">
-            <item>All food</item>
+            <item>All</item>
             <item>Main</item>
             <item>Pizza</item>
             <item>Appetizer</item>

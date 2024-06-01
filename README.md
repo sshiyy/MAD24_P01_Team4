@@ -57,82 +57,168 @@ Food & Drink
 ```
 1. Login/Register/Profile Page - Jason
 
-Our app will use Firebase Firestore and Firebase Authenticaton to handle user login and sign up. 
-Users will need to signup with a username,name,password and a unique email.
-When logging in, Users will use their email and password to login. If successful, Users will be allowed into the product page.
-If user is already logged in and the app is fully closed, user will be automatically logged in unless they log out
+Our app will allow users to sign up to order our food. We will have a signup, login, profile page.
+Users require a Username, name, password and a unique email.
 
+- Implemented Firebase Firestore and Authentication to handle User Accounts
+- Implemented User Persistance 
+- Implemented Validation to check for unique Email and a 6 or more character password
+- Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
+```
+```
+2. Cart/Product page - Shi Ying
 
-We will have a log in page for owner and user. For user, there will be an additional 
-sign in page for the users to create an account with us but it will be static where we 
-will hard code the username,password and email. 
+There will be a product page with all the items displayed and a + - button for users to add the quantity
+they want into the cart. The items added into the cart will then appear in the cart page with the
+quantities and prices as well as the total price for all the items in the cart. Users can also
+increase or decrease the quanitity of the items in the cart page. If users wants to add on items they
+can do so by pressing the 'X' button which leads them back into the product page.
 ```
 ```
-2. Take orders - Shi Ying
+3. Price/Make payment - Ming Qi
 
-There will be a product page with all the items displayed and a add to cart button so that 
-users will be able to take their orders and make payment. 
+After user adds product to cart, there will be a summary of the total price at the bottom of the page.
+Also, prices will be updated immediately once user increase or decrease an item.
+To pay for the items, user can click on the confirm button and there will be multiple payment methods for user to choose from.
+User must select one payment method to enable the "pay' button or can press "cancel" to cancel payment and continue surfing the app.
+This is a stimulated payment so no real money will be involved in the process. Payment will be always be successful once user click pay.
+After successfully paying, there will be a pop up message saying that payment is successful and reset the cart to empty.
 ```
 ```
-3. Make payment - Ming Qi
-
-There will be multiple payment method like QR code and credit card. For QR, we can make it static 
-where we will leave it there for 5 seconds and it will pay automatically and for credit card we can 
-just let them key in the details and will display the last 4 digit and proceed to payment. 
-```
-```
-4. Point system - Kaylea
+4. Point system - Kaylea (only did UI) 
 
 There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
 when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
-to become gold. Can have a reedem points page? so users can redeem voucher. 
+to become gold. Implemented a redeem voucher so that when accumulates 100points, can get $5 off , 200points, can
+get $10 off, 350points can get $20 dollar off. Also updated the cart page, to have a discount so that user know
+how many discount they are getting, so when user redeem it will automatically add the voucher in the cart so when user
+checkout it will be discounted already. 
+
+Raeann:
+- Implement database for the points and tier to be in the account firestore
+- Fetch and match the logged in user by email so that we can update the points to the correct
+user
+- Updated points - making it when redeem voucher it will deduct the points and when payment is done
+it will also add the points into the firestore.
+
 ```
 ```
 5. Filtering page - Raeann
 
-This will be in the search/product page where the items will be sorted into categories: Pasta,
-Pizza, Appetizer, side dish, desserts and beverages. User will be allowed to click on their desired
-category and find the dish or item they want to order. 
+This will be at the top of the productpage where users can click on the button and a popup filter
+will appear for users to choose their category and price range. The cateogry will include Mains,Pizza,
+Appetizer,Sidedish,Dessert,Beverages. For the price, it is seperate into $, $$, $$$ where $: $0 to $10
+$$: $10 to $20 $$$: $20 and above. Users will then be able to filter according to what they prefer and if
+they want to remove they can click on the 'X' button.
+
+- Implemented firebase for productpage
+- Fetching the product from firestore for filtering and displaying products
+- used Category and Price for filtering
+
 ```
 
 # Stage 2 
 
-**Planned task and feature - one person one or more feature: [continuous from stage 1]**
+**Planned task and feature - one person one or more feature**
 
 ```
-1. Log in - owner and user (dynamic - database)
+1. User authentication - Jason
+        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
+        - When a new user sign up, there will be verification to confirm the email is valid 
 
-We will implement the using of database for our log in page so that users and owners can sign up
-and log in with. The information that users and owners provided will be stored in the database
-for future log ins and also syncing of data.
-```
-```
-2. Real time order tracking
+1.1 Image Upload 
+        - Users can now upload a custom profile image to their profile
 
-There will be a page that consists of real time order tracking so that users are able to track where
-their order are specifically and also get an estimate of the duration it will take for the order to
-reach their door step.
 ```
 ```
-3. Preference function
+2. Widget and searchbar  - MingQi
 
-There will be a preference function in the main page which makes use of database to collect what
-users order. With this information, the system will gather what users frequently order and add it
-into the preference of the user. This will make ordering more convenient and fast as user can just
-tap on the preference button and get it added to the cart.
-```
-```
-4. Notifications
+        - Widget : 1. Allows user to know their order status (confirmed, preparing, ready, picked up)
+                   2. A notification will be prompt after payment asking user whether they want
+                      to have a widget on their home screen so that they know when their order is ready       
 
-There will be a notification function whereby users can get notification regarding their orders.
-For example, when their orders are arriving, there will be a notification to inform users. The
-notification will also appear when new items are added in the menu.
+        - Search Bar : 1. Allows user to search for items without having to key in the full spelling 
 ```
 ```
-5.  Statistics
+3. Advance cart UI feature - Shiying 
 
-There will be a statistics page for owner to track the business. Some statistics includes the
-demand for each food, delivery ratings as well as overall food rating. There will also be a
-statistics involving the category of reviews that were made by customers.
+Users can now swipe left on the item to add it to favorites/unfavorite, view more
+and also finding other relevant items in the same category.
+
+```
+```
+4. Navigation Bar - Raeann 
+
+a hamburger menu and a bottom button popup for the navigation using fragments to
+organize the app sections efficiently.
+
+```
+
+```
+5.  External notification - Kaylea
+
+
+
+```
+
+
+References
+```
+Icon Images : https://thenounproject.com/
+Logo: https://www.canva.com/
+
+Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
+Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
+Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
+Avocado toast: https://yejiskitchenstories.com/smoked-salmon-avocado-toast/
+Baked rice: https://easygourmet.com.sg/nacho-cheese-chicken-ham-baked-rice
+Banana split: https://www.twopeasandtheirpod.com/banana-split/
+BBQ sausage: https://www.epicurious.com/recipes/food/views/beer-simmered-grilled-sausages-105455
+Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-and-garlic-ricotta-toasts-with-hot-honey
+Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
+Calamari: https://apronandwhisk.com/easy-fried-calamari/
+Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
+Cheesy bread sticks: https://www.jocooks.com/recipes/cheesy-breadsticks/
+Cheesy cauliflower soup: https://www.kitchensanctuary.com/creamy-cauliflower-soup/
+Chicken chop: https://www.sidechef.com/recipes/6106/chicken_chop_with_black_pepper_sauce/
+Chocolate cake: https://sugargeekshow.com/recipe/easy-chocolate-cake/
+Clam chowder: https://handletheheat.com/new-england-clam-chowder/
+Coffee: https://boston.eater.com/maps/best-cafes-boston
+Curly fries: https://www.bataviarestaurantsupply.com/product/french-fries-curly-q-65/
+Fish n chips: https://www.thespruceeats.com/best-fish-and-chips-recipe-434856
+Fries: https://www.bbcgoodfood.com/recipes/french-fries
+Grilled fish: https://www.lanascooking.com/simple-grilled-fish/
+Honey chicken wing: https://twoplaidaprons.com/honey-garlic-chicken-wings-air-fryer/
+Hot chocolate: https://jessicainthekitchen.com/vegan-hot-chocolate-simple-creamy/
+Ice cream croissant: https://www.sainsburysmagazine.co.uk/recipes/desserts/peanut-butter-jelly-ice-cream-croissant-sandwich
+Ice cream waffle: https://hillstreetgrocer.com/recipes/dessert/homemade-waffles-valhalla-ice-cream
+Lasagna: https://newmansown.com/recipes/homestyle-lasagna/
+Lemonade: https://lmld.org/simple-lemonade/
+Mac n cheese: https://www.allrecipes.com/recipe/238691/simple-macaroni-and-cheese/
+Margherita pizza: https://uk.ooni.com/blogs/recipes/margherita-pizza
+Meatballs with mozzarella: https://www.bellandevans.com/recipe/skillet-meatballs-with-marinara-and-mozzarella/
+Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
+Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
+Mushroom soup with garlic bread: https://www.nommygod.com/recipes/cream-of-mushroom
+Onion rings: https://kristineskitchenblog.com/air-fryer-onion-rings/
+Orange juice: https://en.wikipedia.org/wiki/Orange_juice
+Bolognese: https://www.bonappetit.com/recipe/bas-best-bolognese
+Carbonara: https://www.bonappetit.com/recipe/simple-carbonara
+Pepperoni pizza: https://www.thecountrycook.net/smoked-pepperoni-pizza/
+Poached salmon: https://downshiftology.com/recipes/poached-salmon/
+Popcorn chicken: https://thecozycook.com/popcorn-chicken/
+Rainbow crepe cake: https://suncorefoods.com/blogs/recipes/rainbow-crepes-cake
+Risotto: https://cooking.nytimes.com/recipes/1017022-mushroom-risotto-with-peas
+Root beer: https://shop.scentbridge.com/products/root-beer-float-120-ml-for-scentfit
+Salad: https://www.eatingwell.com/recipe/7917784/chopped-power-salad-with-chicken/
+Smoked salmon rosti: https://www.recipetineats.com/smoked-salmon-potato-rosti-stack/
+Spicy shrimp: https://anaffairfromtheheart.com/spicy-caribbean-shrimp-appetizer/
+Steak with rice: https://www.hellofresh.co.uk/recipes/sirloin-steak-and-black-garlic-butter-5f101be30f472c292d5da9f6
+Steak with potato: https://fantabulosity.com/easy-steak-recipe-pan-seared-in-the-oven/
+Strawberry shortcake: https://www.foodelicacy.com/japanese-strawberry-shortcake/
+Strawberry smoothie: https://www.acouplecooks.com/perfect-strawberry-smoothie/
+Tiramisu: https://www.foodnetwork.com/recipes/food-network-kitchen/tiramisu-recipe-2131631
+Tiramisu crepe cake: https://momsdish.com/tiramisu-crepe-cake
+
 ```
 

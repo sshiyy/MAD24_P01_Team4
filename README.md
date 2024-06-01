@@ -89,7 +89,10 @@ After successfully paying, there will be a pop up message saying that payment is
 
 There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
 when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
-to become gold. Can have a reedem points page? so users can redeem voucher.
+to become gold. Implemented a redeem voucher so that when accumulates 100points, can get $5 off , 200points, can
+get $10 off, 350points can get $20 dollar off. Also updated the cart page, to have a discount so that user know
+how many discount they are getting, so when user redeem it will automatically add the voucher in the cart so when user
+checkout it will be discounted already. 
 
 Raeann:
 - Implement database for the points and tier to be in the account firestore

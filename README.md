@@ -70,7 +70,9 @@ Users require a Username, name, password and a unique email.
 
 There will be a product page with all the items displayed and a + - button for users to add the quantity
 they want into the cart. The items added into the cart will then appear in the cart page with the
-quantities and prices. Users can also increase or decrease the quanitity of the items in the cart page.
+quantities and prices as well as the total price for all the items in the cart. Users can also
+increase or decrease the quanitity of the items in the cart page. If users wants to add on items they
+can do so by pressing the 'X' button which leads them back into the product page.
 ```
 ```
 3. Make payment - Ming Qi
@@ -125,7 +127,7 @@ Search Bar
 3. Advance cart UI feature - Shiying 
 
 Users can now swipe left on the item to add it to favorites/unfavorite, view more
-and also finding other relevant items.
+and also finding other relevant items in the same category.
 
 ```
 ```

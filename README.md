@@ -85,11 +85,22 @@ This is a stimulated payment so no real money will be involved in the process. P
 After successfully paying, there will be a pop up message saying that payment is successful and reset the cart to empty.
 ```
 ```
-4. Point system - Kaylea
+4. Point system - Kaylea (only did UI) 
 
 There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
 when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
-to become gold. Can have a reedem points page? so users can redeem voucher. 
+to become gold. Implemented a redeem voucher so that when accumulates 100points, can get $5 off , 200points, can
+get $10 off, 350points can get $20 dollar off. Also updated the cart page, to have a discount so that user know
+how many discount they are getting, so when user redeem it will automatically add the voucher in the cart so when user
+checkout it will be discounted already. 
+
+Raeann:
+- Implement database for the points and tier to be in the account firestore
+- Fetch and match the logged in user by email so that we can update the points to the correct
+user
+- Updated points - making it when redeem voucher it will deduct the points and when payment is done
+it will also add the points into the firestore.
+
 ```
 ```
 5. Filtering page - Raeann
@@ -136,7 +147,8 @@ and also finding other relevant items in the same category.
 ```
 4. Navigation Bar - Raeann 
 
-Hamburger , or bottom buttom popup? Fragment, or smth
+a hamburger menu and a bottom button popup for the navigation using fragments to
+organize the app sections efficiently.
 
 ```
 
@@ -148,4 +160,19 @@ Hamburger , or bottom buttom popup? Fragment, or smth
 ```
 
 
+#References
+```
+Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
+Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
+Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
+Avocado toast: https://yejiskitchenstories.com/smoked-salmon-avocado-toast/
+Baked rice: https://easygourmet.com.sg/nacho-cheese-chicken-ham-baked-rice
+Banana split: https://www.twopeasandtheirpod.com/banana-split/
+BBQ sausage: https://www.epicurious.com/recipes/food/views/beer-simmered-grilled-sausages-105455
+Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-and-garlic-ricotta-toasts-with-hot-honey
+Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
+Calamari: https://apronandwhisk.com/easy-fried-calamari/
+Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
 
+```
+#References

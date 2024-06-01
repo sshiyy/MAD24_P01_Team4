@@ -86,18 +86,20 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         // Fetch and display user's details
-        fetchUserDetails(currentUser.getUid());
+        fetchUserDetails(currentUser);
 
         // Handle profile edit
-        editProfileBtn.setOnClickListener(v -> updateProfile(currentUser.getUid()));
+        editProfileBtn.setOnClickListener(v -> updateProfile(currentUser));
     }
 
-    private void fetchUserDetails(String userId) {
-        db.collection("Accounts").document(userId).get()
+    private void fetchUserDetails(FirebaseUser currentUser) {
+        String userEmail = currentUser.getEmail();
+        db.collection("Accounts")
+                .whereEqualTo("email", userEmail)
+                .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        for (DocumentSnapshot document : task.getResult()) {
                             String username = document.getString("username");
                             String name = document.getString("name");
                             String email = document.getString("email");
@@ -114,16 +116,15 @@ public class ProfilePage extends AppCompatActivity {
                             }
 
                             Log.d("ProfilePage", "User details fetched");
-                        } else {
-                            Log.d("ProfilePage", "No such document");
+                            break; // Break after fetching the first matching document
                         }
                     } else {
-                        Log.d("ProfilePage", "get failed with ", task.getException());
+                        Log.d("ProfilePage", "Failed to fetch user details", task.getException());
                     }
                 });
     }
 
-    private void updateProfile(String userId) {
+    private void updateProfile(FirebaseUser currentUser) {
         String newUsername = usernameDisplay.getText().toString().trim();
         String newName = nameDisplay.getText().toString().trim();
         String newEmail = emailDisplay.getText().toString().trim();
@@ -137,17 +138,15 @@ public class ProfilePage extends AppCompatActivity {
             updatedFields.put("name", newName);
         }
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
         if (!newEmail.isEmpty() && currentUser != null) {
             // Show password input dialog for email change
-            showPasswordDialog(currentUser, newEmail, updatedFields, userId);
+            showPasswordDialog(currentUser, newEmail, updatedFields);
         } else {
-            updateFirestore(userId, updatedFields);
+            updateFirestore(currentUser.getEmail(), updatedFields);
         }
     }
 
-    private void showPasswordDialog(FirebaseUser currentUser, String newEmail, Map<String, Object> updatedFields, String userId) {
+    private void showPasswordDialog(FirebaseUser currentUser, String newEmail, Map<String, Object> updatedFields) {
         // Inflate the custom layout for password input
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.activity_dialog_password_input, null);
@@ -160,7 +159,7 @@ public class ProfilePage extends AppCompatActivity {
                 .setPositiveButton("Confirm", (dialog, which) -> {
                     String password = passwordInput.getText().toString().trim();
                     if (!password.isEmpty()) {
-                        reauthenticateAndChangeEmail(currentUser, newEmail, password, updatedFields, userId);
+                        reauthenticateAndChangeEmail(currentUser, newEmail, password, updatedFields);
                     } else {
                         Toast.makeText(ProfilePage.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
                     }
@@ -170,7 +169,7 @@ public class ProfilePage extends AppCompatActivity {
                 .show();
     }
 
-    private void reauthenticateAndChangeEmail(FirebaseUser currentUser, String newEmail, String password, Map<String, Object> updatedFields, String userId) {
+    private void reauthenticateAndChangeEmail(FirebaseUser currentUser, String newEmail, String password, Map<String, Object> updatedFields) {
         AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
         currentUser.reauthenticateAndRetrieveData(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -179,7 +178,7 @@ public class ProfilePage extends AppCompatActivity {
                     if (task1.isSuccessful()) {
                         // Update email in Firestore
                         updatedFields.put("email", newEmail);
-                        updateFirestore(userId, updatedFields);
+                        updateFirestore(currentUser.getEmail(), updatedFields);
                     } else {
                         if (task1.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             Toast.makeText(ProfilePage.this, "Invalid email format", Toast.LENGTH_SHORT).show();
@@ -198,18 +197,27 @@ public class ProfilePage extends AppCompatActivity {
         });
     }
 
-    private void updateFirestore(String userId, Map<String, Object> updatedFields) {
-        if (!updatedFields.isEmpty()) {
-            db.collection("Accounts").document(userId).update(updatedFields)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(ProfilePage.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                        fetchUserDetails(userId); // Refresh user details after update
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(ProfilePage.this, "Profile update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(this, "No changes to update", Toast.LENGTH_SHORT).show();
-        }
+    private void updateFirestore(String oldEmail, Map<String, Object> updatedFields) {
+        db.collection("Accounts")
+                .whereEqualTo("email", oldEmail)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            db.collection("Accounts").document(document.getId())
+                                    .update(updatedFields)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(ProfilePage.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                        fetchUserDetails(mAuth.getCurrentUser()); // Refresh user details after update
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(ProfilePage.this, "Profile update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                            break; // Break after updating the first matching document
+                        }
+                    } else {
+                        Toast.makeText(ProfilePage.this, "Failed to update profile: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

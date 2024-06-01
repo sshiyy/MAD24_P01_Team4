@@ -27,7 +27,7 @@
         android:id="@+id/et_email"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/jason_customedittext"
         android:drawableStart="@drawable/person_logo"
         android:drawablePadding="5dp"
@@ -61,14 +61,15 @@
         android:id="@+id/tv_Logintitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="0dp"
         android:text="Sign In"
-        android:textSize="60sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <TextView
         android:id="@+id/tv_signuptext"
@@ -88,6 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="70dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="80dp"
         android:text="Sign Up Here!"
         android:textColor="#03A9F4"
@@ -103,6 +105,7 @@
         android:layout_width="411dp"
         android:layout_height="500dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/mainlogo" />

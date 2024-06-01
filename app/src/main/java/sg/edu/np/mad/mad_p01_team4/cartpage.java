@@ -133,7 +133,7 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
-        // check if pay button is not null -> it is being enabled (user have selected a payment method)
+
         if (payButton != null) {
             payButton.setOnClickListener(new View.OnClickListener() {
                 @Override

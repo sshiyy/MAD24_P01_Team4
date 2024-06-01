@@ -5,7 +5,10 @@
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryVariant">@android:color/white</item>
         <item name="colorOnPrimary">@android:color/black</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
+
+
 
     <style name="Theme.madAssignment1" parent="Base.Theme.MAD_P01_Team4" />
 </resources>

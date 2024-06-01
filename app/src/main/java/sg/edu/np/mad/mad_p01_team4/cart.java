@@ -6,6 +6,7 @@ import java.util.List;
 public class cart {
     private static cart instance;
     private List<Food> cartitems;
+    private CartUpdateListener cartUpdateListener; // Declare the cartUpdateListener variable
 
     private cart() {
         cartitems = new ArrayList<>();
@@ -17,14 +18,25 @@ public class cart {
         }
         return instance;
     }
+
+    public void setCartUpdateListener(CartUpdateListener listener) {
+        this.cartUpdateListener = listener;
+    }
+
     public void additems(Food food) {
         for (Food item : cartitems) {
             if (item.getName().equals(food.getName())) {
-                item.incrementQuantity();
+                item.setQuantity(item.getQuantity() + food.getQuantity()); // Update quantity
+                if (cartUpdateListener != null) {
+                    cartUpdateListener.onCartUpdated();
+                }
                 return;
             }
         }
         cartitems.add(food);
+        if (cartUpdateListener != null) {
+            cartUpdateListener.onCartUpdated();
+        }
     }
 
     public List<Food> getCartitems() {
@@ -33,6 +45,9 @@ public class cart {
 
     public void clearCart() {
         cartitems.clear();
+        if (cartUpdateListener != null) {
+            cartUpdateListener.onCartUpdated();
+        }
     }
 
     public boolean isCartempty() {
@@ -47,9 +62,14 @@ public class cart {
                 } else {
                     cartitems.remove(i);
                 }
+                if (cartUpdateListener != null) {
+                    cartUpdateListener.onCartUpdated();
+                }
+                return;
             }
         }
     }
+
     // calculate total price for checkout
     public double getItemsTotal() {
         double total = 0 ;
@@ -60,7 +80,11 @@ public class cart {
     }
 
     public double getGST() {
-        // Assuming GST is 7% of items total.
+        // Assuming GST is 9% of items total.
         return getItemsTotal() * 0.09;
+    }
+
+    public interface CartUpdateListener {
+        void onCartUpdated();
     }
 }

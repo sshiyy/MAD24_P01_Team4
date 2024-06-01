@@ -69,7 +69,7 @@ public class favoritespage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate to OrderActivity
-                startActivity(new Intent(favoritespage.this, Checkout.class));
+                startActivity(new Intent(favoritespage.this, cartpage.class));
             }
         });
 

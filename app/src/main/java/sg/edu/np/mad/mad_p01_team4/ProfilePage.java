@@ -74,7 +74,7 @@ public class ProfilePage extends AppCompatActivity {
 
         // Navbar
         homebtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, productpage.class)));
-        orderbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, Checkout.class)));
+        orderbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, cartpage.class)));
 
         // Handle logout
         logoutbtn.setOnClickListener(v -> {

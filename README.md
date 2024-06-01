@@ -57,15 +57,13 @@ Food & Drink
 ```
 1. Login/Register/Profile Page - Jason
 
-Our app will use Firebase Firestore and Firebase Authenticaton to handle user login and sign up. 
-Users will need to signup with a username,name,password and a unique email.
-When logging in, Users will use their email and password to login. If successful, Users will be allowed into the product page.
-If user is already logged in and the app is fully closed, user will be automatically logged in unless they log out
+Our app will allow users to sign up to order our food. We will have a signup, login, profile page.
+Users require a Username, name, password and a unique email.
 
-
-We will have a log in page for owner and user. For user, there will be an additional 
-sign in page for the users to create an account with us but it will be static where we 
-will hard code the username,password and email. 
+- Implemented Firebase Firestore and Authentication to handle User Accounts
+- Implemented User Persistance 
+- Implemented Validation to check for unique Email and a 6 or more character password
+- Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
 ```
 ```
 2. Take orders - Shi Ying

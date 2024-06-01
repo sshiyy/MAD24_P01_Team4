@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -32,7 +31,6 @@ public class cartpage extends AppCompatActivity {
     private TextView itemsTotalamt, GSTamt, totalamt;
     private Button btnConfirm;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,16 +48,14 @@ public class cartpage extends AppCompatActivity {
         GSTamt = findViewById(R.id.GSTamt);
         totalamt = findViewById(R.id.totalamt);
 
+
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent crossintent = new Intent(cartpage.this, productpage.class);
-                startActivity(crossintent);
+                finish();
             }
         });
-
-        updateCartSummary();
 
         Button cfmbtn = findViewById(R.id.btnConfirm);
         cfmbtn.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +78,22 @@ public class cartpage extends AppCompatActivity {
         if (cart.getInstance().isCartempty()) {
             showAlertDialog();
         }
+        updateCartSummary();
+    }
+
+    // method to calculate and update the cart summary
+    public void updateCartSummary() {
+        // get total price and GST from cart instance
+        double total = cart.getInstance().getItemsTotal();
+        double gst = cart.getInstance().getGST();
+
+        // display total price and GST in TextViews
+        itemsTotalamt.setText(String.format("$%.2f", total));
+        GSTamt.setText(String.format("$%.2f", gst));
+
+        // calculate total amount
+        double totalAmount = total + gst;
+        totalamt.setText(String.format("$%.2f", totalAmount));
     }
 
     private void showAlertDialog() {
@@ -95,21 +107,6 @@ public class cartpage extends AppCompatActivity {
                     }
                 })
                 .show();
-    }
-
-    // method to calculate and update the cart summary
-    private void updateCartSummary() {
-        // get total price and GST from cart instance
-        double total = cart.getInstance().getItemsTotal();
-        double gst = cart.getInstance().getGST();
-
-        // display total price and GST in TextViews
-        itemsTotalamt.setText(String.format("$%.2f", total));
-        GSTamt.setText(String.format("$%.2f", gst));
-
-        // Calculate total amount
-        double totalAmount = total + gst;
-        totalamt.setText(String.format("$%.2f", totalAmount));
     }
 
     // method to show payments options
@@ -168,12 +165,6 @@ public class cartpage extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-    }
-
-    public void restartActivity() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
     }
 }
 

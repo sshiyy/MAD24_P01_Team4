@@ -57,21 +57,22 @@ Food & Drink
 ```
 1. Login/Register/Profile Page - Jason
 
-Our app will use Firebase Firestore and Firebase Authenticaton to handle user login and sign up. 
-Users will need to signup with a username,name,password and a unique email.
-When logging in, Users will use their email and password to login. If successful, Users will be allowed into the product page.
-If user is already logged in and the app is fully closed, user will be automatically logged in unless they log out
+Our app will allow users to sign up to order our food. We will have a signup, login, profile page.
+Users require a Username, name, password and a unique email.
 
-
-We will have a log in page for owner and user. For user, there will be an additional 
-sign in page for the users to create an account with us but it will be static where we 
-will hard code the username,password and email. 
+- Implemented Firebase Firestore and Authentication to handle User Accounts
+- Implemented User Persistance 
+- Implemented Validation to check for unique Email and a 6 or more character password
+- Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
 ```
 ```
-2. Take orders - Shi Ying
+2. Cart/Product page - Shi Ying
 
-There will be a product page with all the items displayed and a add to cart button so that 
-users will be able to take their orders and make payment. 
+There will be a product page with all the items displayed and a + - button for users to add the quantity
+they want into the cart. The items added into the cart will then appear in the cart page with the
+quantities and prices as well as the total price for all the items in the cart. Users can also
+increase or decrease the quanitity of the items in the cart page. If users wants to add on items they
+can do so by pressing the 'X' button which leads them back into the product page.
 ```
 ```
 3. Make payment - Ming Qi
@@ -94,7 +95,12 @@ This will be at the top of the productpage where users can click on the button a
 will appear for users to choose their category and price range. The cateogry will include Mains,Pizza,
 Appetizer,Sidedish,Dessert,Beverages. For the price, it is seperate into $, $$, $$$ where $: $0 to $10
 $$: $10 to $20 $$$: $20 and above. Users will then be able to filter according to what they prefer and if
-they want to remove they can click on the 'X' button. 
+they want to remove they can click on the 'X' button.
+
+- Implemented firebase for productpage
+- Fetching the product from firestore for filtering and displaying products
+- used Category and Price for filtering
+
 ```
 
 # Stage 2 
@@ -120,7 +126,8 @@ Search Bar
 ```
 3. Advance cart UI feature - Shiying 
 
-Favourites, remove and view more. 
+Users can now swipe left on the item to add it to favorites/unfavorite, view more
+and also finding other relevant items in the same category.
 
 ```
 ```

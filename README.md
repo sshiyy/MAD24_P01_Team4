@@ -90,9 +90,10 @@ to become gold. Can have a reedem points page? so users can redeem voucher.
 ```
 5. Filtering page - Raeann
 
-This will be in the search/product page where the items will be sorted into categories: Pasta,
-Pizza, Appetizer, side dish, desserts and beverages. User will be allowed to click on their desired
-category and find the dish or item they want to order. 
+This will be at the top of the productpage where users can click on the button and a popup filter
+will appear for users to choose their category and price range. The cateogry will include Mains,Pizza,
+Appetizer,Sidedish,Dessert,Beverages. For the price, it is seperate into $, $$, $$$ where $: $0 to $10
+$$: $10 to $20 $$$: $20 and above. 
 ```
 
 # Stage 2 

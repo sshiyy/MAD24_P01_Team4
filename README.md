@@ -75,18 +75,32 @@ increase or decrease the quanitity of the items in the cart page. If users wants
 can do so by pressing the 'X' button which leads them back into the product page.
 ```
 ```
-3. Make payment - Ming Qi
+3. Price/Make payment - Ming Qi
 
-There will be multiple payment method like QR code and credit card. For QR, we can make it static 
-where we will leave it there for 5 seconds and it will pay automatically and for credit card we can 
-just let them key in the details and will display the last 4 digit and proceed to payment. 
+After user adds product to cart, there will be a summary of the total price at the bottom of the page.
+Also, prices will be updated immediately once user increase or decrease an item.
+To pay for the items, user can click on the confirm button and there will be multiple payment methods for user to choose from.
+User must select one payment method to enable the "pay' button or can press "cancel" to cancel payment and continue surfing the app.
+This is a stimulated payment so no real money will be involved in the process. Payment will be always be successful once user click pay.
+After successfully paying, there will be a pop up message saying that payment is successful and reset the cart to empty.
 ```
 ```
-4. Point system - Kaylea
+4. Point system - Kaylea (only did UI) 
 
 There will be a total of 3 members: bronze, sliver and gold. User will automatically become bronze
 when they create an account.User will need to accumulate 100 points to become sliver and 300 points 
-to become gold. Can have a reedem points page? so users can redeem voucher. 
+to become gold. Implemented a redeem voucher so that when accumulates 100points, can get $5 off , 200points, can
+get $10 off, 350points can get $20 dollar off. Also updated the cart page, to have a discount so that user know
+how many discount they are getting, so when user redeem it will automatically add the voucher in the cart so when user
+checkout it will be discounted already. 
+
+Raeann:
+- Implement database for the points and tier to be in the account firestore
+- Fetch and match the logged in user by email so that we can update the points to the correct
+user
+- Updated points - making it when redeem voucher it will deduct the points and when payment is done
+it will also add the points into the firestore.
+
 ```
 ```
 5. Filtering page - Raeann
@@ -133,7 +147,8 @@ and also finding other relevant items in the same category.
 ```
 4. Navigation Bar - Raeann 
 
-Hamburger , or bottom buttom popup? Fragment, or smth
+a hamburger menu and a bottom button popup for the navigation using fragments to
+organize the app sections efficiently.
 
 ```
 
@@ -145,4 +160,18 @@ Hamburger , or bottom buttom popup? Fragment, or smth
 ```
 
 
+#References
+```
+Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
+Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
+Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
+Avocado toast: https://yejiskitchenstories.com/smoked-salmon-avocado-toast/
+Baked rice: https://easygourmet.com.sg/nacho-cheese-chicken-ham-baked-rice
+Banana split: https://www.twopeasandtheirpod.com/banana-split/
+BBQ sausage: https://www.epicurious.com/recipes/food/views/beer-simmered-grilled-sausages-105455
+Broccoli garlic toast: https://www.epicurious.com/recipes/food/views/broccoli-and-garlic-ricotta-toasts-with-hot-honey
+Buffalo wings: https://easychickenrecipes.com/buffalo-wings-recipe-the-best/
+Calamari: https://apronandwhisk.com/easy-fried-calamari/
+Cheese Pizza: https://www.foodandwine.com/recipes/classic-cheese-pizza
 
+```

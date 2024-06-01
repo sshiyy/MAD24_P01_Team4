@@ -131,6 +131,7 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
+
         if (payButton != null) {
             payButton.setOnClickListener(v -> {
                 Toast.makeText(v.getContext(), "Payment Successful! You saved $" + discountAmount, Toast.LENGTH_SHORT).show();

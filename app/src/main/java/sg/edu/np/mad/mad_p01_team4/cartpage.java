@@ -178,6 +178,7 @@ public class cartpage extends AppCompatActivity {
         });
     }
 
+    // to convert the amount of money spent to points
     private void convertToPoints(double totalAmount) {
         int earnedPoints = (int) totalAmount; // $1 = 1 point
 
@@ -218,6 +219,7 @@ public class cartpage extends AppCompatActivity {
         }
     }
 
+    // To show an alert if cart is empty
     private void showAlertDialog() {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
@@ -233,6 +235,8 @@ public class cartpage extends AppCompatActivity {
                 })
                 .show(); // show alert dialog
     }
+
+    // to redeem points if there is
     private void redeemPoints(int pointsRequired, double discount) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {

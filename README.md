@@ -64,6 +64,7 @@ Users require a Username, name, password and a unique email.
 - Implemented User Persistance 
 - Implemented Validation to check for unique Email and a 6 or more character password
 - Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
+- Implemented Email Change ( Requires legitimate email to function ) 
 ```
 ```
 2. Cart/Product page - Shi Ying

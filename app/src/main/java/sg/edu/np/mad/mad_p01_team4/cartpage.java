@@ -58,7 +58,9 @@ public class cartpage extends AppCompatActivity {
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        discountAmount = 0.0; // Initialize discount amount to 0
+
+        // Retrieve the discount amount from SharedPreferences
+        discountAmount = sharedPreferences.getInt("discount", 0);
 
         // Initializing textView objects
         itemsTotalamt = findViewById(R.id.itemsTotalamt);
@@ -104,6 +106,13 @@ public class cartpage extends AppCompatActivity {
         GSTamt.setText(String.format("$%.2f", gst));
         discountAmt.setText(String.format("-$%.2f", discountAmount));
         totalamt.setText(String.format("$%.2f", totalAmount));
+
+        // Reset discount amount in SharedPreferences if totalAmount is calculated
+        if (discountAmount > 0) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("discount", 0);
+            editor.apply();
+        }
     }
 
     // method to show payments options

@@ -10,4 +10,10 @@
     <color name="green">#49583c</color>
     <color name="orange">#d5702b</color>
     <color name="grey">#a9a9a9</color>
+
+
+    <color name="bronze">#CD7F32</color> <!-- Bronze color -->
+    <color name="silver">#C0C0C0</color> <!-- Silver color -->
+    <color name="gold">#FFD700</color> <!-- Gold color -->
+
 </resources>

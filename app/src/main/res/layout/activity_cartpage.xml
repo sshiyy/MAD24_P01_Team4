@@ -194,7 +194,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:text="Confirm"
-                android:backgroundTint="@color/green"
+                android:backgroundTint="@color/orange"
                 />
         </LinearLayout>
     </LinearLayout>

@@ -173,13 +173,17 @@ public class Points_Page extends AppCompatActivity {
                                 break;
                             }
                         } else {
-                            Log.e("Points_Page", "Failed to find document with email: " + userEmail);
+                            Log.e("Points_Page", "Failed to find document with email: " + userEmail, task.getException());
                         }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Points_Page", "Failed to fetch document with email: " + userEmail, e);
                     });
         } else {
             Log.e("Points_Page", "No authenticated user found");
         }
     }
+
 
     private String calculateTier(long points) {
         if (points >= 300) {

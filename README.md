@@ -38,8 +38,8 @@ at your fingertips. Bon appétit!
 ```
 The Enchante application aims to facilitate a smooth and delightful eating experience for our customers while
 concurrently promoting business expansion. By giving users a simple way to browse our menu, place orders, and
-follow delivery in real time, our app seeks to boost sales. Additionally, we want to encourage customers to choose
-Enchante for their dining standards by introducing a point system that rewards repeat business andfosters customer loyalty.
+boost sales. Additionally, we want to encourage customers to choose
+Enchante for their dining standards by introducing a point system that rewards repeat business and fosters customer loyalty.
 In order to differentiate Enchante from rivals and maintain our position as a leader in the culinary sector, we constantly
 work to improve our service and menu options by optimizing restaurant operations and obtaining insightful knowledge about
 customer needs and feedback. 
@@ -64,6 +64,7 @@ Users require a Username, name, password and a unique email.
 - Implemented User Persistance 
 - Implemented Validation to check for unique Email and a 6 or more character password
 - Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
+- Implemented Email Change ( Requires legitimate email to function ) 
 ```
 ```
 2. Cart/Product page - Shi Ying

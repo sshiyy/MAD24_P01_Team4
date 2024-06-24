@@ -35,7 +35,6 @@ public class cartpage extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView itemsTotalamt, GSTamt, totalamt, discountAmt;
     private Button btnConfirm;
-    private BottomSheetDialog dialog; // Declare the dialog as a member variable
 
     private int points = 0; // Points start at 0 for each session
     private double totalPrice = 0.0; // Total price of the cart items
@@ -107,19 +106,20 @@ public class cartpage extends AppCompatActivity {
         totalamt.setText(String.format("$%.2f", totalAmount));
     }
 
+
     // method to show payments options
     private void showPayment() {
         View view = getLayoutInflater().inflate(R.layout.activity_payment_method, null);
 
         // finds 'RadioGroup' in the inflated view & stores as paymentGroup
         RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
-        dialog = new BottomSheetDialog(this); // Initialize the dialog as a member variable
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(view); // sets content view of dialog to the inflated view
         Button payButton = view.findViewById(R.id.payButton); // finds the payButton
 
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
         bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)); // sets peak height of the bottom sheet behavior
-        // makes the bottom sheet non-hideable -> appear to user for payment selection
+        // // makes the bottom sheet non-hideable -> appear to user for payment selection
         bottomSheetBehavior.setHideable(false);
 
         // check if a radio button is selected
@@ -133,17 +133,13 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
+
         if (payButton != null) {
             payButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // once payButton is click, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
-
-                    // Update points after successful payment
-                    double totalAmount = cart.getInstance().getItemsTotal() + cart.getInstance().getGST();
-                    convertToPoints(totalAmount);
-
                     cart.getInstance().clearCart(); // clears cart
                     Intent intent = new Intent(v.getContext(), productpage.class);
                     // starts productpage activity -> direct user back to product page
@@ -182,15 +178,7 @@ public class cartpage extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Dismiss the dialog if it is showing to prevent window leak
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
+    // to convert the amount of money spent to points
     private void convertToPoints(double totalAmount) {
         int earnedPoints = (int) totalAmount; // $1 = 1 point
 
@@ -224,9 +212,6 @@ public class cartpage extends AppCompatActivity {
                             }
                         } else {
                             Log.e("UpdatePoints", "Failed to find document with email: " + userEmail);
-                            if (task.getException() != null) {
-                                Log.e("UpdatePoints", "Error: ", task.getException());
-                            }
                         }
                     });
         } else {
@@ -234,10 +219,12 @@ public class cartpage extends AppCompatActivity {
         }
     }
 
+    // To show an alert if cart is empty
     private void showAlertDialog() {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
                 .setMessage("Cart is empty. Please add items before proceeding.")
+
                 // adds a positive button (ok) to dialog
                 // when button is clicked, it calls the 'finish' method to close the activity
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -249,6 +236,7 @@ public class cartpage extends AppCompatActivity {
                 .show(); // show alert dialog
     }
 
+    // to redeem points if there is
     private void redeemPoints(int pointsRequired, double discount) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -299,4 +287,5 @@ public class cartpage extends AppCompatActivity {
         }
     }
 }
+
 

@@ -2,11 +2,13 @@ package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ public class Points_Page extends AppCompatActivity {
     private TextView pointsCount;
     private TextView currentPointsText;
     private TextView goalPointsText;
+    private ProgressBar progressBar;
     private Button redeemButton;
     private Button redeemButton2;
     private Button redeemButton3;
@@ -45,6 +48,7 @@ public class Points_Page extends AppCompatActivity {
         pointsCount = findViewById(R.id.pointsCount);
         currentPointsText = findViewById(R.id.currentPointsText);
         goalPointsText = findViewById(R.id.goalPointsText);
+        progressBar = findViewById(R.id.progressBar);
         redeemButton = findViewById(R.id.redeemButton);
         redeemButton2 = findViewById(R.id.redeemButton2);
         redeemButton3 = findViewById(R.id.redeemButton3);
@@ -59,33 +63,15 @@ public class Points_Page extends AppCompatActivity {
         }
 
         // Handle redeem button clicks
-        redeemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redeemPoints(100, 5); // 100 points for $5 off
-            }
-        });
-
-        redeemButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redeemPoints(200, 10); // 200 points for $10 off
-            }
-        });
-
-        redeemButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redeemPoints(350, 20); // 350 points for $20 off
-            }
-        });
+        redeemButton.setOnClickListener(v -> redeemPoints(100, 5));
+        redeemButton2.setOnClickListener(v -> redeemPoints(200, 10));
+        redeemButton3.setOnClickListener(v -> redeemPoints(350, 20));
 
         ImageButton homeBtn = findViewById(R.id.home);
         homeBtn.setOnClickListener(v -> {
             Intent intent = new Intent(Points_Page.this, productpage.class);
             startActivity(intent);
         });
-
 
         ImageButton cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
@@ -99,8 +85,6 @@ public class Points_Page extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        // Setup profile button
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {
             Intent intent = new Intent(Points_Page.this, ProfilePage.class);
@@ -118,10 +102,11 @@ public class Points_Page extends AppCompatActivity {
                             Long points = document.getLong("points");
                             userPoints = points != null ? points : 0;
                             updateTier(userPoints);
+                            updateProgressBar(userPoints);
 
                             pointsCount.setText(userPoints + " pts");
                             currentPointsText.setText("Current Points: " + userPoints);
-                            goalPointsText.setText(calculateGoalPointsText(userPoints)); // Calculate points needed for the next tier
+                            goalPointsText.setText(calculateGoalPointsText(userPoints));
 
                             break;
                         }
@@ -136,7 +121,6 @@ public class Points_Page extends AppCompatActivity {
             userPoints -= pointsRequired;
             updatePointsInFirestore(userPoints);
 
-            // Save the discount amount to SharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("discount", discountAmount);
             editor.apply();
@@ -163,8 +147,9 @@ public class Points_Page extends AppCompatActivity {
                                         .addOnSuccessListener(aVoid -> {
                                             pointsCount.setText(newPoints + " pts");
                                             currentPointsText.setText("Current Points: " + newPoints);
-                                            goalPointsText.setText(calculateGoalPointsText(newPoints)); // Calculate points needed for the next tier
+                                            goalPointsText.setText(calculateGoalPointsText(newPoints));
                                             currentTier.setText(tier);
+                                            updateProgressBar(newPoints);
                                             Log.d("Points_Page", "Points and tier updated successfully in Firestore");
                                         })
                                         .addOnFailureListener(e -> {
@@ -184,6 +169,18 @@ public class Points_Page extends AppCompatActivity {
         }
     }
 
+    private void updateProgressBar(long points) {
+        int progress = (int) points;
+        progressBar.setProgress(progress);
+
+        if (points >= 300) {
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.gold)));
+        } else if (points >= 100) {
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.silver)));
+        } else {
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.bronze)));
+        }
+    }
 
     private String calculateTier(long points) {
         if (points >= 300) {

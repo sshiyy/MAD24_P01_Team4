@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -59,6 +58,8 @@ public class cartpage extends AppCompatActivity {
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+
+        // Retrieve the discount amount from SharedPreferences
         discountAmount = sharedPreferences.getInt("discount", 0);
 
         // Initializing textView objects
@@ -97,15 +98,22 @@ public class cartpage extends AppCompatActivity {
         double total = cart.getInstance().getItemsTotal(); // total price of all items in cart
         double gst = cart.getInstance().getGST(); // GST amt
 
+        // apply discount if any
+        double totalAmount = total + gst - discountAmount;
+
         // display total price and GST in TextViews & format as currency values
         itemsTotalamt.setText(String.format("$%.2f", total));
         GSTamt.setText(String.format("$%.2f", gst));
-
-        // calculate total amount
-        double totalAmount = total + gst;
+        discountAmt.setText(String.format("-$%.2f", discountAmount));
         totalamt.setText(String.format("$%.2f", totalAmount));
-    }
 
+        // Reset discount amount in SharedPreferences if totalAmount is calculated
+        if (discountAmount > 0) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("discount", 0);
+            editor.apply();
+        }
+    }
 
     // method to show payments options
     private void showPayment() {
@@ -119,12 +127,10 @@ public class cartpage extends AppCompatActivity {
 
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
         bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)); // sets peak height of the bottom sheet behavior
-        // // makes the bottom sheet non-hideable -> appear to user for payment selection
+        // makes the bottom sheet non-hideable -> appear to user for payment selection
         bottomSheetBehavior.setHideable(false);
 
         // check if a radio button is selected
-        // yes (checkedId != 1) -> pay button is enable, user can click on it
-        // no (checkedId == -1) -> pay button remains disabled, user cannot click on it
         paymentGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != -1) {
                 payButton.setEnabled(true);
@@ -133,17 +139,24 @@ public class cartpage extends AppCompatActivity {
             }
         });
 
-
         if (payButton != null) {
             payButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // once payButton is click, shows toast message
+                    // once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
-                    cart.getInstance().clearCart(); // clears cart
+
+                    // Calculate total amount after discount
+                    double totalAmount = cart.getInstance().getItemsTotal() + cart.getInstance().getGST() - discountAmount;
+
+                    // Convert total amount to points
+                    convertToPoints(totalAmount);
+
+                    // Clear the cart
+                    cart.getInstance().clearCart();
+
+                    // Navigate to the product page
                     Intent intent = new Intent(v.getContext(), productpage.class);
-                    // starts productpage activity -> direct user back to product page
-                    // and finish current event
                     startActivity(intent);
                     finish();
                 }
@@ -153,13 +166,10 @@ public class cartpage extends AppCompatActivity {
         }
 
         // cancel button
-        // finds cancel button in the dialog
         Button cancelButton = dialog.findViewById(R.id.cancelButton);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                // when clicked on 'cancel' it dismiss the dialog
-                // dialog will be hidden from user
                 public void onClick(View v) {
                     dialog.dismiss();
                 }
@@ -167,11 +177,9 @@ public class cartpage extends AppCompatActivity {
         }
 
         // cross
-        // finds cross button in the dialog
         ImageView cross = dialog.findViewById(R.id.cross);
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
-            // when clicked on 'x' it dismiss the dialog
             public void onClick(View v) {
                 dialog.dismiss();
             }
@@ -224,9 +232,6 @@ public class cartpage extends AppCompatActivity {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Cart is Empty")
                 .setMessage("Cart is empty. Please add items before proceeding.")
-
-                // adds a positive button (ok) to dialog
-                // when button is clicked, it calls the 'finish' method to close the activity
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -253,7 +258,7 @@ public class cartpage extends AppCompatActivity {
                                     db.collection("Accounts").document(document.getId())
                                             .update("points", newPoints)
                                             .addOnSuccessListener(aVoid -> {
-                                                discountAmount += discount;
+                                                discountAmount = discount; // Update discount amount only if redemption is successful
                                                 // Save the discount amount to SharedPreferences
                                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                                 editor.putInt("discount", (int) discountAmount);
@@ -287,5 +292,3 @@ public class cartpage extends AppCompatActivity {
         }
     }
 }
-
-

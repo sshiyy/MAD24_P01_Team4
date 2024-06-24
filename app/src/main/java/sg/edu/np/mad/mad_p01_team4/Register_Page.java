@@ -162,6 +162,7 @@ public class Register_Page extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Log.d("Register-Page", "User registration successful!");
+                                                Toast.makeText(Register_Page.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(Register_Page.this, Login_Page.class);
                                                 startActivity(intent);
                                             }
@@ -182,5 +183,4 @@ public class Register_Page extends AppCompatActivity {
                     }
                 });
     }
-
 }

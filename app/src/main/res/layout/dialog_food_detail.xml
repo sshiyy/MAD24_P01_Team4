@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- This page is how the dialog that would pop up upon users clicking on the item cardview from product page look like -->
     <ImageView
         android:id="@+id/ivFoodImage"
         android:layout_width="350dp"
@@ -15,18 +16,6 @@
         android:layout_gravity="center"
         android:src="@drawable/pastacarbonara"
         android:background="@color/background"
-        />
-
-    <ImageButton
-        android:id="@+id/toggleFavorite"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="14dp"
-        app:srcCompat="@drawable/hearticon"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="0dp"
-        android:scaleType="centerInside"
         />
 
     <TextView

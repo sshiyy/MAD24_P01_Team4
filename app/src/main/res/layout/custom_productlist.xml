@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="0dp">
 
+    <!-- This page is how the cardview will look like in product's page recyclerview -->
     <androidx.cardview.widget.CardView
         android:layout_width="215dp"
         android:layout_height="wrap_content"
@@ -43,6 +44,7 @@
                     android:paddingTop="8dp"
                     />
 
+                <!-- For + - button to increase/decrease quantity of item -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

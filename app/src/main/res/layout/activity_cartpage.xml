@@ -23,11 +23,9 @@
             android:layout_width="30dp"
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:padding="0dp"
             android:clickable="true"
             android:focusable="true"
@@ -38,24 +36,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cart"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/crossicon"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:gravity="center"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:textStyle="bold" />
-
     </LinearLayout>
 
+    <!-- Nested scroll view and recyclerview to display the items that were added to cart -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/cartpagesv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/cartlayout"
-        app:layout_constraintBottom_toTopOf="@id/cartconfirm"
+        app:layout_constraintBottom_toTopOf="@id/cartSummaryLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -69,56 +64,138 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"/>
+        </LinearLayout>
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
+    </androidx.core.widget.NestedScrollView>
 
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Items Total:"
-                   android:textStyle="bold"
-                   android:textColor="@color/black"
-                   android:textSize="25dp"
-                   android:paddingLeft="5dp"
-                   app:layout_constraintTop_toBottomOf="@id/cartpagesv"
-                   />
+    <!-- For displaying the GST, total price of items before GST and total price of items with GST -->
+    <LinearLayout
+        android:id="@+id/cartSummaryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-               <TextView
-                   android:id="@+id/tvitemstotalprice"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="$0"
-                   android:textColor="@color/black"
-                   android:textStyle="bold"
-                   android:textSize="20dp"
-                   android:paddingLeft="260dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
-           </LinearLayout>
+            <TextView
+                android:id="@+id/itemsTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Items Total:"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/itemsTotalamt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-    <LinearLayout
-        android:id="@+id/cartconfirm"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/btnConfirm"
-            android:layout_width="300dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm"
-            android:backgroundTint="@color/green"
-            />
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/GST"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GST:"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/GSTamt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+       >
+
+            <TextView
+                android:id="@+id/discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Discount:"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/discountAmt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" - $0"
+                android:textColor="#373b54"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total:"
+                android:textColor="#373b54"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalamt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0"
+                android:textColor="#373b54"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cartconfirm"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:backgroundTint="@color/orange"
+                />
+        </LinearLayout>
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-

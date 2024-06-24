@@ -55,36 +55,45 @@ public class productpage extends AppCompatActivity {
 
         fetchFoodItems();
 
-        // Setup filter buttons
+        // Setup filter buttons to enter filter page
         ImageButton filbtn = findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
 
         CardView filterbutton = findViewById(R.id.filtercard);
         filterbutton.setOnClickListener(v -> showFilterPopup());
 
-        // Setup cart button
+        // Setup cart button to navigate to cart page
         ImageButton cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, cartpage.class);
             startActivity(intent);
         });
 
+        // Setup points button to navigate to points page
+        ImageButton starbutton = findViewById(R.id.points);
+        starbutton.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, Points_Page.class);
+            startActivity(intent);
+        });
 
-        // Setup profile button
+        // Setup profile button to enter profile/account page
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, ProfilePage.class);
             startActivity(intent);
         });
 
-        // Setup navigation buttons
-        setupNavigationButtons();
+
+        ImageView homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
+
 
         // Setup clear filter button
         ImageButton crossicon = findViewById(R.id.crossicon);
         crossicon.setOnClickListener(v -> clearFilter());
     }
 
+    // To set recyclerview to grid format
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
         RecyclerView recyclerView = findViewById(recyclerViewId);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -93,27 +102,33 @@ public class productpage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+
+
+
+    // For retrieving food items from database
+
     private void fetchFoodItems() {
         db.collection("Food_Items")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         allFoodList = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) { // usage of documentsnapshot to fetch the products
                             Food food = document.toObject(Food.class);
                             allFoodList.add(food);
                         }
                         updateAllAdapters(allFoodList);
                     } else {
-                        Log.w(TAG, "Error getting documents.", task.getException());
+                        Log.w(TAG, "Error getting documents.", task.getException()); //checking it in the Logcat
                     }
                 });
     }
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
         foodAdapter.updateList(foodList);
-    }
+    } // update the adapter for the products to be displayed
 
+//function method for filter pop up
     private void showFilterPopup() {
         try {
             // Inflate the popup_filter.xml layout
@@ -121,15 +136,15 @@ public class productpage extends AppCompatActivity {
             View popupView = inflater.inflate(R.layout.activity_flitering_page, null);
 
             // Create a PopupWindow object
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
+            int width = LinearLayout.LayoutParams.MATCH_PARENT; //the sizing of the popup
             int height = LinearLayout.LayoutParams.MATCH_PARENT;
             boolean focusable = true; // Allows taps outside the PopupWindow to dismiss it
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable); // final is to create a constant variable
 
             // Show the popup window
             View mainLayout = findViewById(android.R.id.content).getRootView(); // Get the root view of the current activity
             popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //for the bg of the filter.xml to be transparent
 
             // Setup apply button click event
             Button applyButton = popupView.findViewById(R.id.applyButton);
@@ -155,6 +170,8 @@ public class productpage extends AppCompatActivity {
         }
     }
 
+
+    //method for filter criteria
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
 
@@ -168,7 +185,7 @@ public class productpage extends AppCompatActivity {
             boolean matchesCategory = selectedCategory.equals("All") || food.getCategory().equals(selectedCategory);
             boolean matchesPrice = food.getPrice() >= minPrice && food.getPrice() <= maxPrice;
 
-            if (matchesCategory && matchesPrice) {
+            if ((selectedCategory.equals("All") && matchesPrice) || (matchesCategory && matchesPrice)) {
                 filteredList.add(food);
             }
         }
@@ -178,11 +195,17 @@ public class productpage extends AppCompatActivity {
 
         // Update the filter title
         if (selectedCategory.equals("All") && selectedPriceRange.equals("All")) {
-            allRestaurantsText.setText("All Category");
+            allRestaurantsText.setText("All");
             sortedByText.setText("sorted by category");
+        } else if (selectedCategory.equals("All")) {
+            allRestaurantsText.setText("All Categories");
+            sortedByText.setText("sorted by " + getPriceRangeSymbol(selectedPriceRange));
+        } else if (selectedPriceRange.equals("All")) {
+            allRestaurantsText.setText(selectedCategory);
+            sortedByText.setText("sorted by " + selectedCategory);
         } else {
             allRestaurantsText.setText(selectedCategory);
-            sortedByText.setText("sorted by " + selectedCategory + "," + getPriceRangeSymbol(selectedPriceRange));
+            sortedByText.setText("sorted by " + selectedCategory + " " + getPriceRangeSymbol(selectedPriceRange));
         }
     }
 
@@ -214,6 +237,9 @@ public class productpage extends AppCompatActivity {
         }
     }
 
+
+
+    // a method for clearing the filter - back to default
     private void clearFilter() {
         // Reset the filter title
         allRestaurantsText.setText("All Category");
@@ -223,34 +249,10 @@ public class productpage extends AppCompatActivity {
         updateAllAdapters(allFoodList);
     }
 
-    private void setupNavigationButtons() {
-        ImageView homeButton = findViewById(R.id.home);
-        homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
-
-        ImageView orderButton = findViewById(R.id.order);
-        orderButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, Checkout.class)));
 
 
-      ImageView favouritesButton = findViewById(R.id.favourites);
-        favouritesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to FavouritesActivity
-                startActivity(new Intent(productpage.this, favoritespage.class));
-            }
-        });
-
-//        ImageView accountButton = findViewById(R.id.account);
-//        accountButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Navigate to AccountActivity
-//                startActivity(new Intent(productpage.this, AccountActivity.class));
-//            }
-//        });
 
 
-        // ImageView accountButton = findViewById(R.id.account);
-        // accountButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, AccountActivity.class)));
+
     }
-}
+

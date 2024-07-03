@@ -7,22 +7,27 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,17 +43,91 @@ public class productpage extends AppCompatActivity {
     private TextView allRestaurantsText;
     private TextView sortedByText;
 
+    DrawerLayout drawerLayout;
+    ImageButton buttonDrawer;
+
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productpage);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigationView);
+        buttonDrawer = findViewById(R.id.buttonDrawerToggle);
+
+
+        buttonDrawer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.open();
+            }
+        });
+
+        View headerView = navigationView.getHeaderView(0);
+        ImageView userImage = headerView.findViewById(R.id.userImage);
+        TextView textusername = headerView.findViewById(R.id.textusername);
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(productpage.this, textusername.getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+
+                if (itemId == R.id.navMenu) {
+                    Toast.makeText(productpage.this, "Menu Clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(productpage.this, productpage.class);
+                    startActivity(intent);
+                }
+
+                if (itemId == R.id.navCart) {
+                    Toast.makeText(productpage.this, "Cart Clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(productpage.this, cartpage.class);
+                    startActivity(intent);
+                }
+
+                if (itemId == R.id.navFavourite) {
+                    Toast.makeText(productpage.this, "Favourite Clicked", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(productpage.this, cartpage.class);
+//                    startActivity(intent);
+                }
+
+                if (itemId == R.id.navOngoingOrders) {
+                    Toast.makeText(productpage.this, "Ongoing Orders Clicked", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(productpage.this, cartpage.class);
+//                    startActivity(intent);
+                }
+
+                if (itemId == R.id.navHistory) {
+                    Toast.makeText(productpage.this, "Order History Clicked", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(productpage.this, cartpage.class);
+//                    startActivity(intent);
+                }
+
+                if (itemId == R.id.navAccount) {
+                    Toast.makeText(productpage.this, "Account Clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(productpage.this, ProfilePage.class);
+                    startActivity(intent);
+                }
+
+                drawerLayout.close();
+
+                return false;
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
 
         foodAdapter = new FoodAdapter(new ArrayList<>(), this);
         setUpRecyclerView(R.id.productrecyclerView, foodAdapter);
-
 
         allRestaurantsText = findViewById(R.id.allRestaurantsText);
         sortedByText = findViewById(R.id.sortedByText);
@@ -59,38 +138,36 @@ public class productpage extends AppCompatActivity {
         ImageButton filbtn = findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
 
-        CardView filterbutton = findViewById(R.id.filtercard);
-        filterbutton.setOnClickListener(v -> showFilterPopup());
+//        CardView filterbutton = findViewById(R.id.filtercard);
+//        filterbutton.setOnClickListener(v -> showFilterPopup());
 
         // Setup cart button to navigate to cart page
-        ImageButton cartbutton = findViewById(R.id.cart_button);
+        RelativeLayout cartbutton = findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             Intent intent = new Intent(productpage.this, cartpage.class);
             startActivity(intent);
         });
 
-        // Setup points button to navigate to points page
-        ImageButton starbutton = findViewById(R.id.points);
-        starbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(productpage.this, Points_Page.class);
-            startActivity(intent);
-        });
-
-        // Setup profile button to enter profile/account page
-        ImageButton profilebtn = findViewById(R.id.account);
-        profilebtn.setOnClickListener(v -> {
-            Intent intent = new Intent(productpage.this, ProfilePage.class);
-            startActivity(intent);
-        });
-
-
-        ImageView homeButton = findViewById(R.id.home);
-        homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
-
-
-        // Setup clear filter button
-        ImageButton crossicon = findViewById(R.id.crossicon);
-        crossicon.setOnClickListener(v -> clearFilter());
+//        // Setup points button to navigate to points page
+//        ImageButton starbutton = findViewById(R.id.points);
+//        starbutton.setOnClickListener(v -> {
+//            Intent intent = new Intent(productpage.this, Points_Page.class);
+//            startActivity(intent);
+//        });
+//
+//        // Setup profile button to enter profile/account page
+//        ImageButton profilebtn = findViewById(R.id.account);
+//        profilebtn.setOnClickListener(v -> {
+//            Intent intent = new Intent(productpage.this, ProfilePage.class);
+//            startActivity(intent);
+//        });
+//
+//        ImageView homeButton = findViewById(R.id.home);
+//        homeButton.setOnClickListener(v -> startActivity(new Intent(productpage.this, productpage.class)));
+//
+//        // Setup clear filter button
+//        ImageButton crossicon = findViewById(R.id.crossicon);
+//        crossicon.setOnClickListener(v -> clearFilter());
     }
 
     // To set recyclerview to grid format
@@ -102,33 +179,29 @@ public class productpage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-
-
-
     // For retrieving food items from database
-
     private void fetchFoodItems() {
         db.collection("Food_Items")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         allFoodList = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) { // usage of documentsnapshot to fetch the products
+                        for (QueryDocumentSnapshot document : task.getResult()) {
                             Food food = document.toObject(Food.class);
                             allFoodList.add(food);
                         }
                         updateAllAdapters(allFoodList);
                     } else {
-                        Log.w(TAG, "Error getting documents.", task.getException()); //checking it in the Logcat
+                        Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
     }
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
         foodAdapter.updateList(foodList);
-    } // update the adapter for the products to be displayed
+    }
 
-//function method for filter pop up
+    // Function method for filter pop up
     private void showFilterPopup() {
         try {
             // Inflate the popup_filter.xml layout
@@ -136,15 +209,15 @@ public class productpage extends AppCompatActivity {
             View popupView = inflater.inflate(R.layout.activity_flitering_page, null);
 
             // Create a PopupWindow object
-            int width = LinearLayout.LayoutParams.MATCH_PARENT; //the sizing of the popup
+            int width = LinearLayout.LayoutParams.MATCH_PARENT;
             int height = LinearLayout.LayoutParams.MATCH_PARENT;
-            boolean focusable = true; // Allows taps outside the PopupWindow to dismiss it
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable); // final is to create a constant variable
+            boolean focusable = true;
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
             // Show the popup window
-            View mainLayout = findViewById(android.R.id.content).getRootView(); // Get the root view of the current activity
+            View mainLayout = findViewById(android.R.id.content).getRootView();
             popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //for the bg of the filter.xml to be transparent
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
             // Setup apply button click event
             Button applyButton = popupView.findViewById(R.id.applyButton);
@@ -170,8 +243,7 @@ public class productpage extends AppCompatActivity {
         }
     }
 
-
-    //method for filter criteria
+    // Method for filter criteria
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
 
@@ -237,9 +309,7 @@ public class productpage extends AppCompatActivity {
         }
     }
 
-
-
-    // a method for clearing the filter - back to default
+    // Method for clearing the filter - back to default
     private void clearFilter() {
         // Reset the filter title
         allRestaurantsText.setText("All Category");
@@ -248,11 +318,4 @@ public class productpage extends AppCompatActivity {
         // Update RecyclerView adapters with the full list
         updateAllAdapters(allFoodList);
     }
-
-
-
-
-
-
-    }
-
+}

@@ -190,6 +190,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
         <!-- RecyclerView for displaying products -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productrecyclerView"

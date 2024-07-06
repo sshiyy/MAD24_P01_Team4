@@ -123,12 +123,13 @@ they want to remove they can click on the 'X' button.
 **Planned task and feature - one person one or more feature**
 
 ```
-1. User authentication - Jason
-        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
-        - When a new user sign up, there will be verification to confirm the email is valid 
-
-1.1 Image Upload 
-        - Users can now upload a custom profile image to their profile
+Jason 
+Stage 1 Improvements
+1. Allow user to upload profile image 
+-------------------------------------- 
+Stage 2 Features
+1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
+2. Add real time customer support for users - not confirmed
 
 ```
 ```

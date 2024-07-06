@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -275,11 +276,12 @@ public class productpage extends AppCompatActivity {
 
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
         RecyclerView recyclerView = findViewById(recyclerViewId);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
+
 
     private void fetchFoodItems() {
         db.collection("Food_Items")

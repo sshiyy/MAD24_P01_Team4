@@ -167,6 +167,7 @@ public class productpage extends AppCompatActivity {
         searchVoiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(productpage.this, "Voice button clicked", Toast.LENGTH_SHORT).show();
                 startListening();
             }
         });
@@ -183,23 +184,35 @@ public class productpage extends AppCompatActivity {
             @Override
             public void onReadyForSpeech(Bundle params) {
                 Toast.makeText(productpage.this, "Listening...", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onReadyForSpeech");
             }
 
             @Override
-            public void onBeginningOfSpeech() {}
+            public void onBeginningOfSpeech() {
+                Log.d(TAG, "onBeginningOfSpeech");
+            }
 
             @Override
-            public void onRmsChanged(float rmsdB) {}
+            public void onRmsChanged(float rmsdB) {
+                Log.d(TAG, "onRmsChanged: " + rmsdB);
+            }
 
             @Override
-            public void onBufferReceived(byte[] buffer) {}
+            public void onBufferReceived(byte[] buffer) {
+                Log.d(TAG, "onBufferReceived");
+            }
 
             @Override
-            public void onEndOfSpeech() {}
+            public void onEndOfSpeech() {
+                Toast.makeText(productpage.this, "End of speech", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onEndOfSpeech");
+            }
 
             @Override
             public void onError(int error) {
-                Toast.makeText(productpage.this, "Error: " + getErrorText(error), Toast.LENGTH_SHORT).show();
+                String errorMessage = getErrorText(error);
+                Toast.makeText(productpage.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onError: " + errorMessage);
             }
 
             @Override
@@ -207,6 +220,7 @@ public class productpage extends AppCompatActivity {
                 ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 if (matches != null) {
                     for (String result : matches) {
+                        Log.d(TAG, "Result: " + result);
                         if (result.toLowerCase().contains("pay") || result.toLowerCase().contains("make payment")) {
                             Intent intent = new Intent(productpage.this, cartpage.class);
                             startActivity(intent);
@@ -218,10 +232,14 @@ public class productpage extends AppCompatActivity {
             }
 
             @Override
-            public void onPartialResults(Bundle partialResults) {}
+            public void onPartialResults(Bundle partialResults) {
+                Log.d(TAG, "onPartialResults");
+            }
 
             @Override
-            public void onEvent(int eventType, Bundle params) {}
+            public void onEvent(int eventType, Bundle params) {
+                Log.d(TAG, "onEvent: " + eventType);
+            }
         });
     }
 
@@ -252,6 +270,7 @@ public class productpage extends AppCompatActivity {
 
     private void startListening() {
         speechRecognizer.startListening(speechRecognizerIntent);
+        Toast.makeText(productpage.this, "Started listening", Toast.LENGTH_SHORT).show();
     }
 
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {

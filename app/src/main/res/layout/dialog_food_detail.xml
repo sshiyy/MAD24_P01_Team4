@@ -1,31 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <!-- This page is how the dialog that would pop up upon users clicking on the item cardview from product page look like -->
-    <ImageView
-        android:id="@+id/ivFoodImage"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center"
-        android:src="@drawable/pastacarbonara"
-        android:background="@color/background"
-        />
+    <View
+        android:id="@+id/view"
+        android:layout_width="wrap_content"
+        android:layout_height="500dp"
+        android:background="@color/green" />
 
-    <TextView
-        android:id="@+id/tvFoodDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="This is the description of the food."
-        android:textSize="20sp"
-        android:paddingTop="8dp"
-        android:gravity="center_horizontal"
-        android:paddingBottom="8dp" />
-</LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20px"
+                android:layout_marginTop="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <ImageView
+                    android:id="@+id/favBtn"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/favbtn" />
+
+                <ImageView
+                    android:id="@+id/foodImage"
+                    android:layout_width="0dp"
+                    android:layout_height="312dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/pastacarbonara" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/white_bg_details"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp">
+
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Description"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:id="@+id/imageView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/favbtn" />
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <TextView
+                        android:id="@+id/descriptionTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="151dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Description of food"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+
+
+</RelativeLayout>

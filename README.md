@@ -38,8 +38,8 @@ at your fingertips. Bon appétit!
 ```
 The Enchante application aims to facilitate a smooth and delightful eating experience for our customers while
 concurrently promoting business expansion. By giving users a simple way to browse our menu, place orders, and
-follow delivery in real time, our app seeks to boost sales. Additionally, we want to encourage customers to choose
-Enchante for their dining standards by introducing a point system that rewards repeat business andfosters customer loyalty.
+boost sales. Additionally, we want to encourage customers to choose
+Enchante for their dining standards by introducing a point system that rewards repeat business and fosters customer loyalty.
 In order to differentiate Enchante from rivals and maintain our position as a leader in the culinary sector, we constantly
 work to improve our service and menu options by optimizing restaurant operations and obtaining insightful knowledge about
 customer needs and feedback. 
@@ -64,6 +64,7 @@ Users require a Username, name, password and a unique email.
 - Implemented User Persistance 
 - Implemented Validation to check for unique Email and a 6 or more character password
 - Implemented Forgot Password Feature ( sends a email to the respective email address to reset password )
+- Implemented Email Change ( Requires legitimate email to function ) 
 ```
 ```
 2. Cart/Product page - Shi Ying
@@ -122,12 +123,13 @@ they want to remove they can click on the 'X' button.
 **Planned task and feature - one person one or more feature**
 
 ```
-1. User authentication - Jason
-        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
-        - When a new user sign up, there will be verification to confirm the email is valid 
-
-1.1 Image Upload 
-        - Users can now upload a custom profile image to their profile
+Jason 
+Stage 1 Improvements
+1. Allow user to upload profile image 
+-------------------------------------- 
+Stage 2 Features
+1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
+2. Add real time customer support for users - not confirmed
 
 ```
 ```
@@ -150,7 +152,27 @@ and also finding other relevant items in the same category.
 4. Navigation Bar - Raeann 
 
 a hamburger menu and a bottom button popup for the navigation using fragments to
-organize the app sections efficiently.
+organize the app sections efficiently. using FRAGMENT ..
+
+1. Augmented Reality (AR) Menu
+Concepts: Augmented Reality, 3D Modeling, ARCore.
+Implementation: Use ARCore to integrate AR features, load 3D models, and render them in the user's environment.
+
+2. Voice Commands and Assistant Integration
+Concepts: Speech Recognition, Voice Assistant Integration.
+Implementation: Use SpeechRecognizer for capturing voice input, and integrate with Google Assistant for handling voice commands.
+
+3. Machine Learning for Recommendations
+Concepts: Machine Learning, TensorFlow Lite, Data Analysis.
+Implementation: Train a machine learning model to predict user preferences, and use TensorFlow Lite to run the model on the device for personalized recommendations.
+
+4. Chatbot for Customer Support
+Concepts: Conversational AI(maybe), Natural Language Processing (NLP)
+Implementation: Create a chatbot using Dialogflow or a similar platform to handle user queries and provide automated responses.
+
+5. Blockchain for Food Traceability
+Concepts: Blockchain Technology, QR Code Scanning.
+Implementation: Use a blockchain platform like Ethereum to record and verify the food supply chain, and implement QR code scanning to provide traceability information.
 
 ```
 
@@ -162,8 +184,11 @@ organize the app sections efficiently.
 ```
 
 
-#References
+References
 ```
+Icon Images : https://thenounproject.com/
+Logo: https://www.canva.com/
+
 Aglio olio: https://theplantbasedschool.com/spaghetti-aglio-e-olio/
 Apple juice: https://www.indianhealthyrecipes.com/apple-juice-recipe/
 Avocado milkshake: https://www.oliviascuisine.com/indonesian-avocado-milkshake/
@@ -196,6 +221,26 @@ Margherita pizza: https://uk.ooni.com/blogs/recipes/margherita-pizza
 Meatballs with mozzarella: https://www.bellandevans.com/recipe/skillet-meatballs-with-marinara-and-mozzarella/
 Mocha: https://www.olivemagazine.com/recipes/cocktails-and-drinks/mocha/
 Mushroom pizza: https://portandfin.com/mushroom-pizza-bianco-with-truffle-oil-fresh-herbs/
+Mushroom soup with garlic bread: https://www.nommygod.com/recipes/cream-of-mushroom
+Onion rings: https://kristineskitchenblog.com/air-fryer-onion-rings/
+Orange juice: https://en.wikipedia.org/wiki/Orange_juice
+Bolognese: https://www.bonappetit.com/recipe/bas-best-bolognese
+Carbonara: https://www.bonappetit.com/recipe/simple-carbonara
+Pepperoni pizza: https://www.thecountrycook.net/smoked-pepperoni-pizza/
+Poached salmon: https://downshiftology.com/recipes/poached-salmon/
+Popcorn chicken: https://thecozycook.com/popcorn-chicken/
+Rainbow crepe cake: https://suncorefoods.com/blogs/recipes/rainbow-crepes-cake
+Risotto: https://cooking.nytimes.com/recipes/1017022-mushroom-risotto-with-peas
+Root beer: https://shop.scentbridge.com/products/root-beer-float-120-ml-for-scentfit
+Salad: https://www.eatingwell.com/recipe/7917784/chopped-power-salad-with-chicken/
+Smoked salmon rosti: https://www.recipetineats.com/smoked-salmon-potato-rosti-stack/
+Spicy shrimp: https://anaffairfromtheheart.com/spicy-caribbean-shrimp-appetizer/
+Steak with rice: https://www.hellofresh.co.uk/recipes/sirloin-steak-and-black-garlic-butter-5f101be30f472c292d5da9f6
+Steak with potato: https://fantabulosity.com/easy-steak-recipe-pan-seared-in-the-oven/
+Strawberry shortcake: https://www.foodelicacy.com/japanese-strawberry-shortcake/
+Strawberry smoothie: https://www.acouplecooks.com/perfect-strawberry-smoothie/
+Tiramisu: https://www.foodnetwork.com/recipes/food-network-kitchen/tiramisu-recipe-2131631
+Tiramisu crepe cake: https://momsdish.com/tiramisu-crepe-cake
 
 ```
-#References
+

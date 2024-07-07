@@ -12,7 +12,7 @@ android {
         applicationId = "sg.edu.np.mad.mad_p01_team4"
         minSdk = 23
         targetSdk = 34
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -54,6 +54,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
+
+    implementation ("com.airbnb.android:lottie:5.0.3")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

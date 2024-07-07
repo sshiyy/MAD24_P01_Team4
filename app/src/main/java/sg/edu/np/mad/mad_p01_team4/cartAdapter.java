@@ -24,6 +24,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         this.cartcontext = cartcontext;
     }
 
+    // inflates custom layout for each cart item
     @NonNull
     @Override
     public cartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,6 +32,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         return new cartViewHolder(view);
     }
 
+    // binds data to cart item view
     @Override
     public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
         Food food = cartItems.get(position);
@@ -40,6 +42,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         holder.tvcartQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
         holder.tvQuantity.setText(String.valueOf(food.getQuantity()));
 
+        // button to increase quantity
         holder.btnIncrease.setOnClickListener(v -> {
             int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
             quantity++;
@@ -52,6 +55,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             notifyItemChanged(position);
         });
 
+        // button to decrease quantity
         holder.btnDecrease.setOnClickListener(v -> {
             int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
             if (quantity > 0) {
@@ -71,10 +75,12 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
                 .load(food.getImg()) // Assuming getImage() returns a string URL or path
                 .into(holder.ivcartImage);
 
+        // calculate and display total price for item
         int totalItemPrice = food.getPrice() * food.getQuantity();
         holder.tvcartitemttlprice.setText("$" + totalItemPrice);
     }
 
+    // total number of items in teh cart
     @Override
     public int getItemCount() {
         return cartItems.size();
@@ -96,6 +102,7 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         holder.tvcartitemttlprice.setText(String.format("$%.0f", totalPrice));
     }
 
+    // to hold view of each cart item
     public static class cartViewHolder extends RecyclerView.ViewHolder {
         private TextView tvcartName, tvcartPrice, tvcartQuantity, tvcartitemttlprice, tvQuantity;
         private ImageView ivcartImage;

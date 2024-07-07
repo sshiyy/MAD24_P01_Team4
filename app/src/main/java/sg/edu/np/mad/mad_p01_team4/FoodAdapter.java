@@ -94,8 +94,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_food_detail, null);
 
-        ImageView ivFoodImage = dialogView.findViewById(R.id.ivFoodImage);
-        TextView tvFoodDescription = dialogView.findViewById(R.id.tvFoodDescription);
+        ImageView ivFoodImage = dialogView.findViewById(R.id.foodImage);
+        TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
 
         // Load image using Glide
         Glide.with(context)

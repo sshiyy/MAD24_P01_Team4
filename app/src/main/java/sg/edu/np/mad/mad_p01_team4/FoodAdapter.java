@@ -62,6 +62,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             if (quantity > 0) {
                 quantity--;
                 holder.tvQuantity.setText(String.valueOf(quantity));
+                cart.getInstance().removeitems(food);
             }
         });
     }

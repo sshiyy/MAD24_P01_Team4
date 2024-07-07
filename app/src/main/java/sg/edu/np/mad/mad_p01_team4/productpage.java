@@ -9,11 +9,15 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +35,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +44,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class productpage extends AppCompatActivity {
@@ -51,10 +56,12 @@ public class productpage extends AppCompatActivity {
     private FoodAdapter foodAdapter;
     private TextView allRestaurantsText;
     private TextView sortedByText;
+    private EditText searchEditText;
 
-    DrawerLayout drawerLayout;
-    ImageButton buttonDrawer;
-    NavigationView navigationView;
+    private ImageButton searchVoiceButton;
+    private DrawerLayout drawerLayout;
+    private ImageButton buttonDrawer;
+    private NavigationView navigationView;
 
     private SpeechRecognizer speechRecognizer;
     private Intent speechRecognizerIntent;
@@ -65,8 +72,29 @@ public class productpage extends AppCompatActivity {
         setContentView(R.layout.productpage);
 
         drawerLayout = findViewById(R.id.drawer_layout);
+        View buttonDrawerView = findViewById(R.id.buttonDrawerToggle);
+        Log.d("ViewClass", "Class: " + buttonDrawerView.getClass().getName());
+        if (buttonDrawerView instanceof ImageButton) {
+            buttonDrawer = (ImageButton) buttonDrawerView;
+        } else {
+            Log.e("ViewClass", "Unexpected view type: " + buttonDrawerView.getClass().getName());
+        }
         navigationView = findViewById(R.id.navigationView);
         buttonDrawer = findViewById(R.id.buttonDrawerToggle);
+
+        searchEditText = findViewById(R.id.searchEditText);
+
+        // Set up the action listener for the searchEditText
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    performSearch(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Check and request microphone permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -164,12 +192,28 @@ public class productpage extends AppCompatActivity {
         initializeSpeechRecognizer();
 
         // Set OnClickListener for the voice search button
-        ImageButton searchVoiceButton = findViewById(R.id.search_voice_btn);
+        searchVoiceButton = findViewById(R.id.search_voice_btn);
         searchVoiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(productpage.this, "Voice button clicked", Toast.LENGTH_SHORT).show();
                 startListening();
+            }
+        });
+
+        // TextWatcher for searchEditText
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                performSearch(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }
@@ -281,7 +325,6 @@ public class productpage extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
-
 
     private void fetchFoodItems() {
         db.collection("Food_Items")
@@ -404,5 +447,37 @@ public class productpage extends AppCompatActivity {
         if (speechRecognizer != null) {
             speechRecognizer.destroy();
         }
+    }
+
+    private void performSearch(String query) {
+        ArrayList<Food> filteredList = new ArrayList<>();
+
+        // Convert query to lowercase for case-insensitive search
+        String lowercaseQuery = query.toLowerCase().trim();
+
+        // Filter food items based on search query
+        for (Food food : allFoodList) {
+            if (food.getName().toLowerCase().contains(lowercaseQuery)) {
+                filteredList.add(food);
+            }
+        }
+
+        // Update RecyclerView with filtered list
+        foodAdapter.updateList(filteredList);
+
+        // Update UI to reflect search results (optional)
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Showing results for: " + query, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void clearSearch() {
+        // Clear the search text and reset RecyclerView to show all items
+        searchEditText.setText("");
+        updateAllAdapters(allFoodList); // Reset to show all items
+        allRestaurantsText.setText("All Categories");
+        sortedByText.setText("sorted by category");
     }
 }

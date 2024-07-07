@@ -51,6 +51,11 @@
         android:title="Account"
         android:icon="@drawable/account" />
 
+    <item
+        android:id="@+id/navMap"
+        android:title="Cafe Location"
+        android:icon="@drawable/map_icon" />
+
     </group>
 
 

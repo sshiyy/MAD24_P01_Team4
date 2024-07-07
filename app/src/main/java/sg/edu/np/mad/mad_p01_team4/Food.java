@@ -1,6 +1,7 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 public class Food {
+    private static Food instance;
     private String name;
     private int price;
     private String img;
@@ -52,17 +53,16 @@ public class Food {
         return description;
     }
 
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+
     }
+
 
     public String getCategory() {
         return category;
@@ -80,6 +80,26 @@ public class Food {
         this.imageResourceId = imageResourceId;
     }
 
-    public void incrementQuantity() {
+
+    public int incrementQuantity() {
+        return quantity++;
+    }
+
+    public int decreamentQuantity() {
+        if (quantity > 0) {
+            quantity--;
+        }
+        return quantity;
+    }
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+    public static Food getInstance(){
+        if (instance == null) {
+            instance = new Food();
+        }
+        return instance;
     }
 }

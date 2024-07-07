@@ -49,6 +49,7 @@ public class productpage extends AppCompatActivity {
         foodAdapter = new FoodAdapter(new ArrayList<>(), this);
         setUpRecyclerView(R.id.productrecyclerView, foodAdapter);
 
+        foodAdapter.notifyDataSetChanged();
 
         allRestaurantsText = findViewById(R.id.allRestaurantsText);
         sortedByText = findViewById(R.id.sortedByText);
@@ -103,8 +104,6 @@ public class productpage extends AppCompatActivity {
     }
 
 
-
-
     // For retrieving food items from database
 
     private void fetchFoodItems() {
@@ -128,7 +127,7 @@ public class productpage extends AppCompatActivity {
         foodAdapter.updateList(foodList);
     } // update the adapter for the products to be displayed
 
-//function method for filter pop up
+    //function method for filter pop up
     private void showFilterPopup() {
         try {
             // Inflate the popup_filter.xml layout
@@ -238,7 +237,6 @@ public class productpage extends AppCompatActivity {
     }
 
 
-
     // a method for clearing the filter - back to default
     private void clearFilter() {
         // Reset the filter title
@@ -248,11 +246,4 @@ public class productpage extends AppCompatActivity {
         // Update RecyclerView adapters with the full list
         updateAllAdapters(allFoodList);
     }
-
-
-
-
-
-
-    }
-
+}

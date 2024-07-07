@@ -67,6 +67,7 @@ public class cartpage extends AppCompatActivity {
         totalamt = findViewById(R.id.totalamt);
         discountAmt = findViewById(R.id.discountAmt); // Discount amount TextView
 
+        // cross button in cart page
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(v -> finish());
 
@@ -105,7 +106,6 @@ public class cartpage extends AppCompatActivity {
         double totalAmount = total + gst;
         totalamt.setText(String.format("$%.2f", totalAmount));
     }
-
 
     // method to show payments options
     private void showPayment() {

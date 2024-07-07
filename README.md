@@ -146,6 +146,7 @@ Stage 2 Features
 
 Users can now swipe left on the item to add it to favorites/unfavorite, view more
 and also finding other relevant items in the same category.
+allow user to ammend order
 
 ```
 ```

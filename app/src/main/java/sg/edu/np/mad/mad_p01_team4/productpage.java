@@ -154,6 +154,12 @@ public class productpage extends AppCompatActivity {
                     startActivity(intent);
                 }
 
+                if (itemId == R.id.navMap) {
+                    Toast.makeText(productpage.this, "Map Clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(productpage.this, activity_maps.class);
+                    startActivity(intent);
+                }
+
                 drawerLayout.close();
                 return false;
             }

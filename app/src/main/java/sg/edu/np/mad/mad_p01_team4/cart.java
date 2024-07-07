@@ -24,7 +24,7 @@ public class cart {
             if (item.getName().equals(food.getName())) {
                 // check if item exists
                 // exists -> update quantity
-                item.setQuantity(item.getQuantity() + food.getQuantity()); // Update quantity
+                item.setQuantity(item.getQuantity() + 1); // Update quantity
                 if (cartUpdateListener != null) {
                     // notifies the listener if it is set
                     cartUpdateListener.onCartUpdated();
@@ -37,6 +37,21 @@ public class cart {
         if (cartUpdateListener != null) {
             // notifies the listener if it is set
             cartUpdateListener.onCartUpdated();
+        };
+    }
+
+    public void removeitems(Food food) {
+        for (Food item : cartitems) {
+            if (item.getName().equals(food.getName())) {
+                // check if item exists
+                // exists -> update quantity
+                item.setQuantity(item.getQuantity() - 1); // Update quantity
+                if (cartUpdateListener != null) {
+                    // notifies the listener if it is set
+                    cartUpdateListener.onCartUpdated();
+                }
+                return;
+            }
         }
     }
 
@@ -80,7 +95,7 @@ public class cart {
 
     // calculate total price for checkout
     public double getItemsTotal() {
-        double total = 0 ;
+        double total = 0;
         for (Food item : cartitems) {
             total += item.getPrice() * item.getQuantity();
         }

@@ -49,8 +49,10 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             holder.tvQuantity.setText(String.valueOf(quantity));
             food.setQuantity(quantity);
             cart.getInstance().updateCart(food);
+            //Food.getInstance().incrementQuantity();
             ((cartpage) cartcontext).updateCartSummary();
             updatePriceQuantity(holder, food);
+            notifyItemChanged(position);
         });
 
         // button to decrease quantity
@@ -61,8 +63,10 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
                 holder.tvQuantity.setText(String.valueOf(quantity));
                 food.setQuantity(quantity);
                 cart.getInstance().updateCart(food);
+                //Food.getInstance().decreamentQuantity();
                 ((cartpage) cartcontext).updateCartSummary();
                 updatePriceQuantity(holder, food);
+                notifyItemChanged(position);
             }
         });
 

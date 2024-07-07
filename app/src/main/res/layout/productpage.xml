@@ -121,12 +121,12 @@
 
                     <EditText
                         android:id="@+id/searchEditText"
-                        android:layout_width="350dp"
+                        android:layout_width="450dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:background="@drawable/search_button_desgin"
+                        android:background="@drawable/search_view_bg"
                         android:backgroundTint="@color/lightGray"
-                        android:hint="What would you like to eat?"
+                        android:hint="Search food here..."
                         android:padding="8dp" />
 
                     <ImageButton

@@ -52,18 +52,12 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
-
+    implementation ("com.google.android.gms:play-services-maps:19.0.0")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
-
     implementation ("com.airbnb.android:lottie:5.0.3")
-
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
-
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-
-
 }
 

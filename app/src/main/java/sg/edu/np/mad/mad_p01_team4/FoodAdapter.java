@@ -12,11 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private ArrayList<Food> foodList;
     private ArrayList<Food> filteredFoodList;
     private Context context;
+
+    public void setFilteredFoodList(ArrayList<Food> filteredList) {
+        this.foodList = filteredList;
+        notifyDataSetChanged();
+    }
 
     public FoodAdapter(ArrayList<Food> foodList, Context context) {
         this.foodList = foodList;
@@ -117,5 +123,21 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         filteredFoodList.clear();
         filteredFoodList.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    // Method to update the filtered list based on search query
+    public void filter(String query) {
+        filteredFoodList.clear();
+        if (query.isEmpty()) {
+            filteredFoodList.addAll(foodList); // Show all items if query is empty
+        } else {
+            query = query.toLowerCase().trim();
+            for (Food food : foodList) {
+                if (food.getName().toLowerCase().contains(query)) {
+                    filteredFoodList.add(food);
+                }
+            }
+        }
+        notifyDataSetChanged(); // Notify adapter of data change
     }
 }

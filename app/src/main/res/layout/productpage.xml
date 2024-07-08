@@ -123,10 +123,11 @@
                         android:id="@+id/searchEditText"
                         android:layout_width="450dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="8dp"
                         android:background="@drawable/search_view_bg"
                         android:backgroundTint="@color/lightGray"
                         android:hint="Search food here..."
+                        android:textSize="15dp"
                         android:padding="8dp" />
 
                     <ImageButton
@@ -138,6 +139,7 @@
                         android:layout_marginEnd="20dp"
                         android:background="@android:color/transparent"
                         android:src="@drawable/voice_recognition_icon" />
+
 
                 </RelativeLayout>
 
@@ -151,6 +153,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/filter_icon_image" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -247,6 +250,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/chatbot_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/chatbotimage"
+                    app:backgroundTint="@color/orange"
+                    app:fabSize="normal" />
+            </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- RecyclerView for displaying popular products -->
@@ -299,24 +317,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Floating Chatbot Button -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/chatbot_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="16dp"
-                android:src="@drawable/chatbotimage"
-                app:backgroundTint="@color/orange"
-                app:fabSize="normal" />
-        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

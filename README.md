@@ -123,12 +123,13 @@ they want to remove they can click on the 'X' button.
 **Planned task and feature - one person one or more feature**
 
 ```
-1. User authentication - Jason
-        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
-        - When a new user sign up, there will be verification to confirm the email is valid 
-
-1.1 Image Upload 
-        - Users can now upload a custom profile image to their profile
+Jason 
+Stage 1 Improvements
+1. Allow user to upload profile image 
+-------------------------------------- 
+Stage 2 Features
+1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
+2. Add real time customer support for users - not confirmed
 
 ```
 ```
@@ -145,13 +146,33 @@ they want to remove they can click on the 'X' button.
 
 Users can now swipe left on the item to add it to favorites/unfavorite, view more
 and also finding other relevant items in the same category.
+allow user to ammend order
 
 ```
 ```
 4. Navigation Bar - Raeann 
 
-a hamburger menu and a bottom button popup for the navigation using fragments to
-organize the app sections efficiently.
+a hamburger menu  for the navigation using fragments to
+organize the app sections efficiently. using FRAGMENT ..
+
+1. Augmented Reality (AR) Menu
+Concepts: Augmented Reality, 3D Modeling, ARCore.
+Implementation: Use ARCore to integrate AR features, load 3D models, and render them in the user's environment.
+like camera -- thn it will show the 3d model for the food ??
+
+2. Voice Commands and Assistant Integration
+Concepts: Speech Recognition, Voice Assistant Integration.
+Implementation: Use SpeechRecognizer for capturing voice input, and integrate with Google Assistant for handling voice commands.
+
+3. Machine Learning for Recommendations
+Concepts: Machine Learning, TensorFlow Lite, Data Analysis. 
+Implementation: Train a machine learning model to predict user preferences, and use TensorFlow Lite to run the model on the device for personalized recommendations.
+
+
+4. Chatbot for Customer Support
+Concepts: Natural Language Processing (NLP)
+Implementation: Create a chatbot using firstore and provide automated responses. 
+
 
 ```
 

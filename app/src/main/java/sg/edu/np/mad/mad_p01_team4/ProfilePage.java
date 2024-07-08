@@ -39,6 +39,7 @@ public class ProfilePage extends AppCompatActivity {
     private EditText usernameDisplay;
     private Button editProfileBtn;
     private Button deleteAccountBtn;
+    private Button logoutBtn;
     private FirebaseAuth.AuthStateListener emailVerificationListener;
     private String currentUsername;
     private String currentName;
@@ -67,8 +68,7 @@ public class ProfilePage extends AppCompatActivity {
         ImageButton homebtn = findViewById(R.id.home);
         ImageButton starbtn = findViewById(R.id.point);
         ImageButton cartbtn = findViewById(R.id.cart_button);
-        ImageButton profilebtn = findViewById(R.id.account);
-        ImageView logoutbtn = findViewById(R.id.iv_logout);
+        ImageButton profilebtn = findViewById(R.id.profile_button);
         usernameTitle = findViewById(R.id.titleUsername);
         nameTitle = findViewById(R.id.titleName);
         pointsDisplay = findViewById(R.id.pointsNumber);
@@ -77,6 +77,7 @@ public class ProfilePage extends AppCompatActivity {
         usernameDisplay = findViewById(R.id.profileUsername);
         editProfileBtn = findViewById(R.id.btn_editProfile);
         deleteAccountBtn = findViewById(R.id.button2);
+        logoutBtn = findViewById(R.id.btn_logout);
 
         // Navbar
         homebtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, productpage.class)));
@@ -85,7 +86,7 @@ public class ProfilePage extends AppCompatActivity {
         starbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, Points_Page.class)));
 
         // Handle logout
-        logoutbtn.setOnClickListener(v -> {
+        logoutBtn.setOnClickListener(v -> {
             mAuth.signOut();
             startActivity(new Intent(ProfilePage.this, Login_Page.class));
             finish();

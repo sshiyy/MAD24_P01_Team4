@@ -106,27 +106,35 @@
         android:layout_height="wrap_content"
         android:id="@+id/above"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="28dp">
+            app:cardCornerRadius="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp">
+
             <EditText
                 android:id="@+id/edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ask a question"
-                android:textSize="18dp"
-                android:paddingLeft="24dp"
-                android:paddingBottom="16dp"
+                android:textSize="18sp"
+                android:paddingStart="24dp"
+                android:paddingEnd="18dp"
                 android:paddingTop="12dp"
+                android:paddingBottom="16dp"
+                android:background="@drawable/jason_customedittext"
                 android:drawableRight="@drawable/send"
-                android:paddingRight="18dp"
-                android:backgroundTint="@android:color/transparent">
-            </EditText>
+                android:drawablePadding="8dp"
+                android:inputType="text"
+                android:imeOptions="actionSend"/>
+
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
+
 
 </RelativeLayout>

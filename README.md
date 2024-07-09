@@ -171,7 +171,9 @@ Implementation: Train a machine learning model to predict user preferences, and 
 
 4. Chatbot for Customer Support
 Concepts: Natural Language Processing (NLP)
-Implementation: Create a chatbot using firstore and provide automated responses. 
+Implementation: Create a chatbot using firstore and provide automated responses.
+
+5. Try implementing backstack too? - not sure about this yet 
 
 
 ```

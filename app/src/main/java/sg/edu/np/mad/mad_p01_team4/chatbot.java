@@ -17,8 +17,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class chatbot extends AppCompatActivity {
@@ -59,7 +62,7 @@ public class chatbot extends AppCompatActivity {
                     if (event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
                         String message = editText.getText().toString().trim();
                         if (!message.isEmpty()) {
-                            list.add(new MessageModel(message, user));
+                            list.add(new MessageModel(message, user, getCurrentTime()));
                             adapter.notifyDataSetChanged();
                             recyclerView.smoothScrollToPosition(list.size() - 1);
                             handleUserMessage(message);
@@ -84,18 +87,15 @@ public class chatbot extends AppCompatActivity {
 
     private void initializeKeywordMappings() {
         // Add mappings from keywords to document IDs
-        keywordMapping.put("pay", "how_to_pay");
-        keywordMapping.put("payment methods", "payment_methods");
-        keywordMapping.put("order", "how_to_order_food");
-        keywordMapping.put("track order", "track_order");
-        keywordMapping.put("refund policy", "refund_policy");
-        keywordMapping.put("contact support", "contact_support");
+        keywordMapping.put("payment", "payment_methods");
+        keywordMapping.put("order", "order");
+        keywordMapping.put("track", "track_order");
         // Add more mappings as needed
     }
 
     private void sendWelcomeMessage() {
         String welcomeMessage = "Welcome! How can I assist you today? You can ask me questions like 'how to pay' or 'what are the payment methods'.";
-        list.add(new MessageModel(welcomeMessage, bot));
+        list.add(new MessageModel(welcomeMessage, bot, getCurrentTime()));
         adapter.notifyDataSetChanged();
         recyclerView.smoothScrollToPosition(list.size() - 1);
     }
@@ -105,9 +105,17 @@ public class chatbot extends AppCompatActivity {
         if (documentId != null) {
             fetchFAQAnswer(documentId);
         } else {
-            list.add(new MessageModel("I don't understand the question.", bot));
-            adapter.notifyDataSetChanged();
-            recyclerView.smoothScrollToPosition(list.size() - 1);
+            String closestKeyword = getClosestKeyword(message);
+            if (closestKeyword != null) {
+                list.add(new MessageModel("Did you mean '" + closestKeyword + "'?", bot, getCurrentTime()));
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(list.size() - 1);
+                handleUserMessage(closestKeyword);
+            } else {
+                list.add(new MessageModel("I don't understand the question.", bot, getCurrentTime()));
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(list.size() - 1);
+            }
         }
     }
 
@@ -120,6 +128,41 @@ public class chatbot extends AppCompatActivity {
         return null;
     }
 
+    private String getClosestKeyword(String message) {
+        String closestKeyword = null;
+        int minDistance = Integer.MAX_VALUE;
+
+        for (String keyword : keywordMapping.keySet()) {
+            int distance = getLevenshteinDistance(message.toLowerCase(), keyword.toLowerCase());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestKeyword = keyword;
+            }
+        }
+
+        // Suggest only if the distance is below or equal to a certain threshold (e.g., 2)
+        return minDistance <= 2 ? closestKeyword : null;
+    }
+
+    private int getLevenshteinDistance(String str1, String str2) {
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
+
+        for (int i = 0; i <= str1.length(); i++) {
+            for (int j = 0; j <= str2.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1] + (str1.charAt(i - 1) == str2.charAt(j - 1) ? 0 : 1),
+                            Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1));
+                }
+            }
+        }
+
+        return dp[str1.length()][str2.length()];
+    }
+
     private void fetchFAQAnswer(String documentId) {
         CollectionReference faqsRef = db.collection("FAQs");
         faqsRef.document(documentId).get()
@@ -128,15 +171,20 @@ public class chatbot extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             String answer = task.getResult().getString("answer");
-                            list.add(new MessageModel(answer, bot));
+                            list.add(new MessageModel(answer, bot, getCurrentTime()));
                             adapter.notifyDataSetChanged();
                             recyclerView.smoothScrollToPosition(list.size() - 1);
                         } else {
-                            list.add(new MessageModel("Failed to fetch the answer.", bot));
+                            list.add(new MessageModel("Failed to fetch the answer.", bot, getCurrentTime()));
                             adapter.notifyDataSetChanged();
                             recyclerView.smoothScrollToPosition(list.size() - 1);
                         }
                     }
                 });
+    }
+
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
+        return sdf.format(new Date());
     }
 }

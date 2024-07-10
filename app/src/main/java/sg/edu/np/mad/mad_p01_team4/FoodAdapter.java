@@ -5,14 +5,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private ArrayList<Food> foodList;
@@ -102,6 +105,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         ImageView ivFoodImage = dialogView.findViewById(R.id.foodImage);
         TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
+        LinearLayout modificationsLayout = dialogView.findViewById(R.id.modificationsLayout);
 
         // Load image using Glide
         Glide.with(context)
@@ -110,6 +114,20 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         // set food description
         tvFoodDescription.setText(food.getDescription());
+
+        // add checkboxes for modifications
+        List<Map<String, Object>> modifications = food.getModifications();
+        if (modifications != null) {
+            for (Map<String, Object> modification : modifications) {
+                String name = (String) modification.keySet().toArray()[0];
+                Boolean value = (Boolean) modification.values().toArray()[0];
+
+                CheckBox checkBox = new CheckBox(context);
+                checkBox.setText(name);
+                checkBox.setChecked(value);
+                modificationsLayout.addView(checkBox);
+            }
+        }
 
         // create and show alertdialog
         new AlertDialog.Builder(context)

@@ -131,6 +131,15 @@
                         android:layout_height="wrap_content"
                         android:hint="Enter any special requests"
                         android:layout_marginTop="16dp"/>
+
+                    <!-- Add to Cart button -->
+                    <Button
+                        android:id="@+id/addToCartButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add to Cart"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"/>
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

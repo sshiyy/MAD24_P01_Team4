@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="30dp"
         android:gravity="right"
         android:orientation="horizontal">
 
@@ -21,7 +21,7 @@
             android:layout_marginLeft="70dp"
             android:layout_marginRight="10dp"
             android:layout_gravity="center"
-            android:backgroundTint="#D9BDEA"
+            android:backgroundTint="@color/orange"
             app:cardCornerRadius="38dp">
 
             <TextView
@@ -30,6 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="18dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:text="Hello, I am Sourabh" />
         </androidx.cardview.widget.CardView>
 

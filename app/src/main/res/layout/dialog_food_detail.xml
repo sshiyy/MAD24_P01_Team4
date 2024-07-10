@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="wrap_content"
-        android:layout_height="500dp"
-        android:background="@color/orange" />
-
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +17,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="20px"
                 android:layout_marginTop="48dp"
                 android:layout_marginStart="16dp"
@@ -58,8 +54,7 @@
                 <LinearLayout
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/white_bg_details"
                     android:orientation="vertical"
                     android:padding="16dp"
@@ -67,24 +62,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp">
 
-
                         <TextView
                             android:id="@+id/textView6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="15dp"
                             android:text="Description"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
-
 
                         <ImageView
                             android:id="@+id/imageView6"
@@ -95,25 +86,65 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/favbtn" />
 
-
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                     <TextView
                         android:id="@+id/descriptionTxt"
                         android:layout_width="match_parent"
-                        android:layout_height="151dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="Description of food"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
-                </LinearLayout>
 
+                    <!-- Modifications section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Modification(s)"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingTop="15dp"
+                        android:textColor="@color/black"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/modificationsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="16dp"/>
+
+                    <!-- Special Request section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Special Request"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingTop="15dp"
+                        android:textColor="@color/black"/>
+
+                    <EditText
+                        android:id="@+id/specialRequestInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter any special requests"
+                        android:layout_marginTop="16dp"/>
+
+                    <!-- Add to Cart button -->
+                    <Button
+                        android:id="@+id/addToCartButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add to Cart"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"/>
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
+    </RelativeLayout>
 
-
-</RelativeLayout>
+</ScrollView>

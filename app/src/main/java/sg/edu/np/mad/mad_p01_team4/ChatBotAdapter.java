@@ -39,8 +39,10 @@ public class ChatBotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         MessageModel model = list.get(position);
         if (model.getViewType().equals("user")) {
             ((UserView) holder).user.setText(model.getMessage());
+            ((UserView) holder).time.setText(model.getTime());
         } else {
             ((ReceiverView) holder).receiver.setText(model.getMessage());
+            ((ReceiverView) holder).time.setText(model.getTime());
         }
     }
 
@@ -61,20 +63,24 @@ public class ChatBotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static class UserView extends RecyclerView.ViewHolder {
 
         TextView user;
+        TextView time;
 
         public UserView(@NonNull View itemView) {
             super(itemView);
             user = itemView.findViewById(R.id.sender_text);
+            time = itemView.findViewById(R.id.sender_time);
         }
     }
 
     public static class ReceiverView extends RecyclerView.ViewHolder {
 
         TextView receiver;
+        TextView time;
 
         public ReceiverView(@NonNull View itemView) {
             super(itemView);
             receiver = itemView.findViewById(R.id.receiver_text);
+            time = itemView.findViewById(R.id.receiver_time);
         }
     }
 }

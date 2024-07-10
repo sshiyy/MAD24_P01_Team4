@@ -467,16 +467,8 @@ public class productpage extends AppCompatActivity {
                 filteredList.add(food);
             }
         }
-
         // Update RecyclerView with filtered list
         foodAdapter.updateList(filteredList);
-
-        // Update UI to reflect search results (optional)
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Showing results for: " + query, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void clearSearch() {

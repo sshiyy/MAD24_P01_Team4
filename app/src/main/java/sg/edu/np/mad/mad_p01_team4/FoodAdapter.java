@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -106,6 +107,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         ImageView ivFoodImage = dialogView.findViewById(R.id.foodImage);
         TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
         LinearLayout modificationsLayout = dialogView.findViewById(R.id.modificationsLayout);
+        EditText specialRequestInput = dialogView.findViewById(R.id.specialRequestInput);
 
         // Load image using Glide
         Glide.with(context)

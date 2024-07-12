@@ -27,20 +27,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class cartpage extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private TextView itemsTotalamt, GSTamt, totalamt, discountAmt;
     private Button btnConfirm;
 
-    private int points = 0; // Points start at 0 for each session
-    private double totalPrice = 0.0; // Total price of the cart items
-    private double discountAmount = 0.0; // Discount amount to be applied
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
-    private SharedPreferences sharedPreferences;
+    private List<Food> currentOrders;
+    private cartAdapter cartAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +54,6 @@ public class cartpage extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-
-        // Retrieve the discount amount from SharedPreferences
-        discountAmount = sharedPreferences.getInt("discount", 0);
-
-        // Initializing textView objects
-        itemsTotalamt = findViewById(R.id.itemsTotalamt);
-        GSTamt = findViewById(R.id.GSTamt);
-        totalamt = findViewById(R.id.totalamt);
-        discountAmt = findViewById(R.id.discountAmt); // Discount amount TextView
 
         // cross button in cart page
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
@@ -78,40 +65,17 @@ public class cartpage extends AppCompatActivity {
         recyclerView = findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // gets the list of cart items from cart instance
-        List<Food> cartitems = cart.getInstance().getCartitems();
-        // creates an adapter
-        cartAdapter cartAdapter = new cartAdapter(cartitems, this);
-        // notify adapter of data changes
+        // initialise currentorders list and cartadapter
+        currentOrders = new ArrayList<>();
+        cartAdapter = new cartAdapter(currentOrders, this);
         recyclerView.setAdapter(cartAdapter);
 
-        cartAdapter.notifyDataSetChanged();
+        // load current orders
+        loadCurrentOrders();
 
-        updateCartSummary();
     }
 
     // method to calculate and update the cart summary
-    public void updateCartSummary() {
-        // get total price and GST from cart instance
-        double total = cart.getInstance().getItemsTotal(); // total price of all items in cart
-        double gst = cart.getInstance().getGST(); // GST amt
-
-        // apply discount if any
-        double totalAmount = total + gst - discountAmount;
-
-        // display total price and GST in TextViews & format as currency values
-        itemsTotalamt.setText(String.format("$%.2f", total));
-        GSTamt.setText(String.format("$%.2f", gst));
-        discountAmt.setText(String.format("-$%.2f", discountAmount));
-        totalamt.setText(String.format("$%.2f", totalAmount));
-
-        // Reset discount amount in SharedPreferences if totalAmount is calculated
-        if (discountAmount > 0) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("discount", 0);
-            editor.apply();
-        }
-    }
 
     // method to show payments options
     private void showPayment() {
@@ -144,14 +108,6 @@ public class cartpage extends AppCompatActivity {
                     // once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
 
-                    // Calculate total amount after discount
-                    double totalAmount = cart.getInstance().getItemsTotal() + cart.getInstance().getGST() - discountAmount;
-
-                    // Convert total amount to points
-                    convertToPoints(totalAmount);
-
-                    // Clear the cart
-                    cart.getInstance().clearCart();
 
                     // Navigate to the product page
                     Intent intent = new Intent(v.getContext(), productpage.class);
@@ -184,96 +140,45 @@ public class cartpage extends AppCompatActivity {
         });
     }
 
-    // to convert the amount of money spent to points
-    private void convertToPoints(double totalAmount) {
-        int earnedPoints = (int) totalAmount; // $1 = 1 point
+    private void loadCurrentOrders(){
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null){
+            Intent intent = new Intent(this, Login_Page.class);
+            startActivity(intent);
+            return;
+        }
 
-        // Retrieve current points from Firestore
+        db.collection("currently_ordering")
+                .whereEqualTo("userId",currentUser.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    currentOrders.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Food order = document.toObject(Food.class);
+                        currentOrders.add(order);
+                    }
+                    cartAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void clearCurrentOrders(){
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            String userEmail = currentUser.getEmail();
-            db.collection("Accounts")
-                    .whereEqualTo("email", userEmail)
+            db.collection("currently_ordering")
+                    .whereEqualTo("userId", currentUser.getUid())
                     .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Long currentPoints = document.getLong("points");
-                                currentPoints = currentPoints != null ? currentPoints : 0;
-                                long newPoints = currentPoints + earnedPoints;
-                                String tier = calculateTier(newPoints);
-
-                                db.collection("Accounts").document(document.getId())
-                                        .update("points", newPoints, "tier", tier)
-                                        .addOnSuccessListener(aVoid -> {
-                                            Log.d("UpdatePoints", "Points and tier updated successfully in Firestore");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e("UpdatePoints", "Failed to update points and tier in Firestore", e);
-                                        });
-
-                                // Notify the user of the successful order confirmation and points earned
-                                Toast.makeText(cartpage.this, "Order confirmed! You earned " + earnedPoints + " points. Total points: " + newPoints, Toast.LENGTH_LONG).show();
-                                break;
-                            }
-                        } else {
-                            Log.e("UpdatePoints", "Failed to find document with email: " + userEmail);
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            document.getReference().delete();
                         }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("clearCurrentOrders", "Failed to clear current orders: " + e.getMessage());
                     });
-        } else {
-            Log.e("UpdatePoints", "No authenticated user found");
         }
     }
 
-
-    // to redeem points if there is
-    private void redeemPoints(int pointsRequired, double discount) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String userEmail = currentUser.getEmail();
-            db.collection("Accounts")
-                    .whereEqualTo("email", userEmail)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Long currentPoints = document.getLong("points");
-                                if (currentPoints != null && currentPoints >= pointsRequired) {
-                                    long newPoints = currentPoints - pointsRequired;
-                                    db.collection("Accounts").document(document.getId())
-                                            .update("points", newPoints)
-                                            .addOnSuccessListener(aVoid -> {
-                                                discountAmount = discount; // Update discount amount only if redemption is successful
-                                                // Save the discount amount to SharedPreferences
-                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                editor.putInt("discount", (int) discountAmount);
-                                                editor.apply();
-                                                updateCartSummary(); // Recalculate the cart summary with the discount
-                                                Toast.makeText(cartpage.this, "Redeemed $" + discount + " off!", Toast.LENGTH_SHORT).show();
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                Log.e("RedeemPoints", "Failed to update points in Firebase", e);
-                                            });
-                                } else {
-                                    Toast.makeText(cartpage.this, "Not enough points to redeem this voucher.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } else {
-                            Log.e("RedeemPoints", "Failed to find document with email: " + userEmail);
-                        }
-                    });
-        } else {
-            Log.e("RedeemPoints", "No authenticated user found");
-        }
-    }
-
-    private String calculateTier(long points) {
-        if (points >= 300) {
-            return "Gold";
-        } else if (points >= 100) {
-            return "Silver";
-        } else {
-            return "Bronze";
-        }
-    }
 }

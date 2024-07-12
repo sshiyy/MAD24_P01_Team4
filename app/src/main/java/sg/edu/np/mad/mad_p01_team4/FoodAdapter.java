@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +68,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         // Click listener on image to show the detailed view of the food
         holder.ivImage.setOnClickListener(v -> showFoodDetailDialog(food));
-
     }
 
     @Override
@@ -166,7 +164,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     private void addOrderToFirebase(Order order) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Orders")
+        db.collection("currently_ordering")
                 .add(order)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(context, "Order added to cart successfully!", Toast.LENGTH_SHORT).show();

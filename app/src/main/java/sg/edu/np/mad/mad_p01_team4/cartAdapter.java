@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,18 +37,14 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         holder.tvcartPrice.setText("$" + order.getPrice());
 
         Glide.with(cartcontext)
-                .load(order.getImg()) // Assuming getImageUrl() returns a string URL or path
+                .load(order.getImg()) // Assuming getImg() returns a string URL or path
                 .into(holder.ivcartImage);
-
-        int totalItemPrice = order.getPrice() * order.getQuantity();
-
     }
 
     @Override
     public int getItemCount() {
         return cartItems.size();
     }
-
 
     public static class cartViewHolder extends RecyclerView.ViewHolder {
         private TextView tvcartName, tvcartPrice;
@@ -60,7 +55,6 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
             tvcartName = itemView.findViewById(R.id.tvcartName);
             tvcartPrice = itemView.findViewById(R.id.tvcartPrice);
             ivcartImage = itemView.findViewById(R.id.ivcartImage);
-
         }
     }
 }

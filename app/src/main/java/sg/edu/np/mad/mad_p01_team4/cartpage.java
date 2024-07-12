@@ -1,15 +1,12 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class cartpage extends AppCompatActivity {
+
+    private static final String TAG = "CartPage";
 
     private RecyclerView recyclerView;
     private Button btnConfirm;
@@ -54,8 +53,7 @@ public class cartpage extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-
-        // cross button in cart page
+        // Cross button in cart page
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(v -> finish());
 
@@ -65,34 +63,31 @@ public class cartpage extends AppCompatActivity {
         recyclerView = findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // initialise currentorders list and cartadapter
+        // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
         cartAdapter = new cartAdapter(currentOrders, this);
         recyclerView.setAdapter(cartAdapter);
 
-        // load current orders
+        // Load current orders
         loadCurrentOrders();
-
     }
 
-    // method to calculate and update the cart summary
-
-    // method to show payments options
+    // Method to show payment options
     private void showPayment() {
         View view = getLayoutInflater().inflate(R.layout.activity_payment_method, null);
 
-        // finds 'RadioGroup' in the inflated view & stores as paymentGroup
+        // Finds 'RadioGroup' in the inflated view & stores as paymentGroup
         RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
         BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(view); // sets content view of dialog to the inflated view
-        Button payButton = view.findViewById(R.id.payButton); // finds the payButton
+        dialog.setContentView(view); // Sets content view of dialog to the inflated view
+        Button payButton = view.findViewById(R.id.payButton); // Finds the payButton
 
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
-        bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)); // sets peak height of the bottom sheet behavior
-        // makes the bottom sheet non-hideable -> appear to user for payment selection
+        bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)); // Sets peak height of the bottom sheet behavior
+        // Makes the bottom sheet non-hideable -> appear to user for payment selection
         bottomSheetBehavior.setHideable(false);
 
-        // check if a radio button is selected
+        // Check if a radio button is selected
         paymentGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != -1) {
                 payButton.setEnabled(true);
@@ -105,9 +100,8 @@ public class cartpage extends AppCompatActivity {
             payButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // once payButton is clicked, shows toast message
+                    // Once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
-
 
                     // Navigate to the product page
                     Intent intent = new Intent(v.getContext(), productpage.class);
@@ -119,7 +113,7 @@ public class cartpage extends AppCompatActivity {
             dialog.show();
         }
 
-        // cancel button
+        // Cancel button
         Button cancelButton = dialog.findViewById(R.id.cancelButton);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +124,7 @@ public class cartpage extends AppCompatActivity {
             });
         }
 
-        // cross
+        // Cross button
         ImageView cross = dialog.findViewById(R.id.cross);
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,31 +134,46 @@ public class cartpage extends AppCompatActivity {
         });
     }
 
-    private void loadCurrentOrders(){
+    private void loadCurrentOrders() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null){
+        if (currentUser == null) {
             Intent intent = new Intent(this, Login_Page.class);
             startActivity(intent);
             return;
         }
 
         db.collection("currently_ordering")
-                .whereEqualTo("userId",currentUser.getUid())
+                .whereEqualTo("userId", currentUser.getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     currentOrders.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Food order = document.toObject(Food.class);
-                        currentOrders.add(order);
+                        fetchFoodDetails(order);
                     }
-                    cartAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void clearCurrentOrders(){
+    private void fetchFoodDetails(Food order) {
+        db.collection("Food_Items")
+                .whereEqualTo("name", order.getName())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        order.setImg(document.getString("img"));
+                        currentOrders.add(order);
+                    }
+                    cartAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load food details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void clearCurrentOrders() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             db.collection("currently_ordering")
@@ -180,5 +189,4 @@ public class cartpage extends AppCompatActivity {
                     });
         }
     }
-
 }

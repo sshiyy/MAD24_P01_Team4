@@ -11,11 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
@@ -38,7 +38,7 @@ public class Login_Page extends AppCompatActivity {
         // Get references to the UI elements
         email = findViewById(R.id.et_email);
         password = findViewById(R.id.et_password);
-        loginBtn = findViewById(R.id.btn_editProfile);
+        loginBtn = findViewById(R.id.btn_Login);
         signupRedirectText = findViewById(R.id.tv_signup);
 
         // Set OnClickListener for the login button
@@ -80,11 +80,11 @@ public class Login_Page extends AppCompatActivity {
 
         if (email.getText().toString().trim().isEmpty()) {
             email.setError("Email cannot be empty");
-            Log.d("Login_Page","Email is empty");
+            Log.d("Login_Page", "Email is empty");
             isValid = false;
         } else if (!isValidEmail(email.getText().toString().trim())) { // Call the isValidEmail function here
             email.setError("Email is invalid");
-            Log.d("Login_Page","Email is invalid");
+            Log.d("Login_Page", "Email is invalid");
             isValid = false;
         } else {
             email.setError(null);

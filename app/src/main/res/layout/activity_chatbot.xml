@@ -127,7 +127,7 @@
                 android:paddingEnd="18dp"
                 android:paddingTop="12dp"
                 android:paddingBottom="16dp"
-                android:background="@drawable/jason_customedittext"
+                android:background="@drawable/jason_custom_edit_text"
                 android:drawableRight="@drawable/send"
                 android:drawablePadding="8dp"
                 android:inputType="text"

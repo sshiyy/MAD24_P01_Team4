@@ -5,18 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Register_Page"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    tools:context=".Register_Page">
 
     <TextView
         android:id="@+id/tv_Registertitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="350dp"
         android:text="Sign Up"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="60sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginBottom="350dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,10 +25,12 @@
 
     <EditText
         android:id="@+id/regusername"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="48dp"
-        android:background="@drawable/jason_customedittext"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
         android:drawableStart="@drawable/person_logo"
         android:drawablePadding="5dp"
         android:ems="16"
@@ -42,10 +45,12 @@
 
     <EditText
         android:id="@+id/regname"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/jason_customedittext"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
         android:drawableStart="@drawable/person_logo"
         android:drawablePadding="5dp"
         android:ems="16"
@@ -58,11 +63,32 @@
         app:layout_constraintTop_toBottomOf="@+id/regusername" />
 
     <EditText
-        android:id="@+id/regpassword"
-        android:layout_width="wrap_content"
+        android:id="@+id/regemail"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/jason_customedittext"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
+        android:drawableStart="@drawable/email_logo"
+        android:drawablePadding="5dp"
+        android:ems="16"
+        android:hint="Email:"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regname" />
+
+    <EditText
+        android:id="@+id/regpassword"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
         android:drawableStart="@drawable/lock_logo"
         android:drawablePadding="5dp"
         android:ems="16"
@@ -72,66 +98,52 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regname" />
+        app:layout_constraintTop_toBottomOf="@+id/regemail" />
 
-    <EditText
-        android:id="@+id/regemail"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:background="@drawable/jason_customedittext"
-        android:ems="16"
-        android:inputType="text"
-        android:layout_marginTop="20dp"
-        android:hint="Email:"
-        android:drawableStart="@drawable/email_logo"
-        android:drawablePadding="5dp"
-        android:paddingStart="10dp"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regpassword"/>
+
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="60dp"
         android:backgroundTint="#D5702B"
         android:text="Register"
         android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/regpassword" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regpassword"/>
+        app:layout_constraintTop_toBottomOf="@+id/btn_register">
 
-    <TextView
-        android:id="@+id/tv_AlreadyAccText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginRight="100dp"
-        android:text="Already have an Account?"
-        android:textColor="@color/grey"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+        <TextView
+            android:id="@+id/tv_AlreadyAccText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="Already have an Account?"
+            android:textColor="@color/grey"
+            android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_LogInHereText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="80dp"
-        android:text="Log In Here!"
-        android:textColor="#03A9F4"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_AlreadyAccText"
-        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+        <TextView
+            android:id="@+id/tv_LogInHereText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Log In Here!"
+            android:textColor="#03A9F4"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,14 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login_Page"
     android:background="@drawable/background"
-    >
+    tools:context=".Login_Page">
+
+    <ImageView
+        android:id="@+id/mainLogo"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/mainlogo" />
 
     <Button
-        android:id="@+id/btn_editProfile"
-        android:layout_width="300dp"
+        android:id="@+id/btn_Login"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
         android:layout_marginBottom="100dp"
         android:backgroundTint="#D5702B"
         android:text="Login"
@@ -23,12 +33,29 @@
         app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
 
+    <TextView
+        android:id="@+id/tv_Logintitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Sign In"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/et_email"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/jason_customedittext"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
         android:drawableStart="@drawable/person_logo"
         android:drawablePadding="5dp"
         android:ems="16"
@@ -42,88 +69,65 @@
 
     <EditText
         android:id="@+id/et_password"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@drawable/jason_customedittext"
-        android:ems="16"
-        android:inputType="text"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:hint="Password:"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/jason_custom_edit_text"
         android:drawableStart="@drawable/lock_logo"
         android:drawablePadding="5dp"
+        android:ems="16"
+        android:hint="Password:"
+        android:inputType="text|textPassword"
         android:paddingStart="10dp"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
-    <TextView
-        android:id="@+id/tv_Logintitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:text="Sign In"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/btn_Login">
 
-    <TextView
-        android:id="@+id/tv_signuptext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginRight="100dp"
-        android:text="Don't have an account?"
-        android:textColor="@color/grey"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
+        <TextView
+            android:id="@+id/tv_signuptext"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:text="Don't have an account?"
+            android:textColor="@color/grey"
+            android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_signup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="80dp"
-        android:text="Sign Up Here!"
-        android:textColor="#03A9F4"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_signuptext"
-        app:layout_constraintTop_toBottomOf="@+id/btn_editProfile" />
+        <TextView
+            android:id="@+id/tv_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Sign Up Here!"
+            android:textColor="#03A9F4"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/mainLogo"
-        android:layout_width="411dp"
-        android:layout_height="500dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mainlogo" />
 
     <TextView
         android:id="@+id/tv_forgot_password"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Forgot Password?"
+        android:textAlignment="center"
         android:textColor="#03A9F4"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_signup" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

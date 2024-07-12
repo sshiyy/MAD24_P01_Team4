@@ -39,7 +39,7 @@ public class activity_maps extends AppCompatActivity implements OnMapReadyCallba
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private final LatLng cafeLocation = new LatLng(37.42226708765214, -122.08532420360882); // Example cafe coordinates
+    private final LatLng cafeLocation = new LatLng(1.3333222656771135, 103.77592584043202); // Example cafe coordinates
     private TextView distanceTextView;
 
     @Override

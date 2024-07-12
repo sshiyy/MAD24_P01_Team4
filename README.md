@@ -155,10 +155,7 @@ allow user to ammend order
 a hamburger menu  for the navigation using fragments to
 organize the app sections efficiently. using FRAGMENT ..
 
-1. Augmented Reality (AR) Menu
-Concepts: Augmented Reality, 3D Modeling, ARCore.
-Implementation: Use ARCore to integrate AR features, load 3D models, and render them in the user's environment.
-like camera -- thn it will show the 3d model for the food ??
+1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press crdit card they will be able to pay with fingerprint
 
 2. Voice Commands and Assistant Integration
 Concepts: Speech Recognition, Voice Assistant Integration.
@@ -167,7 +164,6 @@ Implementation: Use SpeechRecognizer for capturing voice input, and integrate wi
 3. Machine Learning for Recommendations
 Concepts: Machine Learning, TensorFlow Lite, Data Analysis. 
 Implementation: Train a machine learning model to predict user preferences, and use TensorFlow Lite to run the model on the device for personalized recommendations.
-
 
 4. Chatbot for Customer Support
 Concepts: Natural Language Processing (NLP)

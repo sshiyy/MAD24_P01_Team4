@@ -10,6 +10,7 @@ public class Order {
     private List<Map<String, Object>> modifications;
     private String specialRequest;
     private long timestamp;
+    private String img;
 
     // Default constructor required for calls to DataSnapshot.getValue(Order.class)
     public Order() {}
@@ -69,5 +70,13 @@ public class Order {
 
     public void setTimestamp(long timestamp){
         this.timestamp=timestamp;
+    }
+
+    public String getImg(){
+        return img;
+    }
+
+    public void setImg(String img){
+        this.img = img;
     }
 }

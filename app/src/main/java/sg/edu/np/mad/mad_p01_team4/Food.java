@@ -1,5 +1,8 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import java.util.List;
+import java.util.Map;
+
 public class Food {
     private static Food instance;
     private String name;
@@ -9,12 +12,13 @@ public class Food {
     private int quantity;
     private String category;
     private int imageResourceId; // Add imageResourceId field
+    private List<Map<String,Object>> modifications;
 
     // No-argument constructor required for Firestore deserialization
     public Food() {
     }
 
-    public Food(String name, int price, String img, String description, int quantity, String category, int imageResourceId) {
+    public Food(String name, int price, String img, String description, int quantity, String category, int imageResourceId, List<Map<String, Object>>modifications) {
         this.name = name;
         this.price = price;
         this.img = img;
@@ -22,6 +26,7 @@ public class Food {
         this.quantity = 0;
         this.category = category;
         this.imageResourceId = imageResourceId;
+        this.modifications = modifications;
     }
 
     // Getters and setters for all fields
@@ -80,7 +85,15 @@ public class Food {
         this.imageResourceId = imageResourceId;
     }
 
+    public List<Map<String,Object>>getModifications()
+    {
+        return modifications;
+    }
 
+    public void setModifications(List<Map<String,Object>>modifications)
+    {
+        this.modifications = modifications;
+    }
     public int incrementQuantity() {
         return quantity++;
     }

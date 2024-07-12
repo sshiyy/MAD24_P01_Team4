@@ -46,6 +46,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class productpage extends AppCompatActivity {
 
@@ -340,6 +341,7 @@ public class productpage extends AppCompatActivity {
                         allFoodList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Food food = document.toObject(Food.class);
+                            food.setModifications((List<Map<String, Object>>) document.get("modifications")); // Set modifications
                             allFoodList.add(food);
                         }
                         updateAllAdapters(allFoodList);

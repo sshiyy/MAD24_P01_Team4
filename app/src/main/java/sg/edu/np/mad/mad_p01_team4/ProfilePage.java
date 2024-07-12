@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +78,7 @@ public class ProfilePage extends AppCompatActivity {
         deleteAccountBtn = findViewById(R.id.button2);
         logoutBtn = findViewById(R.id.btn_logout);
 
+
         // Navbar
         homebtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, productpage.class)));
         cartbtn.setOnClickListener(v -> startActivity(new Intent(ProfilePage.this, cartpage.class)));
@@ -107,6 +107,7 @@ public class ProfilePage extends AppCompatActivity {
         // Handle account deletion
         deleteAccountBtn.setOnClickListener(v -> deleteAccount(currentUser));
     }
+
 
     private void fetchUserDetails(FirebaseUser currentUser) {
         String userEmail = currentUser.getEmail();

@@ -9,6 +9,7 @@ public class Order {
     private int price;
     private List<Map<String, Object>> modifications;
     private String specialRequest;
+    private long timestamp;
 
     // Default constructor required for calls to DataSnapshot.getValue(Order.class)
     public Order() {}
@@ -19,6 +20,7 @@ public class Order {
         this.price = price;
         this.modifications = modifications;
         this.specialRequest = specialRequest;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public String getUserId() {
@@ -59,5 +61,13 @@ public class Order {
 
     public void setSpecialRequest(String specialRequest) {
         this.specialRequest = specialRequest;
+    }
+
+    public long getTimestamp(){
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp){
+        this.timestamp=timestamp;
     }
 }

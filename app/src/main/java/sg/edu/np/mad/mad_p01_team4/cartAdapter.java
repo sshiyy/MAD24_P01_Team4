@@ -24,7 +24,6 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         this.cartcontext = cartcontext;
     }
 
-    // inflates custom layout for each cart item
     @NonNull
     @Override
     public cartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -32,93 +31,36 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
         return new cartViewHolder(view);
     }
 
-    // binds data to cart item view
     @Override
     public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
-        Food food = cartItems.get(position);
-        holder.tvcartName.setText(food.getName());
-        int price = (int) food.getPrice();
-        holder.tvcartPrice.setText("$" + price);
-        holder.tvcartQuantity.setText("Quantity: " + String.valueOf(food.getQuantity()));
-        holder.tvQuantity.setText(String.valueOf(food.getQuantity()));
+        Food order = cartItems.get(position);
+        holder.tvcartName.setText(order.getName());
+        holder.tvcartPrice.setText("$" + order.getPrice());
 
-        // button to increase quantity
-        holder.btnIncrease.setOnClickListener(v -> {
-            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
-            quantity++;
-            holder.tvQuantity.setText(String.valueOf(quantity));
-            food.setQuantity(quantity);
-            cart.getInstance().updateCart(food);
-            //Food.getInstance().incrementQuantity();
-            ((cartpage) cartcontext).updateCartSummary();
-            updatePriceQuantity(holder, food);
-            notifyItemChanged(position);
-        });
-
-        // button to decrease quantity
-        holder.btnDecrease.setOnClickListener(v -> {
-            int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
-            if (quantity > 0) {
-                quantity--;
-                holder.tvQuantity.setText(String.valueOf(quantity));
-                food.setQuantity(quantity);
-                cart.getInstance().updateCart(food);
-                //Food.getInstance().decreamentQuantity();
-                ((cartpage) cartcontext).updateCartSummary();
-                updatePriceQuantity(holder, food);
-                notifyItemChanged(position);
-            }
-        });
-
-        // Load image using Glide
         Glide.with(cartcontext)
-                .load(food.getImg()) // Assuming getImage() returns a string URL or path
+                .load(order.getImg()) // Assuming getImageUrl() returns a string URL or path
                 .into(holder.ivcartImage);
 
-        // calculate and display total price for item
-        int totalItemPrice = food.getPrice() * food.getQuantity();
-        holder.tvcartitemttlprice.setText("$" + totalItemPrice);
+        int totalItemPrice = order.getPrice() * order.getQuantity();
+
     }
 
-    // total number of items in teh cart
     @Override
     public int getItemCount() {
         return cartItems.size();
     }
 
-    // update price & quantity in the cart page
-    // holder -> instance of cartViewHolder that holds the views for a single cart item
-    // food -> an instance of the food class representing the food item in the cart
-    private void updatePriceQuantity(cartViewHolder holder, Food food) {
-        // retrives the current quantity of the food which displays the quantity as text
-        // converts text to an int & assign to var quantity
-        int quantity = Integer.parseInt(holder.tvQuantity.getText().toString());
-        // calculate total price of the food
-        // assigns the result to var totalPrice
-        double totalPrice = quantity * food.getPrice();
 
-        // updates tcartQuality & tvcartitemttlprice to display new quantity and price
-        holder.tvcartQuantity.setText("Quantity: " + String.valueOf(quantity));
-        holder.tvcartitemttlprice.setText(String.format("$%.0f", totalPrice));
-    }
-
-    // to hold view of each cart item
     public static class cartViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvcartName, tvcartPrice, tvcartQuantity, tvcartitemttlprice, tvQuantity;
+        private TextView tvcartName, tvcartPrice;
         private ImageView ivcartImage;
-        private ImageButton btnIncrease, btnDecrease;
 
         public cartViewHolder(@NonNull View itemView) {
             super(itemView);
             tvcartName = itemView.findViewById(R.id.tvcartName);
             tvcartPrice = itemView.findViewById(R.id.tvcartPrice);
             ivcartImage = itemView.findViewById(R.id.ivcartImage);
-            tvcartQuantity = itemView.findViewById(R.id.tvcartQuantity);
-            tvcartitemttlprice = itemView.findViewById(R.id.tvtotalpriceforitem);
-            tvQuantity = itemView.findViewById(R.id.tvQuantity);
-            btnIncrease = itemView.findViewById(R.id.btnIncrease);
-            btnDecrease = itemView.findViewById(R.id.btnDecrease);
+
         }
     }
-
 }

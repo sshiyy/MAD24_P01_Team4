@@ -87,9 +87,6 @@ public class cartpage extends AppCompatActivity {
 
         cartAdapter.notifyDataSetChanged();
 
-        if (cart.getInstance().isCartempty()) {
-            showAlertDialog();
-        }
         updateCartSummary();
     }
 
@@ -228,19 +225,6 @@ public class cartpage extends AppCompatActivity {
         }
     }
 
-    // To show an alert if cart is empty
-    private void showAlertDialog() {
-        new android.app.AlertDialog.Builder(this)
-                .setTitle("Cart is Empty")
-                .setMessage("Cart is empty. Please add items before proceeding.")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .show(); // show alert dialog
-    }
 
     // to redeem points if there is
     private void redeemPoints(int pointsRequired, double discount) {

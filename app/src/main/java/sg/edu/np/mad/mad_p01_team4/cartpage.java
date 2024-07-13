@@ -209,7 +209,7 @@ public class cartpage extends AppCompatActivity {
     private void loadCurrentOrders() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Intent intent = new Intent(this, Login_Page.class);
+            Intent intent = new Intent(this, loginPage.class);
             startActivity(intent);
             return;
         }

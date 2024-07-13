@@ -161,6 +161,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             context.startActivity(intent);
             alertDialog.dismiss(); // Close the dialog
         });
+
+        // cross button to close the dialog
+        ImageButton crossbutton = dialogView.findViewById(R.id.dialogcross);
+        crossbutton.setOnClickListener(v -> {
+            alertDialog.dismiss(); // close the dialog
+        });
+
     }
 
     private void addOrderToFirebase(Order order) {
@@ -189,6 +196,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Failed to fetch food image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+
     }
 
 

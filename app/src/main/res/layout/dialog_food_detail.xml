@@ -10,6 +10,16 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent">
 
+        <ImageButton
+            android:id="@+id/dialogcross"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/cross"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,16 +33,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp">
 
-                <ImageView
-                    android:id="@+id/favBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/favbtn" />
 
                 <ImageView
                     android:id="@+id/foodImage"
@@ -44,6 +44,8 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/pastacarbonara" />
+
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,13 +80,16 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:id="@+id/imageView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/favBtn"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginEnd="5dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
                             app:srcCompat="@drawable/favbtn" />
+
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -138,6 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Add to Cart"
+                        android:backgroundTint="@color/orange"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="16dp"/>
                 </LinearLayout>

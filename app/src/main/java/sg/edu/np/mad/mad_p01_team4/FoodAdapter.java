@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -164,15 +165,32 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     private void addOrderToFirebase(Order order) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("currently_ordering")
-                .add(order)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(context, "Order added to cart successfully!", Toast.LENGTH_SHORT).show();
+
+        // Fetch the image URL from Food_Items collection
+        db.collection("Food_Items")
+                .whereEqualTo("name", order.getFoodName())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String imgUrl = document.getString("img");
+                        order.setImg(imgUrl); // Set the image URL in the order
+
+                        // Add the order to the currently_ordering collection
+                        db.collection("currently_ordering")
+                                .add(order)
+                                .addOnSuccessListener(documentReference -> {
+                                    Toast.makeText(context, "Order added to cart successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(context, "Failed to add order to cart: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(context, "Failed to add order to cart: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Failed to fetch food image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     // Method to update the data list of the adapter with filtered items
     public void updateList(ArrayList<Food> newList) {

@@ -36,7 +36,7 @@ public class cartpage extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
-    private List<Food> currentOrders;
+    private List<Order> currentOrders;
     private cartAdapter cartAdapter;
 
     @Override
@@ -148,8 +148,8 @@ public class cartpage extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     currentOrders.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Food order = document.toObject(Food.class);
-                        fetchFoodDetails(order);
+                        Order order = document.toObject(Order.class);
+                        fetchFoodDetails(order, document.getId());
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -157,16 +157,16 @@ public class cartpage extends AppCompatActivity {
                 });
     }
 
-    private void fetchFoodDetails(Food order) {
+    private void fetchFoodDetails(Order order, String orderId) {
         db.collection("Food_Items")
-                .whereEqualTo("name", order.getName())
+                .whereEqualTo("name", order.getFoodName())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         order.setImg(document.getString("img"));
                         currentOrders.add(order);
+                        cartAdapter.notifyDataSetChanged(); // Move this inside the loop
                     }
-                    cartAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load food details: " + e.getMessage(), Toast.LENGTH_SHORT).show();

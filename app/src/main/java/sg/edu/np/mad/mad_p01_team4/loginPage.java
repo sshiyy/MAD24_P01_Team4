@@ -1,8 +1,10 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
-public class Login_Page extends AppCompatActivity {
+public class loginPage extends AppCompatActivity {
 
     // Declare FirebaseAuth instance
     private FirebaseAuth mAuth;
@@ -51,7 +53,7 @@ public class Login_Page extends AppCompatActivity {
         });
 
         // Set OnClickListener for the signup redirect text
-        signupRedirectText.setOnClickListener(v -> startActivity(new Intent(this, Register_Page.class)));
+        signupRedirectText.setOnClickListener(v -> startActivity(new Intent(this, registerPage.class)));
 
 
         // Inside onCreate method
@@ -62,13 +64,13 @@ public class Login_Page extends AppCompatActivity {
                 mAuth.sendPasswordResetEmail(userEmail)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Login_Page.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(loginPage.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(Login_Page.this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(loginPage.this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show();
                             }
                         });
             } else {
-                Toast.makeText(Login_Page.this, "Please enter your email address to reset your password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(loginPage.this, "Please enter your email address to reset your password", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,23 +109,48 @@ public class Login_Page extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success
-                            Log.d("Login_Page", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // Proceed to the next activity
-                                Intent intent = new Intent(Login_Page.this, productpage.class); // Replace Home_Page.class with your target activity
-                                startActivity(intent);
-                                finish(); // Finish the login activity so the user cannot navigate back to it
+                                if (user.isEmailVerified()) {
+                                    Log.d("Login_Page", "signInWithEmail:success");
+                                    Intent intent = new Intent(loginPage.this, productpage.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    mAuth.signOut();  // Sign out the user
+                                    showEmailNotVerifiedPopup();
+                                }
                             }
                         } else {
-                            // If sign in fails, display a message to the user
                             Log.d("Login_Page", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(Login_Page.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(loginPage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
+    private void showEmailNotVerifiedPopup() {
+        // Create the dialog
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.email_not_verified_popup);
+        dialog.setCancelable(true); // Make it dismissible on outside touch
+
+        // Get references to the UI elements
+        TextView messageText = dialog.findViewById(R.id.tv_message);
+        Button okButton = dialog.findViewById(R.id.btn_ok);
+
+        // Set OnClickListener for the OK button
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
+    }
+
 
     public static boolean isValidEmail(String email) {
         String emailRegex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)" +

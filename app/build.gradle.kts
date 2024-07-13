@@ -60,5 +60,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.0.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.google.android.material:material:1.12.0")
 }
 

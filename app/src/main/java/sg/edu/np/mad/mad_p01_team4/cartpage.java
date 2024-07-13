@@ -1,6 +1,10 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,9 +15,11 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,7 +76,73 @@ public class cartpage extends AppCompatActivity {
 
         // Load current orders
         loadCurrentOrders();
+
+        // Attach the ItemTouchHelper to the RecyclerView
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
+
+    // Define the callback for the ItemTouchHelper
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false; // We are not implementing onMove in this example
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            Order order = currentOrders.get(position);
+            if (direction == ItemTouchHelper.RIGHT) {
+                // Handle edit order
+                editOrder(order);
+                cartAdapter.notifyItemChanged(position);
+            } else if (direction == ItemTouchHelper.LEFT) {
+                // Handle remove order
+                removeOrderFromDatabase(order);
+                currentOrders.remove(position); // Remove the item from the list
+                cartAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
+            }
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            View itemView = viewHolder.itemView;
+            ColorDrawable background = new ColorDrawable();
+            Drawable icon = null;
+            int iconMargin;
+            int iconTop;
+            int iconBottom;
+
+            if (dX > 0) { // Swiping to the right
+                icon = ContextCompat.getDrawable(cartpage.this, R.drawable.editicon);
+                background.setColor(Color.BLUE);
+                background.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + ((int) dX), itemView.getBottom());
+            } else if (dX < 0) { // Swiping to the left
+                icon = ContextCompat.getDrawable(cartpage.this, R.drawable.ic_delete);
+                background.setColor(Color.RED);
+                background.setBounds(itemView.getRight() + ((int) dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
+            } else { // View is unswiped
+                background.setBounds(0, 0, 0, 0);
+            }
+
+            if (icon != null) {
+                iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                iconTop = itemView.getTop() + iconMargin;
+                iconBottom = iconTop + icon.getIntrinsicHeight();
+
+                if (dX > 0) { // Swiping to the right
+                    icon.setBounds(itemView.getLeft() + iconMargin, iconTop, itemView.getLeft() + iconMargin + icon.getIntrinsicWidth(), iconBottom);
+                } else if (dX < 0) { // Swiping to the left
+                    icon.setBounds(itemView.getRight() - iconMargin - icon.getIntrinsicWidth(), iconTop, itemView.getRight() - iconMargin, iconBottom);
+                }
+                icon.draw(c);
+            }
+
+            background.draw(c);
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
 
     // Method to show payment options
     private void showPayment() {
@@ -135,13 +207,14 @@ public class cartpage extends AppCompatActivity {
     }
 
     private void loadCurrentOrders() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Intent intent = new Intent(this, Login_Page.class);
             startActivity(intent);
             return;
         }
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("currently_ordering")
                 .whereEqualTo("userId", currentUser.getUid())
                 .get()
@@ -149,44 +222,29 @@ public class cartpage extends AppCompatActivity {
                     currentOrders.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Order order = document.toObject(Order.class);
-                        fetchFoodDetails(order, document.getId());
+                        order.setDocumentId(document.getId()); // Set the document ID
+                        currentOrders.add(order);
                     }
+                    cartAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void fetchFoodDetails(Order order, String orderId) {
-        db.collection("Food_Items")
-                .whereEqualTo("name", order.getFoodName())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        order.setImg(document.getString("img"));
-                        currentOrders.add(order);
-                        cartAdapter.notifyDataSetChanged(); // Move this inside the loop
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load food details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+    // Method to remove order from database
+    private void removeOrderFromDatabase(Order order) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("currently_ordering")
+                .document(order.getDocumentId())
+                .delete()
+                .addOnSuccessListener(aVoid -> Toast.makeText(cartpage.this, "Order deleted", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(cartpage.this, "Failed to delete order", Toast.LENGTH_SHORT).show());
     }
 
-    private void clearCurrentOrders() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            db.collection("currently_ordering")
-                    .whereEqualTo("userId", currentUser.getUid())
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            document.getReference().delete();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("clearCurrentOrders", "Failed to clear current orders: " + e.getMessage());
-                    });
-        }
+    // Method to edit order
+    private void editOrder(Order order) {
+        // Implement edit order logic here
+        Toast.makeText(cartpage.this, "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -156,9 +156,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             Order order = new Order(userId, foodName, price, selectedModifications, specialRequest);
             addOrderToFirebase(order);
 
-            // Redirect to main page
-            Intent intent = new Intent(context, MainActivity.class); // Ensure MainActivity is the correct class
-            context.startActivity(intent);
             alertDialog.dismiss(); // Close the dialog
         });
 

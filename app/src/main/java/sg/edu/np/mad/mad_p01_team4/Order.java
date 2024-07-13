@@ -11,6 +11,7 @@ public class Order {
     private String specialRequest;
     private long timestamp;
     private String img;
+    private String documentId;
 
     // Default constructor required for calls to DataSnapshot.getValue(Order.class)
     public Order() {}
@@ -78,5 +79,12 @@ public class Order {
 
     public void setImg(String img){
         this.img = img;
+    }
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 }

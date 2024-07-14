@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,7 +39,7 @@ public class cartpage extends AppCompatActivity {
     private static final String TAG = "CartPage";
 
     private RecyclerView recyclerView;
-    private Button btnConfirm;
+    private RelativeLayout btnConfirm;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -63,7 +64,7 @@ public class cartpage extends AppCompatActivity {
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(v -> finish());
 
-        btnConfirm = findViewById(R.id.btnConfirm);
+        btnConfirm = findViewById(R.id.cfmbtn);
         btnConfirm.setOnClickListener(v -> showPayment());
 
         recyclerView = findViewById(R.id.cartrv);
@@ -86,7 +87,7 @@ public class cartpage extends AppCompatActivity {
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false; // We are not implementing onMove in this example
+            return false;
         }
 
         @Override

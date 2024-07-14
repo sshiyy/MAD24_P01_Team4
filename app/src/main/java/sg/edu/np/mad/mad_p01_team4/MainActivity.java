@@ -2,7 +2,6 @@ package sg.edu.np.mad.mad_p01_team4;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Login_Page.class);
+                Intent intent = new Intent(MainActivity.this, loginPage.class);
                 startActivity(intent);
             }
         });

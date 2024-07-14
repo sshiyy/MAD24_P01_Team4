@@ -151,7 +151,7 @@ public class productpage extends AppCompatActivity {
 
                 if (itemId == R.id.navAccount) {
                     Toast.makeText(productpage.this, "Account Clicked", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(productpage.this, ProfilePage.class);
+                    Intent intent = new Intent(productpage.this, profilePage.class);
                     startActivity(intent);
                 }
 

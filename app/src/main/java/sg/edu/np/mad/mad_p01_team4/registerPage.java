@@ -19,17 +19,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class Register_Page extends AppCompatActivity {
+public class registerPage extends AppCompatActivity {
 
     // Declare EditText and Button variables
-    EditText regusername, regname, regpassword, regemail;
+    EditText regname, regpassword, regemail;
     Button registerbtn;
 
     private TextView logInRedirect;
@@ -55,7 +54,6 @@ public class Register_Page extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Get references to the EditText and Button elements
-        regusername = findViewById(R.id.regusername);
         regname = findViewById(R.id.regname);
         regpassword = findViewById(R.id.regpassword);
         regemail = findViewById(R.id.regemail);
@@ -67,22 +65,21 @@ public class Register_Page extends AppCompatActivity {
 
 
         // Set OnClickListener for the signup redirect text
-        logInRedirect.setOnClickListener(v -> startActivity(new Intent(this, Login_Page.class)));
+        logInRedirect.setOnClickListener(v -> startActivity(new Intent(this, loginPage.class)));
 
         // Set OnClickListener for the register button
         registerbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Get the text entered in EditTexts
-                String regUsernameText = regusername.getText().toString().trim();
                 String regnameText = regname.getText().toString().trim();
                 String regPasswordText = regpassword.getText().toString().trim();
                 String regEmailText = regemail.getText().toString().trim();
 
                 // Validate the input fields
-                if (regUsernameText.isEmpty() || regnameText.isEmpty() ||
+                if (regnameText.isEmpty() ||
                         regPasswordText.isEmpty() || regEmailText.isEmpty()) {
-                    Toast.makeText(Register_Page.this, "Incomplete Form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(registerPage.this, "Incomplete Form", Toast.LENGTH_SHORT).show();
                     Log.d("Register-Page", "Incomplete Form");
                     return;
                 }
@@ -119,13 +116,12 @@ public class Register_Page extends AppCompatActivity {
                             boolean emailAvailable = task.getResult().isEmpty();
                             if (emailAvailable) {
                                 // Email is available, proceed with registration logic
-                                String regUsernameText = regusername.getText().toString().trim();
                                 String regnameText = regname.getText().toString().trim();
                                 String regPasswordText = regpassword.getText().toString().trim();
                                 String regEmailText = regemail.getText().toString().trim();
 
                                 // Call function to register the user
-                                registerUser(regUsernameText, regnameText, regPasswordText, regEmailText);
+                                registerUser(regnameText, regPasswordText, regEmailText);
                             } else {
                                 regemail.setError("Email Already Exists!"); // Set error on EditText
                                 Log.d("Register-Page", "Existing Email");
@@ -139,48 +135,56 @@ public class Register_Page extends AppCompatActivity {
     }
 
     // Function to register the user with Firebase Authentication and store additional user data in FireStore
-    private void registerUser(String username, String name, String password, String email) {
-        // Create a new user with email and password using Firebase Authentication
+    private void registerUser(String name, String password, String email) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Registration successful
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // Create a HashMap to store user data
-                                HashMap<Object, Object> userMap = new HashMap<>();
-                                userMap.put("username", username);
-                                userMap.put("name", name);
-                                userMap.put("email", email);
-                                userMap.put("points", 0);  // Store points as an integer
+                                // Send verification email
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    // Create a HashMap to store user data
+                                                    HashMap<Object, Object> userMap = new HashMap<>();
+                                                    userMap.put("name", name);
+                                                    userMap.put("email", email);
+                                                    userMap.put("points", 0);
 
-                                // Store data in Firebase Firestore using the user's UID as the document ID
-                                db.collection("Accounts").document(user.getUid()).set(userMap)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("Register-Page", "User registration successful!");
-                                                Toast.makeText(Register_Page.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(Register_Page.this, Login_Page.class);
-                                                startActivity(intent);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("Register-Page", "Error registering user:", e);
-                                                Toast.makeText(Register_Page.this, "Registration failed! Please try again.", Toast.LENGTH_SHORT).show();
+                                                    db.collection("Accounts").document(user.getUid()).set(userMap)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d("Register-Page", "User registration successful!");
+                                                                    Toast.makeText(registerPage.this, "Account created successfully! Please check your email for verification.", Toast.LENGTH_LONG).show();
+                                                                    Intent intent = new Intent(registerPage.this, loginPage.class);
+                                                                    startActivity(intent);
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.w("Register-Page", "Error registering user:", e);
+                                                                    Toast.makeText(registerPage.this, "Registration failed! Please try again.", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                } else {
+                                                    Log.e("Register-Page", "sendEmailVerification", task.getException());
+                                                    Toast.makeText(registerPage.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         });
                             }
                         } else {
-                            // If registration fails, display a message to the user
                             Log.w("Register-Page", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(Register_Page.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(registerPage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
 }

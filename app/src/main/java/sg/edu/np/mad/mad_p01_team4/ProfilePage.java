@@ -1,6 +1,8 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,12 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,299 +30,377 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 public class profilePage extends AppCompatActivity {
+
+    private static final String TAG = "ProfilePage";
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+
     private TextView nameTitle;
     private TextView pointsDisplay;
     private EditText emailDisplay;
     private EditText nameDisplay;
-    private Button editProfileBtn;
-    private Button deleteAccountBtn;
-    private Button logoutBtn;
-    private FirebaseAuth.AuthStateListener emailVerificationListener;
+    private ImageView profilePic;
+
+    private FirebaseUser currentUser;
     private String currentName;
     private String currentEmail;
+    private String profilePicUrl;
+
+    ActivityResultLauncher<Intent> imagePickLauncher;
+    Uri selectedImageUri;
+    private FirebaseAuth.AuthStateListener emailVerificationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
 
-        // Initialize Firebase Auth and Firestore
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        initFirebase();
+        initUI();
 
-        // Check if the user is logged in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            // Redirect to Login Page
-            startActivity(new Intent(profilePage.this, loginPage.class));
-            finish();
-            Log.d("ProfilePage", "Not Logged In");
+            redirectToLogin();
             return;
         }
 
-        // Get References
-        ImageButton homebtn = findViewById(R.id.home);
-        ImageButton starbtn = findViewById(R.id.point);
-        ImageButton cartbtn = findViewById(R.id.cart_button);
-        ImageButton profilebtn = findViewById(R.id.profile_button);
+        setupNavBar();
+        fetchUserDetails();
+
+        imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getData() != null) {
+                            selectedImageUri = data.getData();
+                            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                            uploadProfileImage(); // Upload the image and update Firestore
+                        }
+                    }
+                });
+
+        profilePic.setOnClickListener(v -> ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512).createIntent(new Function1<Intent, Unit>() {
+            @Override
+            public Unit invoke(Intent intent) {
+                imagePickLauncher.launch(intent);
+                return null;
+            }
+        }));
+
+        // Initialize emailVerificationListener
+        emailVerificationListener = auth -> {
+            FirebaseUser user = auth.getCurrentUser();
+            if (user != null && user.isEmailVerified()) {
+                if (currentEmail != null) {
+                    Map<String, Object> updatedFields = new HashMap<>();
+                    updatedFields.put("email", currentEmail);
+                    updateFirestore(updatedFields);
+                    mAuth.removeAuthStateListener(emailVerificationListener);
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (emailVerificationListener != null) {
+            mAuth.addAuthStateListener(emailVerificationListener);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (emailVerificationListener != null) {
+            mAuth.removeAuthStateListener(emailVerificationListener);
+        }
+    }
+
+    private void initFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+    }
+
+    private void initUI() {
         nameTitle = findViewById(R.id.titleName);
         pointsDisplay = findViewById(R.id.pointsNumber);
         emailDisplay = findViewById(R.id.profileEmail);
         nameDisplay = findViewById(R.id.profileName);
-        editProfileBtn = findViewById(R.id.btn_editProfile);
-        deleteAccountBtn = findViewById(R.id.button2);
-        logoutBtn = findViewById(R.id.btn_logout);
+        profilePic = findViewById(R.id.profileImg);
 
+        Button editProfileBtn = findViewById(R.id.btn_editProfile);
+        Button deleteAccountBtn = findViewById(R.id.button2);
+        Button logoutBtn = findViewById(R.id.btn_logout);
 
-        // Navbar
+        imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null && data.getData() != null) {
+                    selectedImageUri = data.getData();
+                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                }
+            }
+        });
+
+        editProfileBtn.setOnClickListener(v -> updateProfileIfNeeded());
+        deleteAccountBtn.setOnClickListener(v -> showPasswordDialog(this::deleteAccount));
+        logoutBtn.setOnClickListener(v -> logout());
+    }
+
+    private void setupNavBar() {
+        ImageButton homebtn = findViewById(R.id.home);
+        ImageButton starbtn = findViewById(R.id.point);
+        ImageButton cartbtn = findViewById(R.id.cart_button);
+        ImageButton profilebtn = findViewById(R.id.profile_button);
+
         homebtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, productpage.class)));
         cartbtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, cartpage.class)));
         profilebtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, profilePage.class)));
         starbtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, Points_Page.class)));
-
-        // Handle logout
-        logoutBtn.setOnClickListener(v -> {
-            mAuth.signOut();
-            startActivity(new Intent(profilePage.this, loginPage.class));
-            finish();
-        });
-
-        // Fetch and display user's details
-        fetchUserDetails(currentUser);
-
-        // Handle profile edit
-        editProfileBtn.setOnClickListener(v -> {
-            if (areDetailsChanged()) {
-                updateProfile(currentUser);
-            } else {
-                Toast.makeText(profilePage.this, "No details changed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Handle account deletion
-        deleteAccountBtn.setOnClickListener(v -> deleteAccount(currentUser));
     }
 
-
-    private void fetchUserDetails(FirebaseUser currentUser) {
+    private void fetchUserDetails() {
         String userEmail = currentUser.getEmail();
-        db.collection("Accounts")
-                .whereEqualTo("email", userEmail)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            currentName = document.getString("name");
-                            currentEmail = document.getString("email");
-                            Long points = document.getLong("points");
+        if (userEmail != null) {
+            db.collection("Accounts")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                currentName = document.getString("name");
+                                currentEmail = document.getString("email");
+                                profilePicUrl = document.getString("profilePicUrl");
+                                Long points = document.getLong("points");
 
-                            nameTitle.setText(currentName); // Set the name to TextView
-                            nameDisplay.setText(currentName); // Set the name to EditText
-                            emailDisplay.setText(currentEmail); // Set the email to EditText
+                                nameTitle.setText(currentName);
+                                nameDisplay.setText(currentName);
+                                emailDisplay.setText(currentEmail);
 
-                            if (points != null) {
-                                pointsDisplay.setText(String.valueOf(points)); // Set the points to TextView
+                                if (points != null) {
+                                    pointsDisplay.setText(String.valueOf(points));
+                                }
+
+                                if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                                    Glide.with(this).load(profilePicUrl).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                                }
+
+                                Log.d(TAG, "User details fetched");
+                                break;
                             }
-
-                            Log.d("ProfilePage", "User details fetched");
-                            break; // Break after fetching the first matching document
+                        } else {
+                            Log.d(TAG, "Failed to fetch user details", task.getException());
                         }
-                    } else {
-                        Log.d("ProfilePage", "Failed to fetch user details", task.getException());
-                    }
-                });
+                    });
+        } else {
+            Log.d(TAG, "User email is null");
+        }
+    }
+
+    private void updateProfileIfNeeded() {
+        if (areDetailsChanged()) {
+            updateProfile();
+        } else {
+            Toast.makeText(this, "No details changed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean areDetailsChanged() {
         String newName = nameDisplay.getText().toString().trim();
         String newEmail = emailDisplay.getText().toString().trim();
-
         return !newName.equals(currentName) || !newEmail.equals(currentEmail);
     }
 
-    private void updateProfile(FirebaseUser currentUser) {
+    private void updateProfile() {
         String newName = nameDisplay.getText().toString().trim();
         String newEmail = emailDisplay.getText().toString().trim();
 
         Map<String, Object> updatedFields = new HashMap<>();
-
-        if (!newName.isEmpty()) {
+        if (!newName.isEmpty() && !newName.equals(currentName)) {
             updatedFields.put("name", newName);
         }
 
-        if (!newEmail.isEmpty() && !newEmail.equals(currentUser.getEmail())) {
-            // Show password input dialog for email change
-            showPasswordDialog(currentUser, newEmail, updatedFields);
+        if (!newEmail.isEmpty() && !newEmail.equals(currentEmail)) {
+            showPasswordDialog(password -> reauthenticateAndChangeEmail(newEmail, password, updatedFields));
         } else {
-            updateFirestore(currentUser.getEmail(), updatedFields);
+            updateFirestore(updatedFields);
         }
     }
 
-    private void showPasswordDialog(FirebaseUser currentUser, String newEmail, Map<String, Object> updatedFields) {
-        // Inflate the custom layout for password input
+    private void showPasswordDialog(PasswordCallback callback) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.activity_dialog_password_input, null);
         EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView)
+        new AlertDialog.Builder(this)
+                .setView(dialogView)
                 .setTitle("Re-authenticate")
-                .setMessage("Please enter your current password to update your email. A verification email will be sent to you!")
+                .setMessage("Please enter your current password to update your profile.")
                 .setPositiveButton("Confirm", (dialog, which) -> {
-                    String password = passwordInput.getText().toString().trim();
-                    if (!password.isEmpty()) {
-                        reauthenticateAndChangeEmail(currentUser, newEmail, password, updatedFields);
-                    } else {
-                        Toast.makeText(profilePage.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
-                    }
-
+                    String password = passwordInput.getText().toString();
+                    callback.onPasswordEntered(password);
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .create()
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel())
                 .show();
     }
 
-    private void reauthenticateAndChangeEmail(FirebaseUser currentUser, String newEmail, String password, Map<String, Object> updatedFields) {
-        AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
-        currentUser.reauthenticate(credential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Use verifyBeforeUpdateEmail to send a verification email to the new email address
-                currentUser.verifyBeforeUpdateEmail(newEmail).addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()) {
-                        Toast.makeText(profilePage.this, "Verification email sent to " + newEmail, Toast.LENGTH_LONG).show();
+    private void reauthenticateAndChangeEmail(String newEmail, String password, Map<String, Object> updatedFields) {
+        AuthCredential credential = EmailAuthProvider.getCredential(currentEmail, password);
 
-                        // Define the email verification listener
-                        emailVerificationListener = auth -> {
-                            FirebaseUser user = auth.getCurrentUser();
-                            if (user != null && user.isEmailVerified()) {
-                                updatedFields.put("email", newEmail);
-                                updateFirestore(user.getEmail(), updatedFields); // Update Firestore with the new email
-                                // Remove the listener
-                                mAuth.removeAuthStateListener(emailVerificationListener);
-                            }
-                        };
-
-                        // Add the listener to FirebaseAuth
-                        mAuth.addAuthStateListener(emailVerificationListener);
-
-                        // Log out the current user and redirect to the login page
-                        mAuth.signOut();
-                        Toast.makeText(profilePage.this, "Verify your email before logging in!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(profilePage.this, loginPage.class));
-                        finish();
-                    } else {
-                        if (task1.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            Toast.makeText(profilePage.this, "Invalid email format", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(profilePage.this, "Email update failed: " + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            } else {
-                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                    Toast.makeText(profilePage.this, "User re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(profilePage.this, "Re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    private void updateFirestore(String oldEmail, Map<String, Object> updatedFields) {
-        db.collection("Accounts")
-                .whereEqualTo("email", oldEmail)
-                .get()
+        currentUser.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            db.collection("Accounts").document(document.getId())
-                                    .update(updatedFields)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(profilePage.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                                        fetchUserDetails(mAuth.getCurrentUser()); // Refresh user details after update
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(profilePage.this, "Profile update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    });
-                            break; // Break after updating the first matching document
-                        }
-                    } else {
-                        Toast.makeText(profilePage.this, "Failed to update profile: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void deleteAccount(FirebaseUser currentUser) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.activity_dialog_password_input, null);
-        EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView)
-                .setTitle("Delete Account")
-                .setMessage("Please enter your current password to delete your account.")
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String password = passwordInput.getText().toString().trim();
-                    if (!password.isEmpty()) {
-                        reauthenticateAndDeleteAccount(currentUser, password);
-                    } else {
-                        Toast.makeText(profilePage.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .create()
-                .show();
-    }
-
-    private void reauthenticateAndDeleteAccount(FirebaseUser currentUser, String password) {
-        AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
-        currentUser.reauthenticate(credential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Delete user from Firestore
-                db.collection("Accounts")
-                        .whereEqualTo("email", currentUser.getEmail())
-                        .get()
-                        .addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful() && !task1.getResult().isEmpty()) {
-                                for (DocumentSnapshot document : task1.getResult()) {
-                                    db.collection("Accounts").document(document.getId())
-                                            .delete()
-                                            .addOnSuccessListener(aVoid -> {
-                                                // Delete user from Firebase Authentication
-                                                currentUser.delete().addOnCompleteListener(task2 -> {
-                                                    if (task2.isSuccessful()) {
-                                                        Toast.makeText(profilePage.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
-                                                        startActivity(new Intent(profilePage.this, loginPage.class));
-                                                        finish();
+                    if (task.isSuccessful()) {
+                        currentUser.updateEmail(newEmail)
+                                .addOnCompleteListener(emailUpdateTask -> {
+                                    if (emailUpdateTask.isSuccessful()) {
+                                        currentUser.sendEmailVerification()
+                                                .addOnCompleteListener(verificationTask -> {
+                                                    if (verificationTask.isSuccessful()) {
+                                                        currentEmail = newEmail;
+                                                        mAuth.addAuthStateListener(emailVerificationListener);
+                                                        Toast.makeText(this, "Verification email sent. Please verify to complete the update.", Toast.LENGTH_LONG).show();
                                                     } else {
-                                                        Toast.makeText(profilePage.this, "Account deletion failed: " + task2.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        Log.d(TAG, "Failed to send verification email", verificationTask.getException());
                                                     }
                                                 });
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                Toast.makeText(profilePage.this, "Failed to delete user from Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            });
-                                    break; // Break after deleting the first matching document
-                                }
-                            } else {
-                                Toast.makeText(profilePage.this, "Failed to delete user from Firestore: " + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        handleEmailUpdateError(emailUpdateTask.getException());
+                                    }
+                                });
+                    } else {
+                        handleReauthenticationError(task.getException());
+                    }
+                });
+    }
+
+    private void handleEmailUpdateError(Exception e) {
+        if (e instanceof FirebaseAuthInvalidUserException) {
+            Toast.makeText(this, "Invalid user.", Toast.LENGTH_SHORT).show();
+        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Email update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleReauthenticationError(Exception e) {
+        if (e instanceof FirebaseAuthInvalidUserException) {
+            Toast.makeText(this, "Invalid user.", Toast.LENGTH_SHORT).show();
+        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Reauthentication failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateFirestore(Map<String, Object> updatedFields) {
+        if (updatedFields.isEmpty()) {
+            Toast.makeText(this, "No details to update", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userEmail = currentUser.getEmail();
+        if (userEmail != null) {
+            db.collection("Accounts")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                db.collection("Accounts").document(document.getId())
+                                        .update(updatedFields)
+                                        .addOnCompleteListener(updateTask -> {
+                                            if (updateTask.isSuccessful()) {
+                                                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                                fetchUserDetails();
+                                            } else {
+                                                Toast.makeText(this, "Failed to update profile: " + updateTask.getException(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                break;
                             }
-                        });
-            } else {
-                if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                    Toast.makeText(profilePage.this, "User re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(profilePage.this, "Re-authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                        } else {
+                            Log.d(TAG, "Failed to find user document", task.getException());
+                        }
+                    });
+        }
+    }
+
+    private void uploadProfileImage() {
+        if (selectedImageUri != null) {
+            StorageReference profileImageRef = storageRef.child("profile_images/" + currentUser.getUid() + ".jpg");
+
+            profileImageRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(taskSnapshot -> profileImageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                profilePicUrl = uri.toString();
+                                Map<String, Object> updatedFields = new HashMap<>();
+                                updatedFields.put("profilePicUrl", profilePicUrl);
+                                updateFirestore(updatedFields);
+                                Toast.makeText(this, "Profile image uploaded successfully", Toast.LENGTH_SHORT).show();
+                            }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload profile image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void deleteAccount(String password) {
+        AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
+
+        currentUser.reauthenticate(credential)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        db.collection("Accounts").document(currentUser.getUid())
+                                .delete()
+                                .addOnCompleteListener(deleteTask -> {
+                                    if (deleteTask.isSuccessful()) {
+                                        currentUser.delete()
+                                                .addOnCompleteListener(deleteAuthTask -> {
+                                                    if (deleteAuthTask.isSuccessful()) {
+                                                        Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                                        redirectToLogin();
+                                                    } else {
+                                                        Toast.makeText(this, "Failed to delete account: " + deleteAuthTask.getException(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    } else {
+                                        Toast.makeText(this, "Failed to delete Firestore document: " + deleteTask.getException(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else {
+                        handleReauthenticationError(task.getException());
+                    }
+                });
+    }
+
+    private void logout() {
+        mAuth.signOut();
+        redirectToLogin();
+    }
+
+    private void redirectToLogin() {
+        Intent loginIntent = new Intent(profilePage.this, loginPage.class);
+        loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(loginIntent);
+        finish();
+    }
+
+    private interface PasswordCallback {
+        void onPasswordEntered(String password);
     }
 }

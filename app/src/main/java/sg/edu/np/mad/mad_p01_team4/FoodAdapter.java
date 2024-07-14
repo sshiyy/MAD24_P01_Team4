@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +34,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     private ArrayList<Food> foodList;
     private ArrayList<Food> filteredFoodList;
     private Context context;
-
-    public void setFilteredFoodList(ArrayList<Food> filteredList) {
-        this.foodList = filteredList;
-        notifyDataSetChanged();
-    }
 
     public FoodAdapter(ArrayList<Food> foodList, Context context) {
         this.foodList = foodList;
@@ -69,6 +65,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         // Click listener on image to show the detailed view of the food
         holder.ivImage.setOnClickListener(v -> showFoodDetailDialog(food));
+
+        // Check if the food item is already in favorites
+        checkIfFavorite(food, holder.favBtn);
+
+        holder.favBtn.setOnClickListener(v -> {
+            toggleFavorite(food, holder.favBtn);
+        });
     }
 
     @Override
@@ -77,7 +80,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     }
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvPrice, tvQuantity;
+        public ImageButton favBtn;
+        private TextView tvName, tvPrice;
         private ImageView ivImage;
 
         // Viewholder to hold the views for each food
@@ -86,6 +90,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivImage = itemView.findViewById(R.id.ivImage);
+            favBtn = itemView.findViewById(R.id.favBtn);
         }
     }
 
@@ -164,7 +169,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         crossbutton.setOnClickListener(v -> {
             alertDialog.dismiss(); // close the dialog
         });
-
     }
 
     private void addOrderToFirebase(Order order) {
@@ -193,9 +197,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Failed to fetch food image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-
     }
-
 
     // Method to update the data list of the adapter with filtered items
     public void updateList(ArrayList<Food> newList) {
@@ -218,5 +220,65 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             }
         }
         notifyDataSetChanged(); // Notify adapter of data change
+    }
+
+    private void checkIfFavorite(Food food, ImageButton favBtn) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("favorites")
+                    .whereEqualTo("userId", currentUser.getUid())
+                    .whereEqualTo("foodName", food.getName())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            favBtn.setImageResource(R.drawable.redfavbtn);
+                        } else {
+                            favBtn.setImageResource(R.drawable.favbtn);
+                        }
+                    });
+        }
+    }
+
+    private void toggleFavorite(Food food, ImageButton favBtn) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Intent intent = new Intent(context, loginPage.class);
+            context.startActivity(intent);
+            return;
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("favorites")
+                .whereEqualTo("userId", currentUser.getUid())
+                .whereEqualTo("foodName", food.getName())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            document.getReference().delete();
+                        }
+                        favBtn.setImageResource(R.drawable.favbtn);
+                    } else {
+                        Map<String, Object> favorite = new HashMap<>();
+                        favorite.put("userId", currentUser.getUid());
+                        favorite.put("foodName", food.getName());
+                        favorite.put("price", food.getPrice());
+                        favorite.put("img", food.getImg());
+                        favorite.put("description", food.getDescription());
+
+                        db.collection("favorites")
+                                .add(favorite)
+                                .addOnSuccessListener(documentReference -> {
+                                    favBtn.setImageResource(R.drawable.redfavbtn);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(context, "Failed to add to favorites: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Failed to update favorites: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

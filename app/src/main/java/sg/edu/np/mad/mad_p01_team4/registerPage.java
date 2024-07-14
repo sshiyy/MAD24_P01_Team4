@@ -7,18 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -63,7 +63,6 @@ public class registerPage extends AppCompatActivity {
         // Initialize Firebase Firestore instance
         db = FirebaseFirestore.getInstance();
 
-
         // Set OnClickListener for the signup redirect text
         logInRedirect.setOnClickListener(v -> startActivity(new Intent(this, loginPage.class)));
 
@@ -77,35 +76,34 @@ public class registerPage extends AppCompatActivity {
                 String regEmailText = regemail.getText().toString().trim();
 
                 // Validate the input fields
-                if (regnameText.isEmpty() ||
-                        regPasswordText.isEmpty() || regEmailText.isEmpty()) {
-                    Toast.makeText(registerPage.this, "Incomplete Form", Toast.LENGTH_SHORT).show();
+                if (regnameText.isEmpty() || regPasswordText.isEmpty() || regEmailText.isEmpty()) {
+                    popUp1.showPopup(registerPage.this, "Incomplete Form");
                     Log.d("Register-Page", "Incomplete Form");
                     return;
                 }
 
                 // Validate the email format
                 if (!isValidEmail(regEmailText)) {
-                    regemail.setError("Invalid Email format!"); // Set error on EditText
+                    popUp1.showPopup(registerPage.this, "Invalid Email format!");
                     Log.d("Register-Page", "Invalid Email");
-                    return; // Exit the function if email is invalid
+                    return;
                 }
 
                 // Validate if password length >= 6
-                if(regPasswordText.length() < 6){
-                    regpassword.setError("Minimum 6 Characters for password!"); // Set error on EditText
+                if (regPasswordText.length() < 6) {
+                    popUp1.showPopup(registerPage.this, "Minimum 6 Characters for password!");
                     Log.d("Register-Page", "Password Length");
-                    return; // Exit the function if email is invalid
+                    return;
                 }
 
                 // Check email existence before adding user
-                ValidateEmail(regEmailText);
+                ValidateEmailInFirestore(regEmailText);
             }
         });
     }
 
     // Function to validate if the email already exists in Firestore
-    private void ValidateEmail(String email) {
+    private void ValidateEmailInFirestore(String email) {
         db.collection("Accounts")
                 .whereEqualTo("email", email)
                 .get()
@@ -115,23 +113,45 @@ public class registerPage extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             boolean emailAvailable = task.getResult().isEmpty();
                             if (emailAvailable) {
-                                // Email is available, proceed with registration logic
-                                String regnameText = regname.getText().toString().trim();
-                                String regPasswordText = regpassword.getText().toString().trim();
-                                String regEmailText = regemail.getText().toString().trim();
-
-                                // Call function to register the user
-                                registerUser(regnameText, regPasswordText, regEmailText);
+                                // Check email existence in Firebase Auth
+                                ValidateEmailInFirebaseAuth(email);
                             } else {
-                                regemail.setError("Email Already Exists!"); // Set error on EditText
-                                Log.d("Register-Page", "Existing Email");
+                                popUp1.showPopup(registerPage.this, "Email Already Exists!");
+                                Log.d("Register-Page", "Existing Email in Firestore");
                             }
                         } else {
-                            Log.w("Register_Page", "Error checking email existence", task.getException());
-                            // Handle potential errors during email existence check
+                            Log.w("Register_Page", "Error checking email existence in Firestore", task.getException());
+                            // Handle potential errors during email existence check in Firestore
                         }
                     }
                 });
+    }
+
+    // Function to validate if the email already exists in Firebase Auth
+    private void ValidateEmailInFirebaseAuth(String email) {
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                if (task.isSuccessful()) {
+                    boolean emailExists = !task.getResult().getSignInMethods().isEmpty();
+                    if (emailExists) {
+                        popUp1.showPopup(registerPage.this, "Email Already Used!");
+                        Log.d("Register-Page", "Existing Email in Firebase Auth");
+                    } else {
+                        // Email is available, proceed with registration logic
+                        String regnameText = regname.getText().toString().trim();
+                        String regPasswordText = regpassword.getText().toString().trim();
+                        String regEmailText = regemail.getText().toString().trim();
+
+                        // Call function to register the user
+                        registerUser(regnameText, regPasswordText, regEmailText);
+                    }
+                } else {
+                    Log.w("Register_Page", "Error checking email existence in Firebase Auth", task.getException());
+                    // Handle potential errors during email existence check in Firebase Auth
+                }
+            }
+        });
     }
 
     // Function to register the user with Firebase Authentication and store additional user data in FireStore
@@ -152,7 +172,7 @@ public class registerPage extends AppCompatActivity {
                                                     // Create a HashMap to store user data
                                                     HashMap<Object, Object> userMap = new HashMap<>();
                                                     userMap.put("name", name);
-                                                    userMap.put("email", email);
+                                                    userMap.put("email", email); // Ensure email is correctly assigned
                                                     userMap.put("points", 0);
 
                                                     db.collection("Accounts").document(user.getUid()).set(userMap)
@@ -160,7 +180,7 @@ public class registerPage extends AppCompatActivity {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
                                                                     Log.d("Register-Page", "User registration successful!");
-                                                                    Toast.makeText(registerPage.this, "Account created successfully! Please check your email for verification.", Toast.LENGTH_LONG).show();
+                                                                    popUp1.showPopup(registerPage.this, "Account created successfully! Please check your email for verification.");
                                                                     Intent intent = new Intent(registerPage.this, loginPage.class);
                                                                     startActivity(intent);
                                                                 }
@@ -169,19 +189,19 @@ public class registerPage extends AppCompatActivity {
                                                                 @Override
                                                                 public void onFailure(@NonNull Exception e) {
                                                                     Log.w("Register-Page", "Error registering user:", e);
-                                                                    Toast.makeText(registerPage.this, "Registration failed! Please try again.", Toast.LENGTH_SHORT).show();
+                                                                    popUp1.showPopup(registerPage.this, "Registration failed! Please try again.");
                                                                 }
                                                             });
                                                 } else {
                                                     Log.e("Register-Page", "sendEmailVerification", task.getException());
-                                                    Toast.makeText(registerPage.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                                                    popUp1.showPopup(registerPage.this, "Failed to send verification email.");
                                                 }
                                             }
                                         });
                             }
                         } else {
                             Log.w("Register-Page", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(registerPage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            popUp1.showPopup(registerPage.this, "Authentication failed.");
                         }
                     }
                 });

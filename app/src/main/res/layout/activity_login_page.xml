@@ -35,7 +35,7 @@
         android:id="@+id/tv_Logintitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:autoSizeMaxTextSize="35sp"
         android:autoSizeMinTextSize="5sp"
         android:autoSizeStepGranularity="2sp"
@@ -68,7 +68,7 @@
             android:background="@drawable/jason_custom_edit_text"
             android:drawablePadding="5dp"
             android:ems="16"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,9 +92,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/jason_custom_edit_text"
-            android:ems="16"
             android:inputType="textPassword"
-            android:paddingStart="10dp"
             android:textSize="20sp"
             app:passwordToggleEnabled="true" />
     </com.google.android.material.textfield.TextInputLayout>

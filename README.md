@@ -121,7 +121,6 @@ they want to remove they can click on the 'X' button.
 # Stage 2 
 
 **Planned task and feature - one person one or more feature**
-
 ```
 Jason 
 Stage 1 Improvements
@@ -129,9 +128,10 @@ Stage 1 Improvements
 -------------------------------------- 
 Stage 2 Features
 1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
-2. Add real time customer support for users - not confirmed
-
 ```
+Jason's References
+1. [Image Uploader](https://www.youtube.com/watch?v=mHR9Lof_VHQ&t=61s)
+--------------------------------------------
 ```
 2. Widget and searchbar  - MingQi
 

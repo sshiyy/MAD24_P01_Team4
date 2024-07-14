@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -45,6 +46,11 @@ public class cartpage extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private List<Order> currentOrders;
     private cartAdapter cartAdapter;
+    private TextView noGSTprice;
+    private TextView GST;
+    private TextView totalpricing;
+    private TextView totalprice;
+    private TextView emptyCartMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,13 @@ public class cartpage extends AppCompatActivity {
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(v -> finish());
 
+        // Initialize TextViews
+        noGSTprice = findViewById(R.id.noGSTprice);
+        GST = findViewById(R.id.GST);
+        totalpricing = findViewById(R.id.totalpricing);
+        totalprice = findViewById(R.id.totalprice);
+        emptyCartMessage = findViewById(R.id.emptyCartMessage);
+
         btnConfirm = findViewById(R.id.cfmbtn);
         btnConfirm.setOnClickListener(v -> showPayment());
 
@@ -75,12 +88,49 @@ public class cartpage extends AppCompatActivity {
         cartAdapter = new cartAdapter(currentOrders, this);
         recyclerView.setAdapter(cartAdapter);
 
-        // Load current orders
-        loadCurrentOrders();
-
         // Attach the ItemTouchHelper to the RecyclerView
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        // Load current orders
+        loadCurrentOrders();
+        updatePricing();
+    }
+
+    private void updatePricing() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            db.collection("currently_ordering")
+                    .whereEqualTo("userId", currentUser.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        double totalPrice = 0;
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Order order = document.toObject(Order.class);
+                            totalPrice += order.getPrice();
+                        }
+                        double gst = totalPrice * 0.09;
+                        double priceWithoutGST = totalPrice - gst;
+
+                        noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
+                        GST.setText(String.format("$%.2f", gst));
+                        totalpricing.setText(String.format("$%.2f", totalPrice));
+                        totalprice.setText(String.format("$%.2f", totalPrice));
+
+                        if (totalPrice == 0) {
+                            emptyCartMessage.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                            btnConfirm.setEnabled(false);
+                        } else {
+                            emptyCartMessage.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            btnConfirm.setEnabled(true);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     // Define the callback for the ItemTouchHelper
@@ -104,6 +154,7 @@ public class cartpage extends AppCompatActivity {
                 currentOrders.remove(position); // Remove the item from the list
                 cartAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
                 updateConfirmButtonState();
+                updatePricing();
             }
         }
 
@@ -242,9 +293,16 @@ public class cartpage extends AppCompatActivity {
         db.collection("currently_ordering")
                 .document(order.getDocumentId())
                 .delete()
-                .addOnSuccessListener(aVoid -> Toast.makeText(cartpage.this, "Order deleted", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(cartpage.this, "Failed to delete order", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> {
+                    String message = "Order " + order.getFoodName() + " removed";
+                    Toast.makeText(cartpage.this, message, Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    String message = "Failed to delete order " + order.getFoodName();
+                    Toast.makeText(cartpage.this, message, Toast.LENGTH_SHORT).show();
+                });
     }
+
 
     // Method to edit order
     private void editOrder(Order order) {
@@ -255,7 +313,8 @@ public class cartpage extends AppCompatActivity {
     private void updateConfirmButtonState() {
         if (currentOrders.isEmpty()) {
             btnConfirm.setEnabled(false);
-            btnConfirm.setBackgroundColor(Color.GRAY); // Optional: Change the button color to indicate it's disabled
+        } else {
+            btnConfirm.setEnabled(true);
         }
     }
 

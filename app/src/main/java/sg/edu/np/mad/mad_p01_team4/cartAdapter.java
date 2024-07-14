@@ -15,10 +15,10 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder> {
-    private List<Food> cartItems;
+    private List<Order> cartItems;
     private Context cartcontext;
 
-    public cartAdapter(List<Food> cartItems, Context cartcontext) {
+    public cartAdapter(List<Order> cartItems, Context cartcontext) {
         this.cartItems = cartItems;
         this.cartcontext = cartcontext;
     }
@@ -32,8 +32,8 @@ public class cartAdapter extends RecyclerView.Adapter<cartAdapter.cartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull cartViewHolder holder, int position) {
-        Food order = cartItems.get(position);
-        holder.tvcartName.setText(order.getName());
+        Order order = cartItems.get(position);
+        holder.tvcartName.setText(order.getFoodName());
         holder.tvcartPrice.setText("$" + order.getPrice());
 
         Glide.with(cartcontext)

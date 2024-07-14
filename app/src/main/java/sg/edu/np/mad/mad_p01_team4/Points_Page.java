@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -87,7 +86,7 @@ public class Points_Page extends AppCompatActivity {
 
         ImageButton profilebtn = findViewById(R.id.account);
         profilebtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Points_Page.this, ProfilePage.class);
+            Intent intent = new Intent(Points_Page.this, profilePage.class);
             startActivity(intent);
         });
     }

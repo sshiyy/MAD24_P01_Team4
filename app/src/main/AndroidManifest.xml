@@ -25,7 +25,7 @@
             android:name=".chatbot"
             android:exported="false" />
         <activity
-            android:name=".ProfilePage"
+            android:name=".profilePage"
             android:exported="true" />
         <activity
             android:name=".cartpage"
@@ -37,10 +37,10 @@
             android:name=".Points_Page"
             android:exported="true" />
         <activity
-            android:name=".Register_Page"
+            android:name=".registerPage"
             android:exported="true" />
         <activity
-            android:name=".Login_Page"
+            android:name=".loginPage"
             android:exported="true" />
         <activity
             android:name=".FliteringPage"

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,7 +39,7 @@ public class cartpage extends AppCompatActivity {
     private static final String TAG = "CartPage";
 
     private RecyclerView recyclerView;
-    private Button btnConfirm;
+    private RelativeLayout btnConfirm;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -63,7 +64,7 @@ public class cartpage extends AppCompatActivity {
         ImageView cartcrossbtn = findViewById(R.id.crossicon);
         cartcrossbtn.setOnClickListener(v -> finish());
 
-        btnConfirm = findViewById(R.id.btnConfirm);
+        btnConfirm = findViewById(R.id.cfmbtn);
         btnConfirm.setOnClickListener(v -> showPayment());
 
         recyclerView = findViewById(R.id.cartrv);
@@ -86,7 +87,7 @@ public class cartpage extends AppCompatActivity {
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false; // We are not implementing onMove in this example
+            return false;
         }
 
         @Override
@@ -102,6 +103,7 @@ public class cartpage extends AppCompatActivity {
                 removeOrderFromDatabase(order);
                 currentOrders.remove(position); // Remove the item from the list
                 cartAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
+                updateConfirmButtonState();
             }
         }
 
@@ -174,6 +176,7 @@ public class cartpage extends AppCompatActivity {
                 public void onClick(View v) {
                     // Once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+                    moveOrdersToOngoing();
 
                     // Navigate to the product page
                     Intent intent = new Intent(v.getContext(), productpage.class);
@@ -226,6 +229,7 @@ public class cartpage extends AppCompatActivity {
                         currentOrders.add(order);
                     }
                     cartAdapter.notifyDataSetChanged();
+                    updateConfirmButtonState();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -247,4 +251,35 @@ public class cartpage extends AppCompatActivity {
         // Implement edit order logic here
         Toast.makeText(cartpage.this, "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
     }
+
+    private void updateConfirmButtonState() {
+        if (currentOrders.isEmpty()) {
+            btnConfirm.setEnabled(false);
+            btnConfirm.setBackgroundColor(Color.GRAY); // Optional: Change the button color to indicate it's disabled
+        }
+    }
+
+    private void moveOrdersToOngoing() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            for (Order order : currentOrders) {
+                db.collection("ongoing_orders")
+                        .add(order)
+                        .addOnSuccessListener(documentReference -> {
+                            db.collection("currently_ordering")
+                                    .document(order.getDocumentId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Order moved to ongoing_orders and deleted from currently_ordering"))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete order from currently_ordering", e));
+                        })
+                        .addOnFailureListener(e -> Log.e(TAG, "Failed to add order to ongoing_orders", e));
+            }
+            // Clear the current orders list and notify the adapter
+            currentOrders.clear();
+            cartAdapter.notifyDataSetChanged();
+            updateConfirmButtonState();
+        }
+    }
+
 }

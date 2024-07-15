@@ -153,7 +153,8 @@ allow user to ammend order
 4. Navigation Bar - Raeann 
 
 a hamburger menu  for the navigation using fragments to
-organize the app sections efficiently. using FRAGMENT ..
+organize the app sections efficiently. using FRAGMENT .. 
+Using a hash for fragment navigation in an Android app can be done using a HashMap to map menu item IDs to their respective fragments. This approach simplifies the fragment navigation logic and makes it more maintainable.
 
 1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press crdit card they will be able to pay with fingerprint
 

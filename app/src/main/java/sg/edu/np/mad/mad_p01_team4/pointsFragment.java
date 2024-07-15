@@ -1,24 +1,30 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-public class Points_Page extends AppCompatActivity {
+public class pointsFragment extends Fragment {
 
     private TextView currentTier;
     private TextView pointsCount;
@@ -33,27 +39,27 @@ public class Points_Page extends AppCompatActivity {
     private long userPoints;
     private SharedPreferences sharedPreferences;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_points_page);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_points_page, container, false);
 
         // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         // Get References
-        currentTier = findViewById(R.id.currentTier);
-        pointsCount = findViewById(R.id.pointsCount);
-        currentPointsText = findViewById(R.id.currentPointsText);
-        goalPointsText = findViewById(R.id.goalPointsText);
-        progressBar = findViewById(R.id.progressBar);
-        redeemButton = findViewById(R.id.redeemButton);
-        redeemButton2 = findViewById(R.id.redeemButton2);
-        redeemButton3 = findViewById(R.id.redeemButton3);
+        currentTier = view.findViewById(R.id.currentTier);
+        pointsCount = view.findViewById(R.id.pointsCount);
+        currentPointsText = view.findViewById(R.id.currentPointsText);
+        goalPointsText = view.findViewById(R.id.goalPointsText);
+        progressBar = view.findViewById(R.id.progressBar);
+        redeemButton = view.findViewById(R.id.redeemButton);
+        redeemButton2 = view.findViewById(R.id.redeemButton2);
+        redeemButton3 = view.findViewById(R.id.redeemButton3);
 
         // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("user_prefs", getActivity().MODE_PRIVATE);
 
         // Fetch user details and update UI
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -66,29 +72,10 @@ public class Points_Page extends AppCompatActivity {
         redeemButton2.setOnClickListener(v -> redeemPoints(200, 10));
         redeemButton3.setOnClickListener(v -> redeemPoints(350, 20));
 
-        ImageButton homeBtn = findViewById(R.id.home);
-        homeBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Points_Page.this, productpage.class);
-            startActivity(intent);
-        });
+        // Setup navigation bar
+        setupNavBar(view);
 
-        ImageButton cartbutton = findViewById(R.id.cart_button);
-        cartbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(Points_Page.this, cartpage.class);
-            startActivity(intent);
-        });
-
-        ImageButton starbutton = findViewById(R.id.points);
-        starbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(Points_Page.this, Points_Page.class);
-            startActivity(intent);
-        });
-
-        ImageButton profilebtn = findViewById(R.id.account);
-        profilebtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Points_Page.this, profilePage.class);
-            startActivity(intent);
-        });
+        return view;
     }
 
     private void fetchUserDetails(String userEmail) {
@@ -110,7 +97,7 @@ public class Points_Page extends AppCompatActivity {
                             break;
                         }
                     } else {
-                        Log.d("Points_Page", "Failed to fetch user details", task.getException());
+                        Log.d("pointsFragment", "Failed to fetch user details", task.getException());
                     }
                 });
     }
@@ -124,9 +111,9 @@ public class Points_Page extends AppCompatActivity {
             editor.putInt("discount", discountAmount);
             editor.apply();
 
-            Toast.makeText(this, "Redeemed $" + discountAmount + " off!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Redeemed $" + discountAmount + " off!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Not enough points to redeem this voucher.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Not enough points to redeem this voucher.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,5 +192,25 @@ public class Points_Page extends AppCompatActivity {
         } else {
             return "You have reached the highest tier!";
         }
+    }
+
+    private void setupNavBar(View view) {
+        ImageButton homebtn = view.findViewById(R.id.home);
+        ImageButton starbtn = view.findViewById(R.id.points);
+        ImageButton cartbtn = view.findViewById(R.id.cart_button);
+        ImageButton profilebtn = view.findViewById(R.id.account);
+
+        homebtn.setOnClickListener(v -> replaceFragment(new productFragment()));
+        starbtn.setOnClickListener(v -> replaceFragment(new pointsFragment()));
+        cartbtn.setOnClickListener(v -> replaceFragment(new cartFragment()));
+        profilebtn.setOnClickListener(v -> replaceFragment(new profileFragment()));
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

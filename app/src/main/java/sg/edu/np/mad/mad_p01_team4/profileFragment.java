@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,8 +17,10 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,6 +35,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +46,9 @@ import java.util.Map;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-public class profilePage extends AppCompatActivity {
+public class profileFragment extends Fragment {
 
-    private static final String TAG = "ProfilePage";
+    private static final String TAG = "AccountFragment";
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -63,21 +70,21 @@ public class profilePage extends AppCompatActivity {
     Uri selectedImageUri;
     private FirebaseAuth.AuthStateListener emailVerificationListener;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_page);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_profile_page, container, false);
 
         initFirebase();
-        initUI();
+        initUI(view);
 
         currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             redirectToLogin();
-            return;
+            return view;
         }
 
-        setupNavBar();
+        setupNavBar(view);
         fetchUserDetails();
 
         imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -112,10 +119,12 @@ public class profilePage extends AppCompatActivity {
                 }
             }
         };
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         if (emailVerificationListener != null) {
             mAuth.addAuthStateListener(emailVerificationListener);
@@ -123,7 +132,7 @@ public class profilePage extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (emailVerificationListener != null) {
             mAuth.removeAuthStateListener(emailVerificationListener);
@@ -137,16 +146,16 @@ public class profilePage extends AppCompatActivity {
         storageRef = storage.getReference();
     }
 
-    private void initUI() {
-        nameTitle = findViewById(R.id.titleName);
-        pointsDisplay = findViewById(R.id.pointsNumber);
-        emailDisplay = findViewById(R.id.profileEmail);
-        nameDisplay = findViewById(R.id.profileName);
-        profilePic = findViewById(R.id.profileImg);
+    private void initUI(View view) {
+        nameTitle = view.findViewById(R.id.titleName);
+        pointsDisplay = view.findViewById(R.id.pointsNumber);
+        emailDisplay = view.findViewById(R.id.profileEmail);
+        nameDisplay = view.findViewById(R.id.profileName);
+        profilePic = view.findViewById(R.id.profileImg);
 
-        Button editProfileBtn = findViewById(R.id.btn_editProfile);
-        Button deleteAccountBtn = findViewById(R.id.button2);
-        Button logoutBtn = findViewById(R.id.btn_logout);
+        Button editProfileBtn = view.findViewById(R.id.btn_editProfile);
+        Button deleteAccountBtn = view.findViewById(R.id.button2);
+        Button logoutBtn = view.findViewById(R.id.btn_logout);
 
         imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
@@ -163,18 +172,26 @@ public class profilePage extends AppCompatActivity {
         logoutBtn.setOnClickListener(v -> logout());
     }
 
-    private void setupNavBar() {
-        ImageButton homebtn = findViewById(R.id.home);
-        ImageButton starbtn = findViewById(R.id.point);
-        ImageButton cartbtn = findViewById(R.id.cart_button);
-        ImageButton profilebtn = findViewById(R.id.profile_button);
+//    update for fragment
+    private void setupNavBar(View view) {
+        ImageButton homebtn = view.findViewById(R.id.home);
+        ImageButton starbtn = view.findViewById(R.id.point);
+        ImageButton cartbtn = view.findViewById(R.id.cart_button);
+        ImageButton profilebtn = view.findViewById(R.id.profile_button);
 
-        homebtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, productpage.class)));
-        cartbtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, cartpage.class)));
-        profilebtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, profilePage.class)));
-        starbtn.setOnClickListener(v -> startActivity(new Intent(profilePage.this, Points_Page.class)));
+        homebtn.setOnClickListener(v -> replaceFragment(new productFragment()));
+        cartbtn.setOnClickListener(v -> replaceFragment(new cartFragment()));
+        profilebtn.setOnClickListener(v -> replaceFragment(new profileFragment()));
+        starbtn.setOnClickListener(v -> replaceFragment(new pointsFragment()));
     }
 
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
     private void fetchUserDetails() {
         String userEmail = currentUser.getEmail();
         if (userEmail != null) {
@@ -217,7 +234,7 @@ public class profilePage extends AppCompatActivity {
         if (areDetailsChanged()) {
             updateProfile();
         } else {
-            Toast.makeText(this, "No details changed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No details changed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -244,11 +261,11 @@ public class profilePage extends AppCompatActivity {
     }
 
     private void showPasswordDialog(PasswordCallback callback) {
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
         View dialogView = inflater.inflate(R.layout.activity_dialog_password_input, null);
         EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
                 .setTitle("Re-authenticate")
                 .setMessage("Please enter your current password to update your profile.")
@@ -274,7 +291,7 @@ public class profilePage extends AppCompatActivity {
                                                     if (verificationTask.isSuccessful()) {
                                                         currentEmail = newEmail;
                                                         mAuth.addAuthStateListener(emailVerificationListener);
-                                                        Toast.makeText(this, "Verification email sent. Please verify to complete the update.", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getActivity(), "Verification email sent. Please verify to complete the update.", Toast.LENGTH_LONG).show();
                                                     } else {
                                                         Log.d(TAG, "Failed to send verification email", verificationTask.getException());
                                                     }
@@ -291,27 +308,27 @@ public class profilePage extends AppCompatActivity {
 
     private void handleEmailUpdateError(Exception e) {
         if (e instanceof FirebaseAuthInvalidUserException) {
-            Toast.makeText(this, "Invalid user.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Invalid user.", Toast.LENGTH_SHORT).show();
         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Invalid credentials.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Email update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Email update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleReauthenticationError(Exception e) {
         if (e instanceof FirebaseAuthInvalidUserException) {
-            Toast.makeText(this, "Invalid user.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Invalid user.", Toast.LENGTH_SHORT).show();
         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-            Toast.makeText(this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Invalid credentials.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Reauthentication failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Reauthentication failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void updateFirestore(Map<String, Object> updatedFields) {
         if (updatedFields.isEmpty()) {
-            Toast.makeText(this, "No details to update", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No details to update", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -327,10 +344,10 @@ public class profilePage extends AppCompatActivity {
                                         .update(updatedFields)
                                         .addOnCompleteListener(updateTask -> {
                                             if (updateTask.isSuccessful()) {
-                                                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
                                                 fetchUserDetails();
                                             } else {
-                                                Toast.makeText(this, "Failed to update profile: " + updateTask.getException(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity(), "Failed to update profile: " + updateTask.getException(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                 break;
@@ -353,9 +370,9 @@ public class profilePage extends AppCompatActivity {
                                 Map<String, Object> updatedFields = new HashMap<>();
                                 updatedFields.put("profilePicUrl", profilePicUrl);
                                 updateFirestore(updatedFields);
-                                Toast.makeText(this, "Profile image uploaded successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Profile image uploaded successfully", Toast.LENGTH_SHORT).show();
                             }))
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload profile image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to upload profile image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -372,14 +389,14 @@ public class profilePage extends AppCompatActivity {
                                         currentUser.delete()
                                                 .addOnCompleteListener(deleteAuthTask -> {
                                                     if (deleteAuthTask.isSuccessful()) {
-                                                        Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getActivity(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
                                                         redirectToLogin();
                                                     } else {
-                                                        Toast.makeText(this, "Failed to delete account: " + deleteAuthTask.getException(), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getActivity(), "Failed to delete account: " + deleteAuthTask.getException(), Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                     } else {
-                                        Toast.makeText(this, "Failed to delete Firestore document: " + deleteTask.getException(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), "Failed to delete Firestore document: " + deleteTask.getException(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     } else {
@@ -394,10 +411,10 @@ public class profilePage extends AppCompatActivity {
     }
 
     private void redirectToLogin() {
-        Intent loginIntent = new Intent(profilePage.this, loginPage.class);
+        Intent loginIntent = new Intent(getActivity(), loginPage.class);
         loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(loginIntent);
-        finish();
+        getActivity().finish();
     }
 
     private interface PasswordCallback {

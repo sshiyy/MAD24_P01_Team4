@@ -111,7 +111,7 @@ public class loginPage extends AppCompatActivity {
                             if (user != null) {
                                 if (user.isEmailVerified()) {
                                     Log.d("Login_Page", "signInWithEmail:success");
-                                    Intent intent = new Intent(loginPage.this, productpage.class);
+                                    Intent intent = new Intent(loginPage.this, productFragment.class);
                                     startActivity(intent);
                                     finish();
                                 } else {

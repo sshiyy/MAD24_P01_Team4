@@ -17,6 +17,11 @@
             android:icon="@drawable/shopping_cart_icon" />
 
         <item
+            android:id="@+id/navPoints"
+            android:title="Points"
+            android:icon="@drawable/star" />
+
+        <item
             android:id="@+id/navFavourite"
             android:title="Favourite"
             android:icon="@drawable/favourite" />

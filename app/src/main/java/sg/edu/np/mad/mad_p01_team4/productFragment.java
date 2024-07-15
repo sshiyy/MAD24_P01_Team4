@@ -1,12 +1,12 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,10 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,11 +43,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class productpage extends AppCompatActivity {
+public class productFragment extends Fragment {
+
+    // Default constructor - every fragment needs it
+    public productFragment() {
+        // Required empty public constructor
+    }
 
     private static final String TAG = "productpage";
     private static final int REQUEST_MIC_PERMISSION = 1;
@@ -60,23 +67,21 @@ public class productpage extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
-    private PopupWindow micPopupWindow;
+    private LinearLayout voicePopup;
     private SpeechRecognitionHelper speechRecognitionHelper;
 
+    // Map to store the relationship between menu item IDs and fragment classes
+    private Map<Integer, Class<? extends Fragment>> fragmentMap;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.productpage);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.productpage, container, false);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        View buttonDrawerView = findViewById(R.id.buttonDrawerToggle);
-        if (buttonDrawerView instanceof ImageButton) {
-            buttonDrawer = (ImageButton) buttonDrawerView;
-        }
-        navigationView = findViewById(R.id.navigationView);
-        buttonDrawer = findViewById(R.id.buttonDrawerToggle);
-
-        searchEditText = findViewById(R.id.searchEditText);
+        drawerLayout = view.findViewById(R.id.drawer_layout);
+        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
+        navigationView = view.findViewById(R.id.navigationView);
+        searchEditText = view.findViewById(R.id.searchEditText);
+        voicePopup = view.findViewById(R.id.voice_popup); // Initialize the voice popup
 
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -86,8 +91,8 @@ public class productpage extends AppCompatActivity {
             return false;
         });
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
         } else {
             initializeSpeechRecognitionHelper();
         }
@@ -98,74 +103,43 @@ public class productpage extends AppCompatActivity {
         ImageView userImage = headerView.findViewById(R.id.userImage);
         TextView textusername = headerView.findViewById(R.id.textusername);
 
-        userImage.setOnClickListener(v -> Toast.makeText(productpage.this, textusername.getText(), Toast.LENGTH_SHORT).show());
+        userImage.setOnClickListener(v -> Toast.makeText(getContext(), textusername.getText(), Toast.LENGTH_SHORT).show());
+
+        // Initialize the fragment map
+        initializeFragmentMap();
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
-
-            if (itemId == R.id.navMenu) {
-                Toast.makeText(productpage.this, "Menu Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(productpage.this, productpage.class);
-                startActivity(intent);
-            }
-
-            if (itemId == R.id.navCart) {
-                Toast.makeText(productpage.this, "Cart Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(productpage.this, cartpage.class);
-                startActivity(intent);
-            }
-
-            if (itemId == R.id.navFavourite) {
-                Toast.makeText(productpage.this, "Favourite Clicked", Toast.LENGTH_SHORT).show();
-            }
-
-            if (itemId == R.id.navOngoingOrders) {
-                Toast.makeText(productpage.this, "Ongoing Orders Clicked", Toast.LENGTH_SHORT).show();
-            }
-
-            if (itemId == R.id.navHistory) {
-                Toast.makeText(productpage.this, "Order History Clicked", Toast.LENGTH_SHORT).show();
-            }
-
-            if (itemId == R.id.navAccount) {
-                Toast.makeText(productpage.this, "Account Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(productpage.this, profilePage.class);
-                startActivity(intent);
-            }
-
-            if (itemId == R.id.navMap) {
-                Toast.makeText(productpage.this, "Map Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(productpage.this, activity_maps.class);
-                startActivity(intent);
-            }
-
+            displaySelectedFragment(itemId); // Dynamically display the fragment
             drawerLayout.close();
-            return false;
+            return true;
         });
 
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
 
-        foodAdapter = new FoodAdapter(new ArrayList<>(), this);
-        setUpRecyclerView(R.id.productrecyclerView, foodAdapter);
+        foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
+        setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
 
-        allRestaurantsText = findViewById(R.id.allRestaurantsText);
-        sortedByText = findViewById(R.id.sortedByText);
+        allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
+        sortedByText = view.findViewById(R.id.sortedByText);
 
         fetchFoodItems();
 
-        ImageButton filbtn = findViewById(R.id.filterIcon);
+        ImageButton filbtn = view.findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
 
-        RelativeLayout cartbutton = findViewById(R.id.cart_button);
+        RelativeLayout cartbutton = view.findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
-            Intent intent = new Intent(productpage.this, cartpage.class);
-            startActivity(intent);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new cartFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
-        FloatingActionButton floatingActionButton = findViewById(R.id.chatbot_button);
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.chatbot_button);
         floatingActionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(productpage.this, chatbot.class);
+            Intent intent = new Intent(getActivity(), chatbot.class);
             startActivity(intent);
         });
 
@@ -184,12 +158,29 @@ public class productpage extends AppCompatActivity {
             }
         });
 
-        ImageButton voiceButton = findViewById(R.id.search_voice_btn);
+        ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
         voiceButton.setOnClickListener(v -> startVoiceRecognition());
+
+        return view;
+    }
+
+
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dismissMicPopup();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissMicPopup();
     }
 
     private void initializeSpeechRecognitionHelper() {
-        speechRecognitionHelper = new SpeechRecognitionHelper(this, new SpeechRecognitionHelper.SpeechRecognitionListener() {
+        speechRecognitionHelper = new SpeechRecognitionHelper(getContext(), new SpeechRecognitionHelper.SpeechRecognitionListener() {
             @Override
             public void onReadyForSpeech() {
                 showMicPopup();
@@ -226,6 +217,7 @@ public class productpage extends AppCompatActivity {
                 Log.d(TAG, "Recognized result: " + result);
                 updateRecognizedText(result); // Update the Popup's TextView with the recognized text
                 handleVoiceCommand(result); // Handle voice command and dismiss popup
+                dismissMicPopup();
             }
 
             @Override
@@ -247,60 +239,63 @@ public class productpage extends AppCompatActivity {
     }
 
     private void showMicPopup() {
-        try {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.popup_mic_activity, null);
-            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true;
-            micPopupWindow = new PopupWindow(popupView, width, height, focusable);
-            View mainLayout = findViewById(android.R.id.content).getRootView();
-            micPopupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-            micPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        } catch (Exception e) {
-            Log.e(TAG, "Error showing mic popup", e);
-        }
+        voicePopup.setVisibility(View.VISIBLE);
     }
 
     private void dismissMicPopup() {
-        if (micPopupWindow != null && micPopupWindow.isShowing()) {
-            micPopupWindow.dismiss();
+        if (voicePopup != null) {
+            voicePopup.setVisibility(View.GONE);
         }
     }
 
     private void updateRecognizedText(String text) {
-        if (micPopupWindow != null && micPopupWindow.isShowing()) {
-            View popupView = micPopupWindow.getContentView();
-            TextView recognizedTextView = popupView.findViewById(R.id.recognized_text);
+        Log.d(TAG, "Attempting to update recognized text: " + text);
+        if (voicePopup != null && voicePopup.getVisibility() == View.VISIBLE) {
+            TextView recognizedTextView = voicePopup.findViewById(R.id.recognized_text);
             if (recognizedTextView != null) {
-                Log.d(TAG, "Updating recognized text: " + text); // Log text to verify update
+                Log.d(TAG, "Updating recognized text: " + text);
                 recognizedTextView.setText(text);
             } else {
                 Log.e(TAG, "recognizedTextView is null");
             }
         } else {
-            Log.e(TAG, "micPopupWindow is not showing");
+            Log.e(TAG, "voicePopup is not visible or is null");
         }
     }
 
     private void handleVoiceCommand(String command) {
+        Log.d(TAG, "Handling voice command: " + command);
         command = command.toLowerCase(Locale.ROOT);
-        dismissMicPopup(); // Close the popup before navigating
-        if (command.contains("account page")) {
-            Intent intent = new Intent(productpage.this, profilePage.class);
-            startActivity(intent);
-        } else if (command.contains("cart page")) {
-            Intent intent = new Intent(productpage.this, cartpage.class);
-            startActivity(intent);
-        } else if (command.contains("menu page")) {
-            Intent intent = new Intent(productpage.this, productpage.class);
-            startActivity(intent);
-        } // Add more commands as needed
+
+        Fragment selectedFragment = null;
+
+        if (command.contains("account")) {
+            Log.d(TAG, "Navigating to account fragment");
+            selectedFragment = new profileFragment();
+        } else if (command.contains("shopping")) {
+            Log.d(TAG, "Navigating to cart fragment");
+            selectedFragment = new cartFragment();
+        } else if (command.contains("product")) {
+            Log.d(TAG, "Navigating to product fragment");
+            selectedFragment = new productFragment();
+        } else if (command.contains("points")) {
+            Log.d(TAG, "Navigating to points fragment");
+            selectedFragment = new pointsFragment();
+        } else {
+            Log.d(TAG, "Unrecognized command: " + command);
+        }
+
+        if (selectedFragment != null) {
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
-    private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
-        RecyclerView recyclerView = findViewById(recyclerViewId);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+    private void setUpRecyclerView(View view, int recyclerViewId, FoodAdapter adapter) {
+        RecyclerView recyclerView = view.findViewById(recyclerViewId);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -330,13 +325,13 @@ public class productpage extends AppCompatActivity {
 
     private void showFilterPopup() {
         try {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.activity_flitering_page, null);
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
             int height = LinearLayout.LayoutParams.MATCH_PARENT;
             boolean focusable = true;
             final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-            View mainLayout = findViewById(android.R.id.content).getRootView();
+            View mainLayout = getActivity().findViewById(android.R.id.content).getRootView();
             popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
             popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -358,9 +353,26 @@ public class productpage extends AppCompatActivity {
         }
     }
 
+    private final Map<String, double[]> priceRangeMap = new HashMap<String, double[]>() {{
+        put("$", new double[]{0, 10.0});
+        put("$$", new double[]{10.0, 20.0});
+        put("$$$", new double[]{20.0, Double.MAX_VALUE});
+        put("All", new double[]{0, Double.MAX_VALUE});
+    }};
+
+    private final Map<String, String> priceRangeSymbolMap = new HashMap<String, String>() {{
+        put("$", "$");
+        put("$$", "$$");
+        put("$$$", "$$$");
+        put("All", "");
+    }};
+
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
-        double[] priceRange = getPriceRange(selectedPriceRange);
+        double[] priceRange = new double[0];
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            priceRange = priceRangeMap.getOrDefault(selectedPriceRange, new double[]{0, Double.MAX_VALUE});
+        }
         double minPrice = priceRange[0];
         double maxPrice = priceRange[1];
 
@@ -375,46 +387,23 @@ public class productpage extends AppCompatActivity {
 
         updateAllAdapters(filteredList);
 
+        String priceRangeSymbol = priceRangeSymbolMap.getOrDefault(selectedPriceRange, "");
+
         if (selectedCategory.equals("All") && selectedPriceRange.equals("All")) {
             allRestaurantsText.setText("All");
             sortedByText.setText("sorted by category");
         } else if (selectedCategory.equals("All")) {
             allRestaurantsText.setText("All Categories");
-            sortedByText.setText("sorted by " + getPriceRangeSymbol(selectedPriceRange));
+            sortedByText.setText("sorted by " + priceRangeSymbol);
         } else if (selectedPriceRange.equals("All")) {
             allRestaurantsText.setText(selectedCategory);
             sortedByText.setText("sorted by " + selectedCategory);
         } else {
             allRestaurantsText.setText(selectedCategory);
-            sortedByText.setText("sorted by " + selectedCategory + " " + getPriceRangeSymbol(selectedPriceRange));
+            sortedByText.setText("sorted by " + selectedCategory + " " + priceRangeSymbol);
         }
     }
 
-    private double[] getPriceRange(String priceRange) {
-        switch (priceRange) {
-            case "$":
-                return new double[]{0, 10.0};
-            case "$$":
-                return new double[]{10.0, 20.0};
-            case "$$$":
-                return new double[]{20.0, Double.MAX_VALUE};
-            default:
-                return new double[]{0, Double.MAX_VALUE};
-        }
-    }
-
-    private String getPriceRangeSymbol(String priceRange) {
-        switch (priceRange) {
-            case "$":
-                return "$";
-            case "$$":
-                return "$$";
-            case "$$$":
-                return "$$$";
-            default:
-                return "";
-        }
-    }
 
     private void clearFilter() {
         allRestaurantsText.setText("All Category");
@@ -444,7 +433,7 @@ public class productpage extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (speechRecognitionHelper != null) {
             speechRecognitionHelper.destroy();
@@ -459,8 +448,41 @@ public class productpage extends AppCompatActivity {
                 Log.d(TAG, "Microphone permission granted");
                 initializeSpeechRecognitionHelper();
             } else {
-                Toast.makeText(this, "Microphone permission is required for speech recognition", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Microphone permission is required for speech recognition", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    // Initialize the fragment map
+    private void initializeFragmentMap() {
+        fragmentMap = new HashMap<>();
+        fragmentMap.put(R.id.navMenu, productFragment.class);
+        fragmentMap.put(R.id.navCart, cartFragment.class);
+        fragmentMap.put(R.id.navAccount, profileFragment.class);
+        fragmentMap.put(R.id.navMap, mapFragment.class);
+        fragmentMap.put(R.id.navPoints, pointsFragment.class);
+        // Add more mappings as needed
+    }
+
+    // Dynamically display the selected fragment based on the menu item ID
+    private void displaySelectedFragment(int itemId) {
+        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+
+        if (fragmentClass != null) {
+            try {
+                Fragment fragment = fragmentClass.newInstance();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null); // Add transaction to back stack
+                transaction.commit();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
+            } catch (java.lang.InstantiationException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Log.e(TAG, "Fragment class not found for item ID: " + itemId);
         }
     }
 }

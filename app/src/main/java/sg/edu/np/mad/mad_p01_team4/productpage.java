@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
-import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,17 +13,17 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +37,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +49,7 @@ import java.util.Map;
 public class productpage extends AppCompatActivity {
 
     private static final String TAG = "productpage";
+    private static final int REQUEST_MIC_PERMISSION = 1;
 
     private FirebaseFirestore db;
     private ArrayList<Food> allFoodList;
@@ -58,14 +57,11 @@ public class productpage extends AppCompatActivity {
     private TextView allRestaurantsText;
     private TextView sortedByText;
     private EditText searchEditText;
-
-    private ImageButton searchVoiceButton;
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
-
-    private SpeechRecognizer speechRecognizer;
-    private Intent speechRecognizerIntent;
+    private PopupWindow micPopupWindow;
+    private SpeechRecognitionHelper speechRecognitionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,96 +70,77 @@ public class productpage extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         View buttonDrawerView = findViewById(R.id.buttonDrawerToggle);
-        Log.d("ViewClass", "Class: " + buttonDrawerView.getClass().getName());
         if (buttonDrawerView instanceof ImageButton) {
             buttonDrawer = (ImageButton) buttonDrawerView;
-        } else {
-            Log.e("ViewClass", "Unexpected view type: " + buttonDrawerView.getClass().getName());
         }
         navigationView = findViewById(R.id.navigationView);
         buttonDrawer = findViewById(R.id.buttonDrawerToggle);
 
         searchEditText = findViewById(R.id.searchEditText);
 
-        // Set up the action listener for the searchEditText
-        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    performSearch(v.getText().toString());
-                    return true;
-                }
-                return false;
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                performSearch(v.getText().toString());
+                return true;
             }
+            return false;
         });
 
-        // Check and request microphone permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+        } else {
+            initializeSpeechRecognitionHelper();
         }
 
-        buttonDrawer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.open();
-            }
-        });
+        buttonDrawer.setOnClickListener(v -> drawerLayout.open());
 
         View headerView = navigationView.getHeaderView(0);
         ImageView userImage = headerView.findViewById(R.id.userImage);
         TextView textusername = headerView.findViewById(R.id.textusername);
 
-        userImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(productpage.this, textusername.getText(), Toast.LENGTH_SHORT).show();
+        userImage.setOnClickListener(v -> Toast.makeText(productpage.this, textusername.getText(), Toast.LENGTH_SHORT).show());
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+
+            if (itemId == R.id.navMenu) {
+                Toast.makeText(productpage.this, "Menu Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(productpage.this, productpage.class);
+                startActivity(intent);
             }
-        });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int itemId = menuItem.getItemId();
-
-                if (itemId == R.id.navMenu) {
-                    Toast.makeText(productpage.this, "Menu Clicked", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(productpage.this, productpage.class);
-                    startActivity(intent);
-                }
-
-                if (itemId == R.id.navCart) {
-                    Toast.makeText(productpage.this, "Cart Clicked", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(productpage.this, cartpage.class);
-                    startActivity(intent);
-                }
-
-                if (itemId == R.id.navFavourite) {
-                    Toast.makeText(productpage.this, "Favourite Clicked", Toast.LENGTH_SHORT).show();
-                }
-
-                if (itemId == R.id.navOngoingOrders) {
-                    Toast.makeText(productpage.this, "Ongoing Orders Clicked", Toast.LENGTH_SHORT).show();
-                }
-
-                if (itemId == R.id.navHistory) {
-                    Toast.makeText(productpage.this, "Order History Clicked", Toast.LENGTH_SHORT).show();
-                }
-
-                if (itemId == R.id.navAccount) {
-                    Toast.makeText(productpage.this, "Account Clicked", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(productpage.this, profilePage.class);
-                    startActivity(intent);
-                }
-
-                if (itemId == R.id.navMap) {
-                    Toast.makeText(productpage.this, "Map Clicked", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(productpage.this, activity_maps.class);
-                    startActivity(intent);
-                }
-
-                drawerLayout.close();
-                return false;
+            if (itemId == R.id.navCart) {
+                Toast.makeText(productpage.this, "Cart Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(productpage.this, cartpage.class);
+                startActivity(intent);
             }
+
+            if (itemId == R.id.navFavourite) {
+                Toast.makeText(productpage.this, "Favourite Clicked", Toast.LENGTH_SHORT).show();
+            }
+
+            if (itemId == R.id.navOngoingOrders) {
+                Toast.makeText(productpage.this, "Ongoing Orders Clicked", Toast.LENGTH_SHORT).show();
+            }
+
+            if (itemId == R.id.navHistory) {
+                Toast.makeText(productpage.this, "Order History Clicked", Toast.LENGTH_SHORT).show();
+            }
+
+            if (itemId == R.id.navAccount) {
+                Toast.makeText(productpage.this, "Account Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(productpage.this, profilePage.class);
+                startActivity(intent);
+            }
+
+            if (itemId == R.id.navMap) {
+                Toast.makeText(productpage.this, "Map Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(productpage.this, activity_maps.class);
+                startActivity(intent);
+            }
+
+            drawerLayout.close();
+            return false;
         });
 
         db = FirebaseFirestore.getInstance();
@@ -187,28 +164,11 @@ public class productpage extends AppCompatActivity {
         });
 
         FloatingActionButton floatingActionButton = findViewById(R.id.chatbot_button);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(productpage.this, chatbot.class);
-                startActivity(intent);
-            }
+        floatingActionButton.setOnClickListener(v -> {
+            Intent intent = new Intent(productpage.this, chatbot.class);
+            startActivity(intent);
         });
 
-        // Initialize SpeechRecognizer
-        initializeSpeechRecognizer();
-
-        // Set OnClickListener for the voice search button
-        searchVoiceButton = findViewById(R.id.search_voice_btn);
-        searchVoiceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(productpage.this, "Voice button clicked", Toast.LENGTH_SHORT).show();
-                startListening();
-            }
-        });
-
-        // TextWatcher for searchEditText
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -223,106 +183,119 @@ public class productpage extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        ImageButton voiceButton = findViewById(R.id.search_voice_btn);
+        voiceButton.setOnClickListener(v -> startVoiceRecognition());
     }
 
-    private void initializeSpeechRecognizer() {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something");
-
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+    private void initializeSpeechRecognitionHelper() {
+        speechRecognitionHelper = new SpeechRecognitionHelper(this, new SpeechRecognitionHelper.SpeechRecognitionListener() {
             @Override
-            public void onReadyForSpeech(Bundle params) {
-                Toast.makeText(productpage.this, "Listening...", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onReadyForSpeech");
+            public void onReadyForSpeech() {
+                showMicPopup();
             }
 
             @Override
             public void onBeginningOfSpeech() {
-                Log.d(TAG, "onBeginningOfSpeech");
+                // Optional: Show some indication that speech recognition has started
             }
 
             @Override
             public void onRmsChanged(float rmsdB) {
-                Log.d(TAG, "onRmsChanged: " + rmsdB);
+                // Optional: Handle changes in the input signal
             }
 
             @Override
             public void onBufferReceived(byte[] buffer) {
-                Log.d(TAG, "onBufferReceived");
+                // Optional: Handle received buffer
             }
 
             @Override
             public void onEndOfSpeech() {
-                Toast.makeText(productpage.this, "End of speech", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onEndOfSpeech");
+                // Optional: Show some indication that speech recognition has ended
             }
 
             @Override
             public void onError(int error) {
-                String errorMessage = getErrorText(error);
-                Toast.makeText(productpage.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onError: " + errorMessage);
+                dismissMicPopup();
+                Log.e(TAG, "Speech recognition error: " + error);
             }
 
             @Override
-            public void onResults(Bundle results) {
-                ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (matches != null) {
-                    for (String result : matches) {
-                        Log.d(TAG, "Result: " + result);
-                        if (result.toLowerCase().contains("pay") || result.toLowerCase().contains("make payment")) {
-                            Intent intent = new Intent(productpage.this, cartpage.class);
-                            startActivity(intent);
-                            return;
-                        }
-                    }
-                    Toast.makeText(productpage.this, "Command not recognized", Toast.LENGTH_SHORT).show();
-                }
+            public void onResults(String result) {
+                Log.d(TAG, "Recognized result: " + result);
+                updateRecognizedText(result); // Update the Popup's TextView with the recognized text
+                handleVoiceCommand(result); // Handle voice command and dismiss popup
             }
 
             @Override
-            public void onPartialResults(Bundle partialResults) {
-                Log.d(TAG, "onPartialResults");
+            public void onPartialResults(String partialResult) {
+                Log.d(TAG, "Partial result: " + partialResult);
+                updateRecognizedText(partialResult); // Update the Popup's TextView with partial results
             }
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-                Log.d(TAG, "onEvent: " + eventType);
+                // Optional: Handle events
             }
         });
     }
 
-    private String getErrorText(int errorCode) {
-        switch (errorCode) {
-            case SpeechRecognizer.ERROR_AUDIO:
-                return "Audio recording error";
-            case SpeechRecognizer.ERROR_CLIENT:
-                return "Client side error";
-            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                return "Insufficient permissions";
-            case SpeechRecognizer.ERROR_NETWORK:
-                return "Network error";
-            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                return "Network timeout";
-            case SpeechRecognizer.ERROR_NO_MATCH:
-                return "No match";
-            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                return "Recognizer busy";
-            case SpeechRecognizer.ERROR_SERVER:
-                return "Server error";
-            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                return "Speech timeout";
-            default:
-                return "Didn't understand, please try again.";
+    private void startVoiceRecognition() {
+        speechRecognitionHelper.startListening();
+        showMicPopup(); // Show the popup when starting voice recognition
+    }
+
+    private void showMicPopup() {
+        try {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.popup_mic_activity, null);
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            boolean focusable = true;
+            micPopupWindow = new PopupWindow(popupView, width, height, focusable);
+            View mainLayout = findViewById(android.R.id.content).getRootView();
+            micPopupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+            micPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing mic popup", e);
         }
     }
 
-    private void startListening() {
-        speechRecognizer.startListening(speechRecognizerIntent);
-        Toast.makeText(productpage.this, "Started listening", Toast.LENGTH_SHORT).show();
+    private void dismissMicPopup() {
+        if (micPopupWindow != null && micPopupWindow.isShowing()) {
+            micPopupWindow.dismiss();
+        }
+    }
+
+    private void updateRecognizedText(String text) {
+        if (micPopupWindow != null && micPopupWindow.isShowing()) {
+            View popupView = micPopupWindow.getContentView();
+            TextView recognizedTextView = popupView.findViewById(R.id.recognized_text);
+            if (recognizedTextView != null) {
+                Log.d(TAG, "Updating recognized text: " + text); // Log text to verify update
+                recognizedTextView.setText(text);
+            } else {
+                Log.e(TAG, "recognizedTextView is null");
+            }
+        } else {
+            Log.e(TAG, "micPopupWindow is not showing");
+        }
+    }
+
+    private void handleVoiceCommand(String command) {
+        command = command.toLowerCase(Locale.ROOT);
+        dismissMicPopup(); // Close the popup before navigating
+        if (command.contains("account page")) {
+            Intent intent = new Intent(productpage.this, profilePage.class);
+            startActivity(intent);
+        } else if (command.contains("cart page")) {
+            Intent intent = new Intent(productpage.this, cartpage.class);
+            startActivity(intent);
+        } else if (command.contains("menu page")) {
+            Intent intent = new Intent(productpage.this, productpage.class);
+            startActivity(intent);
+        } // Add more commands as needed
     }
 
     private void setUpRecyclerView(int recyclerViewId, FoodAdapter adapter) {
@@ -449,35 +422,45 @@ public class productpage extends AppCompatActivity {
         updateAllAdapters(allFoodList);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-        }
-    }
-
     private void performSearch(String query) {
         ArrayList<Food> filteredList = new ArrayList<>();
 
-        // Convert query to lowercase for case-insensitive search
         String lowercaseQuery = query.toLowerCase().trim();
 
-        // Filter food items based on search query
         for (Food food : allFoodList) {
             if (food.getName().toLowerCase().contains(lowercaseQuery)) {
                 filteredList.add(food);
             }
         }
-        // Update RecyclerView with filtered list
+
         foodAdapter.updateList(filteredList);
     }
 
     private void clearSearch() {
-        // Clear the search text and reset RecyclerView to show all items
         searchEditText.setText("");
-        updateAllAdapters(allFoodList); // Reset to show all items
+        updateAllAdapters(allFoodList);
         allRestaurantsText.setText("All Categories");
         sortedByText.setText("sorted by category");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (speechRecognitionHelper != null) {
+            speechRecognitionHelper.destroy();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_MIC_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "Microphone permission granted");
+                initializeSpeechRecognitionHelper();
+            } else {
+                Toast.makeText(this, "Microphone permission is required for speech recognition", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

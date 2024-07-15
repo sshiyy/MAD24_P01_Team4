@@ -113,7 +113,7 @@
                 <RelativeLayout
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="60dp"
+                    android:layout_marginEnd="70dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -130,16 +130,21 @@
                         android:padding="8dp"
                         android:textSize="15dp" />
 
-                    <ImageButton
-                        android:id="@+id/search_voice_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/voice_recognition_icon" />
+
                 </RelativeLayout>
+
+                <ImageButton
+                    android:id="@+id/search_voice_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="60dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/voice_recognition_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageButton
                     android:id="@+id/filterIcon"
@@ -304,6 +309,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -330,5 +336,48 @@
         app:headerLayout="@layout/drawer_header"
         app:itemIconPadding="30dp"
         app:menu="@menu/drawer_items" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <!-- Popup Layout -->
+    <LinearLayout
+        android:id="@+id/voice_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="100dp"
+        android:background="@color/lightGray"
+        android:gravity="center"
+        android:elevation="10dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="Mic Icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Listening..."
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/recognized_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="speech to text.."
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

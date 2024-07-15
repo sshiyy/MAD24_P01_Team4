@@ -121,7 +121,6 @@ they want to remove they can click on the 'X' button.
 # Stage 2 
 
 **Planned task and feature - one person one or more feature**
-
 ```
 Jason 
 Stage 1 Improvements
@@ -129,9 +128,10 @@ Stage 1 Improvements
 -------------------------------------- 
 Stage 2 Features
 1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
-2. Add real time customer support for users - not confirmed
-
 ```
+Jason's References
+1. [Image Uploader](https://www.youtube.com/watch?v=mHR9Lof_VHQ&t=61s)
+--------------------------------------------
 ```
 2. Widget and searchbar  - MingQi
 
@@ -153,7 +153,8 @@ allow user to ammend order
 4. Navigation Bar - Raeann 
 
 a hamburger menu  for the navigation using fragments to
-organize the app sections efficiently. using FRAGMENT ..
+organize the app sections efficiently. using FRAGMENT .. 
+Using a hash for fragment navigation in an Android app can be done using a HashMap to map menu item IDs to their respective fragments. This approach simplifies the fragment navigation logic and makes it more maintainable.
 
 1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press crdit card they will be able to pay with fingerprint
 

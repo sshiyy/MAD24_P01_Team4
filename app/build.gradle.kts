@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "sg.edu.np.mad.mad_p01_team4"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.firebase.database)
     implementation(libs.recyclerview)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
@@ -61,5 +62,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.android.material:material:1.12.0")
+    implementation ("com.github.dhaval2404:imagepicker:2.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
 }
 

@@ -31,6 +31,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,13 +233,16 @@ public class cartFragment extends Fragment {
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
                     moveOrdersToOngoing();
 
-                    // Navigate to the product page
-                    Intent intent = new Intent(v.getContext(), productFragment.class);
-                    startActivity(intent);
-                    requireActivity().finish();
+                    // Navigate to the product fragment
+                    Fragment productFragment = new productFragment();
+                    FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, productFragment); // Replace R.id.fragment_container with the ID of your container layout
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    dialog.dismiss();
                 }
-            });
 
+            });
             dialog.show();
         }
 

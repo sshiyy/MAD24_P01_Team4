@@ -1,5 +1,6 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,9 +33,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +52,7 @@ public class cartFragment extends Fragment {
     private TextView GST;
     private TextView totalpricing;
     private TextView totalprice;
+    private TextView discountPrice;
     private TextView emptyCartMessage;
 
     @Nullable
@@ -71,12 +71,12 @@ public class cartFragment extends Fragment {
             }
         });
 
-
         // Initialize TextViews
         noGSTprice = view.findViewById(R.id.noGSTprice);
         GST = view.findViewById(R.id.GST);
         totalpricing = view.findViewById(R.id.totalpricing);
         totalprice = view.findViewById(R.id.totalprice);
+        discountPrice = view.findViewById(R.id.discountPrice);
         emptyCartMessage = view.findViewById(R.id.emptyCartMessage);
 
         btnConfirm = view.findViewById(R.id.cfmbtn);
@@ -97,6 +97,15 @@ public class cartFragment extends Fragment {
         // Load current orders
         loadCurrentOrders();
         updatePricing();
+
+        // Check for voucher discount in the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String voucherDiscount = arguments.getString("voucherDiscount");
+            if (voucherDiscount != null) {
+                applyVoucherDiscount(voucherDiscount);
+            }
+        }
 
         return view;
     }
@@ -135,6 +144,17 @@ public class cartFragment extends Fragment {
                         Toast.makeText(getActivity(), "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+
+    private void applyVoucherDiscount(String voucherDiscount) {
+        // Convert the discount string to a double value
+        double discountValue = Double.parseDouble(voucherDiscount.replaceAll("[^0-9.]", ""));
+        discountPrice.setText(String.format("-$%.2f", discountValue));
+
+        // Update the total price with the discount applied
+        double totalPrice = Double.parseDouble(totalprice.getText().toString().substring(1));
+        double newTotalPrice = totalPrice - discountValue;
+        totalprice.setText(String.format("$%.2f", newTotalPrice));
     }
 
     // Define the callback for the ItemTouchHelper
@@ -232,6 +252,8 @@ public class cartFragment extends Fragment {
                     // Once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
                     moveOrdersToOngoing();
+                    double totalPrice = Double.parseDouble(totalpricing.getText().toString().substring(1)); // Remove the $ sign and parse to double
+                    updatePointsAfterCheckout(totalPrice);
 
                     // Navigate to the product fragment
                     Fragment productFragment = new productFragment();
@@ -241,7 +263,6 @@ public class cartFragment extends Fragment {
                     transaction.commit();
                     dialog.dismiss();
                 }
-
             });
             dialog.show();
         }
@@ -310,7 +331,6 @@ public class cartFragment extends Fragment {
                 });
     }
 
-
     // Method to edit order
     private void editOrder(Order order) {
         // Implement edit order logic here
@@ -348,4 +368,49 @@ public class cartFragment extends Fragment {
         }
     }
 
+    private void updatePointsAfterCheckout(double totalPrice) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            db.collection("Accounts")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Long currentPoints = document.getLong("points");
+                                long newPoints = (currentPoints != null ? currentPoints : 0) + (long) totalPrice; // 1 dollar equals 1 point
+
+                                String newTier = calculateTier(newPoints);
+                                db.collection("Accounts").document(document.getId())
+                                        .update("points", newPoints, "tier", newTier)
+                                        .addOnSuccessListener(aVoid -> {
+
+                                            Log.d(TAG, "Points and tier updated successfully in Firestore");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to update points and tier in Firestore", e);
+                                        });
+                                break;
+                            }
+                        } else {
+                            Log.d(TAG, "Failed to fetch user details", task.getException());
+                        }
+                    });
+        } else {
+            Log.e(TAG, "No authenticated user found");
+        }
+    }
+
+    private String calculateTier(long points) {
+        if (points >= 450) {
+            return "Platinum";
+        } else if (points >= 300) {
+            return "Gold";
+        } else if (points >= 100) {
+            return "Silver";
+        } else {
+            return "Bronze";
+        }
+    }
 }

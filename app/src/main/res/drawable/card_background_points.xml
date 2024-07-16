@@ -7,7 +7,6 @@
         android:top="16dp"
         android:right="16dp"
         android:bottom="16dp" />
-    <elevation android:elevation="6dp" />
     <stroke
         android:width="1dp"
         android:color="@color/white" />

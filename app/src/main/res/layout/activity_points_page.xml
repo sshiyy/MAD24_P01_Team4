@@ -5,114 +5,244 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@color/lightGray"
     tools:context=".pointsFragment">
 
-    <TextView
-        android:id="@+id/currentTier"
-        android:textSize="50sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bronze tier"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/pointsCount"
-        android:textSize="30sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0 pts"
-        android:layout_margin="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTier" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="0"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressTint="@color/green"
-        app:layout_constraintTop_toBottomOf="@id/pointsCount"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/currentPointsText"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Points: 0"
-        android:layout_marginStart="16dp"
-        app:layout_constraintTop_toBottomOf="@id/progressBar"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/goalPointsText"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/progressBar"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Redeem Voucher Section -->
-    <TextView
-        android:id="@+id/redeemTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Redeem Voucher"
-        android:textAlignment="center"
-        android:textAppearance="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/redeemButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goalPointsText" />
-
-    <Button
-        android:id="@+id/redeemButton"
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Redeem $5 for 100 Points"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/redeemTitle"
+        android:orientation="horizontal"
+        android:padding="50dp"
+        android:background="@color/yellow"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/redeemButton2"
+<!--        <ImageView-->
+<!--            android:id="@+id/faqIcon"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/ic_faq"-->
+<!--            android:contentDescription="FAQ Icon" />-->
+
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Welcome to Plus Rewards"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <!--        <ImageView-->
+<!--            android:id="@+id/settingsIcon"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/ic_settings"-->
+<!--            android:contentDescription="Settings Icon" />-->
+    </LinearLayout>
+
+    <!-- Points Section -->
+    <LinearLayout
+        android:id="@+id/pointsSection"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/card_background_points"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header"
+        android:layout_marginTop="110dp">
+
+        <TextView
+            android:id="@+id/pointsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Points"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/pointsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2,000"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/pointsEquivalent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Equals $250"
+            android:textSize="14sp"
+            android:textColor="@color/grey" />
+    </LinearLayout>
+
+    <!-- Earn and Redeem Section -->
+    <LinearLayout
+        android:id="@+id/earnRedeemSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Redeem $10 for 200 Points"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/redeemButton"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/pointsSection"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/redeemButton3"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="@drawable/card_background_points">
+
+            <ImageView
+                android:id="@+id/earnIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/account"
+                android:contentDescription="Earn Icon" />
+
+            <TextView
+                android:id="@+id/earnLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Earn"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="@drawable/card_background_points">
+
+            <ImageView
+                android:id="@+id/redeemIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/account"
+                android:contentDescription="Redeem Icon" />
+
+            <TextView
+                android:id="@+id/redeemLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Redeem"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Progress Section -->
+    <LinearLayout
+        android:id="@+id/progressSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Redeem $20 for 350 Points"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/redeemButton2"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/earnRedeemSection"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/levelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gold (Level 3)"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
+        <ProgressBar
+            android:id="@+id/levelProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="55"
+            android:progressTint="@color/green"
+            style="?android:attr/progressBarStyleHorizontal" />
+    </LinearLayout>
+
+    <!-- Refer Friends Section -->
+    <LinearLayout
+        android:id="@+id/referFriendsSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/progressSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/referLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refer Your Friends"
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/referDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You get $20 Coupon\nThey get Free Shipping Coupon"
+            android:textSize="14sp"
+            android:textColor="@color/grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <EditText
+                android:id="@+id/referLink"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="https://www.greatsite.com/..."
+                android:background="@drawable/custom_rounded_corner_details"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/copyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Copy"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/referFriendsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have referred 0 friends"
+            android:textSize="14sp"
+            android:textColor="@color/grey"
+            android:paddingTop="8dp" />
+    </LinearLayout>
 
     <!-- Navigation bar -->
     <LinearLayout
@@ -181,7 +311,6 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -199,7 +328,6 @@
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/shoppingcartimg" />
-
 
             <TextView
                 android:id="@+id/carttext"
@@ -227,7 +355,6 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/account" />
-
 
             <TextView
                 android:id="@+id/accountText"

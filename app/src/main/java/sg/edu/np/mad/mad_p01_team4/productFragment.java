@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,14 +40,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class productFragment extends Fragment {
 
@@ -59,8 +65,11 @@ public class productFragment extends Fragment {
     private static final int REQUEST_MIC_PERMISSION = 1;
 
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private String userId;
     private ArrayList<Food> allFoodList;
     private FoodAdapter foodAdapter;
+    private FoodAdapter popularFoodAdapter;
     private TextView allRestaurantsText;
     private TextView sortedByText;
     private EditText searchEditText;
@@ -69,6 +78,8 @@ public class productFragment extends Fragment {
     private NavigationView navigationView;
     private LinearLayout voicePopup;
     private SpeechRecognitionHelper speechRecognitionHelper;
+
+    private TextView noProductTextView;
 
     // Map to store the relationship between menu item IDs and fragment classes
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
@@ -82,6 +93,7 @@ public class productFragment extends Fragment {
         navigationView = view.findViewById(R.id.navigationView);
         searchEditText = view.findViewById(R.id.searchEditText);
         voicePopup = view.findViewById(R.id.voice_popup); // Initialize the voice popup
+        noProductTextView = view.findViewById(R.id.noProductTextView); //for apply filter - when no products text view
 
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -99,27 +111,26 @@ public class productFragment extends Fragment {
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.open());
 
-        View headerView = navigationView.getHeaderView(0);
-        ImageView userImage = headerView.findViewById(R.id.userImage);
-        TextView textusername = headerView.findViewById(R.id.textusername);
 
-        userImage.setOnClickListener(v -> Toast.makeText(getContext(), textusername.getText(), Toast.LENGTH_SHORT).show());
-
-        // Initialize the fragment map
         initializeFragmentMap();
 
+        // Set up the navigation drawer
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
-            displaySelectedFragment(itemId); // Dynamically display the fragment
-            drawerLayout.close();
+            Log.d(TAG, "Navigation item clicked: " + itemId); // Log the item ID
+            displaySelectedFragment(itemId);
+            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
+
         db = FirebaseFirestore.getInstance();
+
         allFoodList = new ArrayList<>();
 
         foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
         setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
+
 
         allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
         sortedByText = view.findViewById(R.id.sortedByText);
@@ -143,6 +154,7 @@ public class productFragment extends Fragment {
             startActivity(intent);
         });
 
+
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -163,8 +175,6 @@ public class productFragment extends Fragment {
 
         return view;
     }
-
-
 
 
     @Override
@@ -367,6 +377,8 @@ public class productFragment extends Fragment {
         put("All", "");
     }};
 
+
+
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
         double[] priceRange = new double[0];
@@ -386,6 +398,13 @@ public class productFragment extends Fragment {
         }
 
         updateAllAdapters(filteredList);
+
+
+        if (filteredList.isEmpty()) {
+            noProductTextView.setVisibility(View.VISIBLE);
+        } else {
+            noProductTextView.setVisibility(View.GONE);
+        }
 
         String priceRangeSymbol = priceRangeSymbolMap.getOrDefault(selectedPriceRange, "");
 
@@ -464,17 +483,18 @@ public class productFragment extends Fragment {
         // Add more mappings as needed
     }
 
+
     // Dynamically display the selected fragment based on the menu item ID
     private void displaySelectedFragment(int itemId) {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
-
         if (fragmentClass != null) {
             try {
-                Fragment fragment = fragmentClass.newInstance();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment);
-                transaction.addToBackStack(null); // Add transaction to back stack
-                transaction.commit();
+                Fragment selectedFragment = fragmentClass.newInstance();
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .addToBackStack(null)
+                        .commit();
+                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
                 Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
@@ -482,7 +502,9 @@ public class productFragment extends Fragment {
                 throw new RuntimeException(e);
             }
         } else {
-            Log.e(TAG, "Fragment class not found for item ID: " + itemId);
+            Log.e(TAG, "Unknown navigation item selected: " + itemId);
         }
     }
+
+
 }

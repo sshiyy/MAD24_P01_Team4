@@ -44,7 +44,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- TextView for "Cart is empty" message -->
+    <!-- TextView for "no ongoing orders" message -->
     <TextView
         android:id="@+id/emptyCartMessage"
         android:layout_width="wrap_content"

@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,29 +30,31 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // User is already logged in, proceed to main app screen
-            loadProductFragment();
-            return;
+            loadFragment(new productFragment());
+        } else {
+            // Set onClickListener for the main layout to redirect to login
+            ConstraintLayout mainLayout = findViewById(R.id.main);
+            mainLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, loginPage.class);
+                    startActivity(intent);
+                }
+            });
         }
 
-        // Get the root ConstraintLayout
-        ConstraintLayout mainLayout = findViewById(R.id.main);
-
-        // Set onClickListener for the entire layout
-        mainLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, loginPage.class);
-                startActivity(intent);
-            }
-        });
+        // Check if there is a fragment to navigate to (e.g., from login)
+        String navigateTo = getIntent().getStringExtra("navigateTo");
+        if (navigateTo != null && navigateTo.equals("productFragment")) {
+            loadFragment(new productFragment());
+        }
     }
 
-    private void loadProductFragment() {
-        // Load the productFragment
-        productFragment fragment = new productFragment();
+    private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }

@@ -148,28 +148,31 @@ Users can now swipe left on the item to add it to favorites/unfavorite, view mor
 and also finding other relevant items in the same category.
 allow user to ammend order
 
+popular recommendations
+order again function
+ongoing order
+order history
+ui for voucher to add in main page
+
 ```
 ```
 4. Navigation Bar - Raeann 
 
 a hamburger menu  for the navigation using fragments to
-organize the app sections efficiently. using FRAGMENT ..
+organize the app sections efficiently. using FRAGMENT .. 
+Using a hash for fragment navigation in an Android app can be done using a HashMap to map menu item IDs to their respective fragments. This approach simplifies the fragment navigation logic and makes it more maintainable.
 
-1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press crdit card they will be able to pay with fingerprint
+1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press credit card they will be able to pay with fingerprint
 
 2. Voice Commands and Assistant Integration
 Concepts: Speech Recognition, Voice Assistant Integration.
 Implementation: Use SpeechRecognizer for capturing voice input, and integrate with Google Assistant for handling voice commands.
 
-3. Machine Learning for Recommendations
-Concepts: Machine Learning, TensorFlow Lite, Data Analysis. 
-Implementation: Train a machine learning model to predict user preferences, and use TensorFlow Lite to run the model on the device for personalized recommendations.
-
-4. Chatbot for Customer Support
+3. Chatbot for Customer Support
 Concepts: Natural Language Processing (NLP)
 Implementation: Create a chatbot using firstore and provide automated responses.
 
-5. Try implementing backstack too? - not sure about this yet 
+4. Try implementing backstack too? - not sure about this yet 
 
 
 ```

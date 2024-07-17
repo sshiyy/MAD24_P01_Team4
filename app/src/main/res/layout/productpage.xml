@@ -113,7 +113,7 @@
                 <RelativeLayout
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="60dp"
+                    android:layout_marginEnd="70dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -130,16 +130,21 @@
                         android:padding="8dp"
                         android:textSize="15dp" />
 
-                    <ImageButton
-                        android:id="@+id/search_voice_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/voice_recognition_icon" />
+
                 </RelativeLayout>
+
+                <ImageButton
+                    android:id="@+id/search_voice_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="60dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/voice_recognition_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageButton
                     android:id="@+id/filterIcon"
@@ -248,6 +253,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/allproductslayout" />
+
+            <TextView
+                android:id="@+id/noProductTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="There is no product available in that price and category"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@id/productrecyclerView"
+                app:layout_constraintBottom_toBottomOf="@id/productrecyclerView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- RecyclerView for displaying popular products -->
@@ -274,6 +293,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!-- RecyclerView for displaying order again products -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clorderagainproduct"
@@ -304,6 +324,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -320,15 +341,62 @@
             app:fabSize="normal" />
     </FrameLayout>
 
+
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <!-- Popup Layout -->
+    <LinearLayout
+        android:id="@+id/voice_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="100dp"
+        android:background="@color/lightGray"
+        android:gravity="center"
+        android:elevation="10dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="Mic Icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Listening..."
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/recognized_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="speech to text.."
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:visibility="gone"
         app:dividerInsetStart="50dp"
         app:headerLayout="@layout/drawer_header"
         app:itemIconPadding="30dp"
         app:menu="@menu/drawer_items" />
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

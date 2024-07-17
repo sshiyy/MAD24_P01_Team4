@@ -111,9 +111,10 @@ public class loginPage extends AppCompatActivity {
                             if (user != null) {
                                 if (user.isEmailVerified()) {
                                     Log.d("Login_Page", "signInWithEmail:success");
-                                    Intent intent = new Intent(loginPage.this, productpage.class);
+                                    Intent intent = new Intent(loginPage.this, MainActivity.class);
+                                    intent.putExtra("navigateTo", "productFragment"); // Pass the fragment to navigate to
                                     startActivity(intent);
-                                    finish();
+                                    finish(); // Prevent going back to the login screen
                                 } else {
                                     mAuth.signOut();  // Sign out the user
                                     popUp1.showPopup(loginPage.this, "Please verify your email before logging in.");

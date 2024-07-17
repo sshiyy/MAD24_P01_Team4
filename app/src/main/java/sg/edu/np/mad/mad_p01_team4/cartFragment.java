@@ -1,5 +1,6 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,7 +8,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -15,12 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,9 +37,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class cartpage extends AppCompatActivity {
+public class cartFragment extends Fragment {
 
-    private static final String TAG = "CartPage";
+    private static final String TAG = "CartFragment";
 
     private RecyclerView recyclerView;
     private RelativeLayout btnConfirm;
@@ -50,42 +52,42 @@ public class cartpage extends AppCompatActivity {
     private TextView GST;
     private TextView totalpricing;
     private TextView totalprice;
+    private TextView discountPrice;
     private TextView emptyCartMessage;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_cartpage);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_cartpage, container, false);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
         // Cross button in cart page
-        ImageView cartcrossbtn = findViewById(R.id.crossicon);
-        cartcrossbtn.setOnClickListener(v -> finish());
+        ImageView cartcrossbtn = view.findViewById(R.id.crossicon);
+        cartcrossbtn.setOnClickListener(v -> {
+            if (requireActivity().getSupportFragmentManager() != null) {
+                requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back to the previous fragment
+            }
+        });
 
         // Initialize TextViews
-        noGSTprice = findViewById(R.id.noGSTprice);
-        GST = findViewById(R.id.GST);
-        totalpricing = findViewById(R.id.totalpricing);
-        totalprice = findViewById(R.id.totalprice);
-        emptyCartMessage = findViewById(R.id.emptyCartMessage);
+        noGSTprice = view.findViewById(R.id.noGSTprice);
+        GST = view.findViewById(R.id.GST);
+        totalpricing = view.findViewById(R.id.totalpricing);
+        totalprice = view.findViewById(R.id.totalprice);
+        discountPrice = view.findViewById(R.id.discountPrice);
+        emptyCartMessage = view.findViewById(R.id.emptyCartMessage);
 
-        btnConfirm = findViewById(R.id.cfmbtn);
+        btnConfirm = view.findViewById(R.id.cfmbtn);
         btnConfirm.setOnClickListener(v -> showPayment());
 
-        recyclerView = findViewById(R.id.cartrv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = view.findViewById(R.id.cartrv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
-        cartAdapter = new cartAdapter(currentOrders, this);
+        cartAdapter = new cartAdapter(currentOrders, getActivity());
         recyclerView.setAdapter(cartAdapter);
 
         // Attach the ItemTouchHelper to the RecyclerView
@@ -95,6 +97,17 @@ public class cartpage extends AppCompatActivity {
         // Load current orders
         loadCurrentOrders();
         updatePricing();
+
+        // Check for voucher discount in the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String voucherDiscount = arguments.getString("voucherDiscount");
+            if (voucherDiscount != null) {
+                applyVoucherDiscount(voucherDiscount);
+            }
+        }
+
+        return view;
     }
 
     private void updatePricing() {
@@ -128,9 +141,20 @@ public class cartpage extends AppCompatActivity {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+
+    private void applyVoucherDiscount(String voucherDiscount) {
+        // Convert the discount string to a double value
+        double discountValue = Double.parseDouble(voucherDiscount.replaceAll("[^0-9.]", ""));
+        discountPrice.setText(String.format("-$%.2f", discountValue));
+
+        // Update the total price with the discount applied
+        double totalPrice = Double.parseDouble(totalprice.getText().toString().substring(1));
+        double newTotalPrice = totalPrice - discountValue;
+        totalprice.setText(String.format("$%.2f", newTotalPrice));
     }
 
     // Define the callback for the ItemTouchHelper
@@ -168,11 +192,11 @@ public class cartpage extends AppCompatActivity {
             int iconBottom;
 
             if (dX > 0) { // Swiping to the right
-                icon = ContextCompat.getDrawable(cartpage.this, R.drawable.editicon);
+                icon = ContextCompat.getDrawable(getActivity(), R.drawable.editicon);
                 background.setColor(Color.BLUE);
                 background.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + ((int) dX), itemView.getBottom());
             } else if (dX < 0) { // Swiping to the left
-                icon = ContextCompat.getDrawable(cartpage.this, R.drawable.ic_delete);
+                icon = ContextCompat.getDrawable(getActivity(), R.drawable.ic_delete);
                 background.setColor(Color.RED);
                 background.setBounds(itemView.getRight() + ((int) dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
             } else { // View is unswiped
@@ -203,7 +227,7 @@ public class cartpage extends AppCompatActivity {
 
         // Finds 'RadioGroup' in the inflated view & stores as paymentGroup
         RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(view); // Sets content view of dialog to the inflated view
         Button payButton = view.findViewById(R.id.payButton); // Finds the payButton
 
@@ -228,14 +252,18 @@ public class cartpage extends AppCompatActivity {
                     // Once payButton is clicked, shows toast message
                     Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
                     moveOrdersToOngoing();
+                    double totalPrice = Double.parseDouble(totalpricing.getText().toString().substring(1)); // Remove the $ sign and parse to double
+                    updatePointsAfterCheckout(totalPrice);
 
-                    // Navigate to the product page
-                    Intent intent = new Intent(v.getContext(), productpage.class);
-                    startActivity(intent);
-                    finish();
+                    // Navigate to the product fragment
+                    Fragment productFragment = new productFragment();
+                    FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, productFragment); // Replace R.id.fragment_container with the ID of your container layout
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    dialog.dismiss();
                 }
             });
-
             dialog.show();
         }
 
@@ -263,7 +291,7 @@ public class cartpage extends AppCompatActivity {
     private void loadCurrentOrders() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Intent intent = new Intent(this, loginPage.class);
+            Intent intent = new Intent(getActivity(), loginPage.class);
             startActivity(intent);
             return;
         }
@@ -283,7 +311,7 @@ public class cartpage extends AppCompatActivity {
                     updateConfirmButtonState();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -295,19 +323,18 @@ public class cartpage extends AppCompatActivity {
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     String message = "Order " + order.getFoodName() + " removed";
-                    Toast.makeText(cartpage.this, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     String message = "Failed to delete order " + order.getFoodName();
-                    Toast.makeText(cartpage.this, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                 });
     }
-
 
     // Method to edit order
     private void editOrder(Order order) {
         // Implement edit order logic here
-        Toast.makeText(cartpage.this, "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
     }
 
     private void updateConfirmButtonState() {
@@ -341,4 +368,49 @@ public class cartpage extends AppCompatActivity {
         }
     }
 
+    private void updatePointsAfterCheckout(double totalPrice) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            db.collection("Accounts")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Long currentPoints = document.getLong("points");
+                                long newPoints = (currentPoints != null ? currentPoints : 0) + (long) totalPrice; // 1 dollar equals 1 point
+
+                                String newTier = calculateTier(newPoints);
+                                db.collection("Accounts").document(document.getId())
+                                        .update("points", newPoints, "tier", newTier)
+                                        .addOnSuccessListener(aVoid -> {
+
+                                            Log.d(TAG, "Points and tier updated successfully in Firestore");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to update points and tier in Firestore", e);
+                                        });
+                                break;
+                            }
+                        } else {
+                            Log.d(TAG, "Failed to fetch user details", task.getException());
+                        }
+                    });
+        } else {
+            Log.e(TAG, "No authenticated user found");
+        }
+    }
+
+    private String calculateTier(long points) {
+        if (points >= 450) {
+            return "Platinum";
+        } else if (points >= 300) {
+            return "Gold";
+        } else if (points >= 100) {
+            return "Silver";
+        } else {
+            return "Bronze";
+        }
+    }
 }

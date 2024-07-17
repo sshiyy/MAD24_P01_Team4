@@ -8,13 +8,18 @@
 
         <item
             android:id="@+id/navMenu"
-            android:title="Menu"
+            android:title="Products"
             android:icon="@drawable/menu_icon" />
 
         <item
             android:id="@+id/navCart"
             android:title="Cart"
             android:icon="@drawable/shopping_cart_icon" />
+
+        <item
+            android:id="@+id/navPoints"
+            android:title="Points"
+            android:icon="@drawable/star" />
 
         <item
             android:id="@+id/navFavourite"

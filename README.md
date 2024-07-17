@@ -148,6 +148,12 @@ Users can now swipe left on the item to add it to favorites/unfavorite, view mor
 and also finding other relevant items in the same category.
 allow user to ammend order
 
+popular recommendations
+order again function
+ongoing order
+order history
+ui for voucher to add in main page
+
 ```
 ```
 4. Navigation Bar - Raeann 

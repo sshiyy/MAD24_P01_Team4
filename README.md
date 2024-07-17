@@ -152,6 +152,7 @@ popular recommendations
 order again function
 ongoing order
 order history
+payment
 
 
 ```

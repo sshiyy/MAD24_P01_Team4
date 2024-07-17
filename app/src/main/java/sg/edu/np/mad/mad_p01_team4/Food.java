@@ -13,6 +13,7 @@ public class Food {
     private String category;
     private int imageResourceId; // Add imageResourceId field
     private List<Map<String,Object>> modifications;
+    private String specialrequest;
 
     // No-argument constructor required for Firestore deserialization
     public Food() {
@@ -94,17 +95,14 @@ public class Food {
     {
         this.modifications = modifications;
     }
-    public int incrementQuantity() {
-        return quantity++;
+
+    public String getSpecialrequest() {
+        return specialrequest;
     }
 
-    public int decreamentQuantity() {
-        if (quantity > 0) {
-            quantity--;
-        }
-        return quantity;
+    public void setSpecialrequest(String specialrequest) {
+        this.specialrequest = specialrequest;
     }
-
 
     public int getQuantity() {
         return quantity;

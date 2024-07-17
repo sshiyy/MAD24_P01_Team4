@@ -64,6 +64,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.google.android.material:material:1.4.0")
 
 }
 

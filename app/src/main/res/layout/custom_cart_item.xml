@@ -12,20 +12,23 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
-        >
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivcartImage"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/pastacarbonara"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/pastacarbonara"
+                style="@style/CustomImageViewShape"
                 android:onClick="showFoodDetail"/>
 
             <LinearLayout
@@ -41,8 +44,7 @@
                     android:text="Name"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    />
+                    android:paddingTop="8dp"/>
 
                 <!-- To display the price of 1 of the specific item -->
                 <TextView
@@ -52,8 +54,30 @@
                     android:text="Price"
                     android:textSize="18sp"
                     android:paddingTop="4dp"
+                    android:textColor="@color/grey"
                     android:paddingBottom="10dp"/>
 
+                <!-- To display modifications -->
+                <TextView
+                    android:id="@+id/tvModifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Modifications"
+                    android:textSize="18sp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/grey"
+                    android:paddingBottom="10dp"/>
+
+                <!-- To display special requests -->
+                <TextView
+                    android:id="@+id/tvspecialrequest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Special request"
+                    android:textSize="18sp"
+                    android:textColor="@color/grey"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="10dp"/>
 
             </LinearLayout>
         </LinearLayout>

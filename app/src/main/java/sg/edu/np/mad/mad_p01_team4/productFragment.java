@@ -480,6 +480,7 @@ public class productFragment extends Fragment {
         fragmentMap.put(R.id.navAccount, profileFragment.class);
         fragmentMap.put(R.id.navMap, mapFragment.class);
         fragmentMap.put(R.id.navPoints, pointsFragment.class);
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
         // Add more mappings as needed
     }
 

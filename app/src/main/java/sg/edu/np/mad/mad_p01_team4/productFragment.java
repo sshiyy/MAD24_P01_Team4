@@ -158,7 +158,7 @@ public class productFragment extends Fragment {
         Button viewAllButton = view.findViewById(R.id.viewallbutton);
         viewAllButton.setOnClickListener(v -> {
             // Navigate to the ViewAllActivity
-            Intent intent = new Intent(getActivity(), viewallproduct.class);
+            Intent intent = new Intent(getActivity(), viewallFragment.class);
             startActivity(intent);
         });
 
@@ -489,6 +489,8 @@ public class productFragment extends Fragment {
         fragmentMap.put(R.id.navMap, mapFragment.class);
         fragmentMap.put(R.id.navPoints, pointsFragment.class);
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
+        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
+        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
         // Add more mappings as needed
     }
 

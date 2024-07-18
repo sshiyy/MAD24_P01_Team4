@@ -148,7 +148,7 @@ public class cartFragment extends Fragment {
                         noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
                         GST.setText(String.format("$%.2f", gst));
                         totalpricing.setText(String.format("$%.2f", totalPrice));
-                        totalprice.setText(String.format("$%.2f", totalPrice));
+                        totalprice.setText(String.format("%.2f", totalPrice));
 
                         if (totalPrice == 0) {
                             emptyCartMessage.setVisibility(View.VISIBLE);

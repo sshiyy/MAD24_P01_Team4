@@ -57,12 +57,36 @@
                     android:textColor="@color/grey"
                     android:paddingBottom="10dp"/>
 
+                <!-- To display modifications header -->
+                <TextView
+                    android:id="@+id/tvModificationsheader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Modification(s)"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/grey"
+                    android:paddingBottom="10dp"/>
+
                 <!-- To display modifications -->
                 <TextView
                     android:id="@+id/tvModifications"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Modifications"
+                    android:text="None"
+                    android:textSize="18sp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/grey"
+                    android:paddingBottom="10dp"/>
+
+                <!-- To display special request header -->
+                <TextView
+                    android:id="@+id/tvspecialreqheader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Special request(s)"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:paddingTop="4dp"
                     android:textColor="@color/grey"
@@ -73,7 +97,7 @@
                     android:id="@+id/tvspecialrequest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Special request"
+                    android:text="None"
                     android:textSize="18sp"
                     android:textColor="@color/grey"
                     android:paddingTop="4dp"

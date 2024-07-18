@@ -154,6 +154,14 @@ public class productFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Set OnClickListener for viewAllButton
+        Button viewAllButton = view.findViewById(R.id.viewallbutton);
+        viewAllButton.setOnClickListener(v -> {
+            // Navigate to the ViewAllActivity
+            Intent intent = new Intent(getActivity(), viewallproduct.class);
+            startActivity(intent);
+        });
+
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override

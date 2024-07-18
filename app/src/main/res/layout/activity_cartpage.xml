@@ -37,9 +37,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cart"
-                android:layout_marginStart="16dp"
+                android:layout_marginLeft="30dp"
                 android:layout_gravity="center_vertical"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>

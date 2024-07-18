@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -29,13 +31,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class cartFragment extends Fragment {
 
@@ -54,6 +59,9 @@ public class cartFragment extends Fragment {
     private TextView totalprice;
     private TextView discountPrice;
     private TextView emptyCartMessage;
+    private ImageButton buttonDrawer;
+    private NavigationView navigationView;
+    private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Nullable
     @Override
@@ -63,13 +71,6 @@ public class cartFragment extends Fragment {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Cross button in cart page
-        ImageView cartcrossbtn = view.findViewById(R.id.crossicon);
-        cartcrossbtn.setOnClickListener(v -> {
-            if (requireActivity().getSupportFragmentManager() != null) {
-                requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back to the previous fragment
-            }
-        });
 
         // Initialize TextViews
         noGSTprice = view.findViewById(R.id.noGSTprice);
@@ -84,6 +85,9 @@ public class cartFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
+        navigationView = view.findViewById(R.id.navigationView);
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
@@ -411,6 +415,42 @@ public class cartFragment extends Fragment {
             return "Silver";
         } else {
             return "Bronze";
+        }
+    }
+
+    // Initialize the fragment map
+    private void initializeFragmentMap() {
+        fragmentMap = new HashMap<>();
+        fragmentMap.put(R.id.navMenu, productFragment.class);
+        fragmentMap.put(R.id.navCart, cartFragment.class);
+        fragmentMap.put(R.id.navAccount, profileFragment.class);
+        fragmentMap.put(R.id.navMap, mapFragment.class);
+        fragmentMap.put(R.id.navPoints, pointsFragment.class);
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
+        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
+        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
+        // Add more mappings as needed
+    }
+
+    // Dynamically display the selected fragment based on the menu item ID
+    private void displaySelectedFragment(int itemId) {
+        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+        if (fragmentClass != null) {
+            try {
+                Fragment selectedFragment = fragmentClass.newInstance();
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .addToBackStack(null)
+                        .commit();
+                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
+            } catch (java.lang.InstantiationException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Log.e(TAG, "Unknown navigation item selected: " + itemId);
         }
     }
 }

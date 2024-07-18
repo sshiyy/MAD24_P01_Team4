@@ -40,10 +40,6 @@ public class FavoritesFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
-        favoritesRecyclerView = view.findViewById(R.id.favoritesRecyclerView);
-        emptyFavoritesMessage = view.findViewById(R.id.emptyFavoritesMessage);
-        ImageView backButton = view.findViewById(R.id.crossicon);
 
         // Set up RecyclerView
         favoriteItems = new ArrayList<>();
@@ -54,8 +50,6 @@ public class FavoritesFragment extends Fragment {
         // Load favorite items
         loadFavoriteItems();
 
-        // Set up back button
-        backButton.setOnClickListener(v -> getActivity().onBackPressed());
 
         return view;
     }

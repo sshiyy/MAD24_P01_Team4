@@ -63,6 +63,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .load(food.getImg()) // Assuming img is a URL or path to the image
                 .into(holder.ivImage);
 
+
         // Click listener on image to show the detailed view of the food
         holder.ivImage.setOnClickListener(v -> showFoodDetailDialog(food));
 
@@ -81,7 +82,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         public ImageButton favBtn;
-        private TextView tvName, tvPrice, tvspecialrequest;
+        private TextView tvName, tvPrice;
         private ImageView ivImage;
 
         // Viewholder to hold the views for each food
@@ -91,7 +92,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivImage = itemView.findViewById(R.id.ivImage);
             favBtn = itemView.findViewById(R.id.favBtn);
-            tvspecialrequest = itemView.findViewById(R.id.tvspecialrequest);
+
         }
     }
 

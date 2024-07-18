@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,7 +61,9 @@ public class cartFragment extends Fragment {
     private TextView discountPrice;
     private TextView emptyCartMessage;
     private ImageButton buttonDrawer;
+    private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Nullable
@@ -70,7 +73,6 @@ public class cartFragment extends Fragment {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
 
         // Initialize TextViews
         noGSTprice = view.findViewById(R.id.noGSTprice);
@@ -86,8 +88,22 @@ public class cartFragment extends Fragment {
         recyclerView = view.findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
+
+        // Set the drawer toggle button listener
+        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        initializeFragmentMap();
+
+        // Initialize NavigationView
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            displaySelectedFragment(itemId);
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();

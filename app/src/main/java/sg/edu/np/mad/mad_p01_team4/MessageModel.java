@@ -1,40 +1,29 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 public class MessageModel {
-    String message;
-    String viewType;
-    String time;
+    private String message;
+    private String sender;
+    private String time;
 
-    public MessageModel(String message, String viewType, String time) {
+    public MessageModel(String message, String sender, String time) {
         this.message = message;
-        this.viewType = viewType;
+        this.sender = sender;
         this.time = time;
-    }
-
-    public MessageModel() {
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getViewType() {
-        return viewType;
-    }
-
-    public void setViewType(String viewType) {
-        this.viewType = viewType;
+    public String getSender() {
+        return sender;
     }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getViewType() {
+        return sender;
     }
 }

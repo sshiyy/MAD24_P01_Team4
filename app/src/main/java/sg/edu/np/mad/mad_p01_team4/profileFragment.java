@@ -20,11 +20,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,10 +38,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,14 +65,38 @@ public class profileFragment extends Fragment {
     private String currentEmail;
     private String profilePicUrl;
 
+    private DrawerLayout drawerLayout;
+    private ImageButton buttonDrawer;
+    private NavigationView navigationView;
+
     ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
     private FirebaseAuth.AuthStateListener emailVerificationListener;
+
+    private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_profile_page, container, false);
+
+        drawerLayout = view.findViewById(R.id.drawer_layout);
+        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
+        navigationView = view.findViewById(R.id.navigationView);
+
+        buttonDrawer.setOnClickListener(v -> drawerLayout.open());
+
+        fragmentMap = new HashMap<>();
+        initializeFragmentMap();
+
+        // Set up the navigation drawer
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            Log.d(TAG, "Navigation item clicked: " + itemId);
+            displaySelectedFragment(itemId);
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
 
         initFirebase();
         initUI(view);
@@ -84,7 +107,6 @@ public class profileFragment extends Fragment {
             return view;
         }
 
-        setupNavBar(view);
         fetchUserDetails();
 
         imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -172,26 +194,6 @@ public class profileFragment extends Fragment {
         logoutBtn.setOnClickListener(v -> logout());
     }
 
-//    update for fragment
-    private void setupNavBar(View view) {
-        ImageButton homebtn = view.findViewById(R.id.home);
-        ImageButton starbtn = view.findViewById(R.id.point);
-        ImageButton cartbtn = view.findViewById(R.id.cart_button);
-        ImageButton profilebtn = view.findViewById(R.id.profile_button);
-
-        homebtn.setOnClickListener(v -> replaceFragment(new productFragment()));
-        cartbtn.setOnClickListener(v -> replaceFragment(new cartFragment()));
-        profilebtn.setOnClickListener(v -> replaceFragment(new profileFragment()));
-        starbtn.setOnClickListener(v -> replaceFragment(new pointsFragment()));
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
     private void fetchUserDetails() {
         String userEmail = currentUser.getEmail();
         if (userEmail != null) {
@@ -419,5 +421,38 @@ public class profileFragment extends Fragment {
 
     private interface PasswordCallback {
         void onPasswordEntered(String password);
+    }
+
+    private void initializeFragmentMap() {
+        fragmentMap.put(R.id.navMenu, productFragment.class);
+        fragmentMap.put(R.id.navCart, cartFragment.class);
+        fragmentMap.put(R.id.navAccount, profileFragment.class);
+        fragmentMap.put(R.id.navMap, mapFragment.class);
+        fragmentMap.put(R.id.navPoints, pointsFragment.class);
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
+        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
+        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
+        // Add more mappings as needed
+    }
+
+    private void displaySelectedFragment(int itemId) {
+        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+        if (fragmentClass != null) {
+            try {
+                Fragment selectedFragment = fragmentClass.newInstance();
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .addToBackStack(null)
+                        .commit();
+                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
+            } catch (java.lang.InstantiationException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Log.e(TAG, "Unknown navigation item selected: " + itemId);
+        }
     }
 }

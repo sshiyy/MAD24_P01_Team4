@@ -59,10 +59,12 @@ public class cartFragment extends Fragment {
     private TextView totalpricing;
     private TextView totalprice;
     private TextView discountPrice;
+
+    private ImageButton crossBtn;
     private TextView emptyCartMessage;
-    private ImageButton buttonDrawer;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+//    private ImageButton buttonDrawer;
+//    private DrawerLayout drawerLayout;
+//    private NavigationView navigationView;
 
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
@@ -88,22 +90,26 @@ public class cartFragment extends Fragment {
         recyclerView = view.findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
-        navigationView = view.findViewById(R.id.navigationView);
+        crossBtn = view.findViewById(R.id.crossBtn);
+        crossBtn.setOnClickListener(v -> getActivity().onBackPressed());
 
-        // Set the drawer toggle button listener
-        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        initializeFragmentMap();
-
-        // Initialize NavigationView
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            int itemId = menuItem.getItemId();
-            displaySelectedFragment(itemId);
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+//        drawerLayout = view.findViewById(R.id.drawer_layout);
+//        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
+//        navigationView = view.findViewById(R.id.navigationView);
+//
+//        // Set the drawer toggle button listener
+//        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+//
+//        initializeFragmentMap();
+//
+//        // Initialize NavigationView
+//        navigationView.setNavigationItemSelectedListener(menuItem -> {
+//            int itemId = menuItem.getItemId();
+//            displaySelectedFragment(itemId);
+//            drawerLayout.closeDrawer(GravityCompat.START);
+//            return true;
+//        });
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
@@ -435,38 +441,38 @@ public class cartFragment extends Fragment {
     }
 
     // Initialize the fragment map
-    private void initializeFragmentMap() {
-        fragmentMap = new HashMap<>();
-        fragmentMap.put(R.id.navMenu, productFragment.class);
-        fragmentMap.put(R.id.navCart, cartFragment.class);
-        fragmentMap.put(R.id.navAccount, profileFragment.class);
-        fragmentMap.put(R.id.navMap, mapFragment.class);
-        fragmentMap.put(R.id.navPoints, pointsFragment.class);
-        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
-        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
-        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
-        // Add more mappings as needed
-    }
+//    private void initializeFragmentMap() {
+//        fragmentMap = new HashMap<>();
+//        fragmentMap.put(R.id.navMenu, productFragment.class);
+//        fragmentMap.put(R.id.navCart, cartFragment.class);
+//        fragmentMap.put(R.id.navAccount, profileFragment.class);
+//        fragmentMap.put(R.id.navMap, mapFragment.class);
+//        fragmentMap.put(R.id.navPoints, pointsFragment.class);
+//        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
+//        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
+//        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
+//        // Add more mappings as needed
+//    }
 
     // Dynamically display the selected fragment based on the menu item ID
-    private void displaySelectedFragment(int itemId) {
-        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
-        if (fragmentClass != null) {
-            try {
-                Fragment selectedFragment = fragmentClass.newInstance();
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .addToBackStack(null)
-                        .commit();
-                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
-            } catch (java.lang.InstantiationException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            Log.e(TAG, "Unknown navigation item selected: " + itemId);
-        }
+//    private void displaySelectedFragment(int itemId) {
+//        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+//        if (fragmentClass != null) {
+//            try {
+//                Fragment selectedFragment = fragmentClass.newInstance();
+//                requireActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.fragment_container, selectedFragment)
+//                        .addToBackStack(null)
+//                        .commit();
+//                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
+//            } catch (java.lang.InstantiationException e) {
+//                throw new RuntimeException(e);
+//            }
+//        } else {
+//            Log.e(TAG, "Unknown navigation item selected: " + itemId);
+//        }
+//    }
     }
-}

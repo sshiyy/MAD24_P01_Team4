@@ -1,6 +1,5 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -62,9 +61,6 @@ public class cartFragment extends Fragment {
 
     private ImageButton crossBtn;
     private TextView emptyCartMessage;
-//    private ImageButton buttonDrawer;
-//    private DrawerLayout drawerLayout;
-//    private NavigationView navigationView;
 
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
@@ -93,24 +89,6 @@ public class cartFragment extends Fragment {
         crossBtn = view.findViewById(R.id.crossBtn);
         crossBtn.setOnClickListener(v -> getActivity().onBackPressed());
 
-
-//        drawerLayout = view.findViewById(R.id.drawer_layout);
-//        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
-//        navigationView = view.findViewById(R.id.navigationView);
-//
-//        // Set the drawer toggle button listener
-//        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-//
-//        initializeFragmentMap();
-//
-//        // Initialize NavigationView
-//        navigationView.setNavigationItemSelectedListener(menuItem -> {
-//            int itemId = menuItem.getItemId();
-//            displaySelectedFragment(itemId);
-//            drawerLayout.closeDrawer(GravityCompat.START);
-//            return true;
-//        });
-
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
         cartAdapter = new cartAdapter(currentOrders, getActivity());
@@ -125,16 +103,42 @@ public class cartFragment extends Fragment {
         updatePricing();
 
         // Check for voucher discount in the arguments
+        // In onCreateView
         Bundle arguments = getArguments();
         if (arguments != null) {
-            String voucherDiscount = arguments.getString("voucherDiscount");
-            if (voucherDiscount != null) {
+            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
+            Log.d(TAG, "Voucher discount: " + voucherDiscount);
+            if (voucherDiscount != 0) {
                 applyVoucherDiscount(voucherDiscount);
             }
         }
 
+
         return view;
     }
+
+    private void applyVoucherDiscount(int voucherDiscount) {
+        String totalPriceText = totalprice.getText().toString();
+        Log.d(TAG, "Total price text before applying discount: " + totalPriceText);
+
+        try {
+            double totalPrice = Double.parseDouble(totalPriceText);
+            double newTotalPrice = totalPrice - voucherDiscount;
+            totalprice.setText(String.format("%.2f", newTotalPrice));
+
+            // Set the discount price and make it visible
+            discountPrice.setText(String.format("-$%.2f", (double) voucherDiscount));
+            discountPrice.setVisibility(View.VISIBLE);
+
+            Log.d(TAG, "Discount applied: " + voucherDiscount);
+            Log.d(TAG, "New total price: " + newTotalPrice);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Invalid total price format", e);
+            Toast.makeText(getActivity(), "Invalid total price format", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     private void updatePricing() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -154,7 +158,18 @@ public class cartFragment extends Fragment {
                         noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
                         GST.setText(String.format("$%.2f", gst));
                         totalpricing.setText(String.format("$%.2f", totalPrice));
-                        totalprice.setText(String.format("%.2f", totalPrice));
+                        totalprice.setText(String.format("$%.2f", totalPrice)); // Ensure the dollar sign is included
+
+                        Log.d(TAG, "Total price text after update: " + totalprice.getText().toString());
+
+                        // Apply the voucher discount if any
+                        Bundle arguments = getArguments();
+                        if (arguments != null) {
+                            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
+                            if (voucherDiscount != 0) {
+                                applyVoucherDiscount(voucherDiscount);
+                            }
+                        }
 
                         if (totalPrice == 0) {
                             emptyCartMessage.setVisibility(View.VISIBLE);
@@ -172,16 +187,8 @@ public class cartFragment extends Fragment {
         }
     }
 
-    private void applyVoucherDiscount(String voucherDiscount) {
-        // Convert the discount string to a double value
-        double discountValue = Double.parseDouble(voucherDiscount.replaceAll("[^0-9.]", ""));
-        discountPrice.setText(String.format("-$%.2f", discountValue));
 
-        // Update the total price with the discount applied
-        double totalPrice = Double.parseDouble(totalprice.getText().toString().substring(1));
-        double newTotalPrice = totalPrice - discountValue;
-        totalprice.setText(String.format("$%.2f", newTotalPrice));
-    }
+
 
     // Define the callback for the ItemTouchHelper
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -439,40 +446,4 @@ public class cartFragment extends Fragment {
             return "Bronze";
         }
     }
-
-    // Initialize the fragment map
-//    private void initializeFragmentMap() {
-//        fragmentMap = new HashMap<>();
-//        fragmentMap.put(R.id.navMenu, productFragment.class);
-//        fragmentMap.put(R.id.navCart, cartFragment.class);
-//        fragmentMap.put(R.id.navAccount, profileFragment.class);
-//        fragmentMap.put(R.id.navMap, mapFragment.class);
-//        fragmentMap.put(R.id.navPoints, pointsFragment.class);
-//        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
-//        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
-//        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
-//        // Add more mappings as needed
-//    }
-
-    // Dynamically display the selected fragment based on the menu item ID
-//    private void displaySelectedFragment(int itemId) {
-//        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
-//        if (fragmentClass != null) {
-//            try {
-//                Fragment selectedFragment = fragmentClass.newInstance();
-//                requireActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.fragment_container, selectedFragment)
-//                        .addToBackStack(null)
-//                        .commit();
-//                Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//                Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
-//            } catch (java.lang.InstantiationException e) {
-//                throw new RuntimeException(e);
-//            }
-//        } else {
-//            Log.e(TAG, "Unknown navigation item selected: " + itemId);
-//        }
-//    }
-    }
+}

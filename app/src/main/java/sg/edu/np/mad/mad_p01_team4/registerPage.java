@@ -19,9 +19,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -175,13 +177,19 @@ public class registerPage extends AppCompatActivity {
                                                     userMap.put("name", name);
                                                     userMap.put("email", email); // Ensure email is correctly assigned
                                                     userMap.put("points", 0);
+                                                    userMap.put("vouchers", new ArrayList<Map<String, Object>>() {{
+                                                        add(new HashMap<String, Object>() {{
+                                                            put("title", "$5 off your next purchase");
+                                                            put("description", "Welcome Voucher");
+                                                            put("discountAmt", 5);
+                                                        }});
+                                                    }}); // Initialize vouchers list
 
                                                     db.collection("Accounts").document(user.getUid()).set(userMap)
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
                                                                     Log.d("Register-Page", "User registration successful!");
-                                                                    addWelcomeVoucher(user.getUid());
                                                                     popUp1.showPopup(registerPage.this, "Account created successfully! Please check your email for verification.");
                                                                     Intent intent = new Intent(registerPage.this, loginPage.class);
                                                                     startActivity(intent);
@@ -208,20 +216,4 @@ public class registerPage extends AppCompatActivity {
                     }
                 });
     }
-
-    // this is for signin , automatically got voucher
-    private void addWelcomeVoucher(String userId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> voucher = new HashMap<>();
-        voucher.put("title", "$5 off your next purchase");
-        voucher.put("description", "Welcome Voucher");
-        voucher.put("userId", userId);
-        voucher.put("type", "welcome");
-
-        db.collection("vouchers")
-                .add(voucher)
-                .addOnSuccessListener(documentReference -> Log.d("RegisterPage", "Welcome voucher added"))
-                .addOnFailureListener(e -> Log.w("RegisterPage", "Error adding voucher", e));
-    }
-
 }

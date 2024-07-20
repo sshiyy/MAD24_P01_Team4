@@ -1,5 +1,4 @@
 package sg.edu.np.mad.mad_p01_team4;
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,34 +12,55 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 
 public class ongoingFragment extends Fragment {
 
+    private static final String TAG = "OngoingFragment";
+
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private RecyclerView recyclerView;
+    private OrderAdapter orderAdapter;
     private ImageButton buttonDrawer;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_ongoingorders, container, false);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        recyclerView = view.findViewById(R.id.ongoingrv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        orderAdapter = new OrderAdapter(new ArrayList<>());
+        recyclerView.setAdapter(orderAdapter);
 
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
 
-        // Set the drawer toggle button listener
         buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         initializeFragmentMap();
 
-        // Initialize NavigationView
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
             displaySelectedFragment(itemId);
@@ -48,10 +68,42 @@ public class ongoingFragment extends Fragment {
             return true;
         });
 
+        loadOrders();
+
         return view;
     }
 
-    // Initialize the fragment map
+    private void loadOrders() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        db.collection("ongoing_orders")
+                .whereEqualTo("userId", currentUser.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Map<Long, List<Order>> ordersMap = new HashMap<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Order order = document.toObject(Order.class);
+                        long timestamp = order.getTimestamp(); // Assuming Order class has a timestamp field
+
+                        if (!ordersMap.containsKey(timestamp)) {
+                            ordersMap.put(timestamp, new ArrayList<>());
+                        }
+                        ordersMap.get(timestamp).add(order);
+                    }
+
+                    List<OrderGroup> orderGroups = new ArrayList<>();
+                    for (Map.Entry<Long, List<Order>> entry : ordersMap.entrySet()) {
+                        orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
+                    }
+
+                    orderAdapter.updateOrderGroups(orderGroups);
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to load orders", e));
+    }
+
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
         fragmentMap.put(R.id.navMenu, productFragment.class);
@@ -62,10 +114,8 @@ public class ongoingFragment extends Fragment {
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
         fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
         fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
-        // Add more mappings as needed
     }
 
-    // Dynamically display the selected fragment based on the menu item ID
     private void displaySelectedFragment(int itemId) {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
         if (fragmentClass != null) {

@@ -102,19 +102,25 @@ public class pointsFragment extends Fragment {
             return true;
         });
 
+        // Fetch user details to update points and tier
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            fetchUserDetails(currentUser.getEmail());
+        } else {
+            Log.e(TAG, "User is not authenticated.");
+        }
 
         // Fetch and display vouchers
         fetchVouchers();
 
-
-
         // Handle redeem button clicks
-        redeemButton.setOnClickListener(v -> redeemPoints(100, "$5 off your next purchase"));
-        redeemButton2.setOnClickListener(v -> redeemPoints(200, "$10 off your next purchase"));
-        redeemButton3.setOnClickListener(v -> redeemPoints(350, "$20 off your next purchase"));
+        redeemButton.setOnClickListener(v -> redeemPoints(100, "$5 off your next purchase", 5));
+        redeemButton2.setOnClickListener(v -> redeemPoints(200, "$10 off your next purchase", 10));
+        redeemButton3.setOnClickListener(v -> redeemPoints(350, "$20 off your next purchase", 20));
 
         return view;
     }
+
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
         fragmentMap.put(R.id.navMenu, productFragment.class);
@@ -149,8 +155,6 @@ public class pointsFragment extends Fragment {
         }
     }
 
-
-
     private void fetchVouchers() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -160,11 +164,14 @@ public class pointsFragment extends Fragment {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                List<Map<String, String>> vouchers = (List<Map<String, String>>) document.get("vouchers");
+                                List<Map<String, Object>> vouchers = (List<Map<String, Object>>) document.get("vouchers");
                                 voucherList.clear();
                                 if (vouchers != null) {
-                                    for (Map<String, String> voucherData : vouchers) {
-                                        Voucher voucher = new Voucher(voucherData.get("title"), voucherData.get("discount"));
+                                    for (Map<String, Object> voucherData : vouchers) {
+                                        String title = (String) voucherData.get("title");
+                                        String description = (String) voucherData.get("description");
+                                        Long discountAmt = (Long) voucherData.get("discountAmt");
+                                        Voucher voucher = new Voucher(title, description, discountAmt != null ? discountAmt.intValue() : 0);
                                         voucherList.add(voucher);
                                     }
                                 }
@@ -210,17 +217,17 @@ public class pointsFragment extends Fragment {
                 });
     }
 
-    private void redeemPoints(int pointsRequired, String discountDescription) {
+    private void redeemPoints(int pointsRequired, String discountDescription, int discountAmt) {
         if (userPoints >= pointsRequired) {
             userPoints -= pointsRequired;
-            updatePointsInFirestore(userPoints, discountDescription);
+            updatePointsInFirestore(userPoints, discountDescription, discountAmt);
         } else {
             Log.d("PointsFragment", "Not enough points to redeem this voucher");
             Toast.makeText(getActivity(), "Not enough points to redeem this voucher.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updatePointsInFirestore(long newPoints, String discountDescription) {
+    private void updatePointsInFirestore(long newPoints, String discountDescription, int discountAmt) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
@@ -239,7 +246,7 @@ public class pointsFragment extends Fragment {
                                             currentTier.setText(tier);
                                             updateProgressBar(newPoints);
                                             Log.d("Points_Page", "Points and tier updated successfully in Firestore");
-                                            addVoucher(currentUser.getUid(), discountDescription);
+                                            addVoucher(currentUser.getUid(), discountDescription, discountAmt);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Points_Page", "Failed to update points and tier in Firestore", e);
@@ -262,7 +269,7 @@ public class pointsFragment extends Fragment {
         }
     }
 
-    private void addVoucher(String userId, String discountDescription) {
+    private void addVoucher(String userId, String discountDescription, int discountAmt) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
@@ -272,12 +279,18 @@ public class pointsFragment extends Fragment {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Create a voucher map with title, description, and discount amount
+                                Map<String, Object> voucher = new HashMap<>();
+                                voucher.put("title", discountDescription);
+                                voucher.put("description", discountDescription);
+                                voucher.put("discountAmt", discountAmt);
+
                                 // Add voucher to the user's account
                                 db.collection("Accounts").document(document.getId())
-                                        .update("vouchers", FieldValue.arrayUnion(new Voucher(discountDescription, discountDescription)))
+                                        .update("vouchers", FieldValue.arrayUnion(voucher))
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("pointsFragment", "Voucher added successfully");
-                                            Voucher newVoucher = new Voucher(discountDescription, discountDescription);
+                                            Voucher newVoucher = new Voucher(discountDescription, discountDescription, discountAmt);
                                             voucherList.add(newVoucher);
                                             voucherAdapter.notifyDataSetChanged();
                                             Toast.makeText(getActivity(), "Redeemed " + discountDescription + " successfully!", Toast.LENGTH_SHORT).show();
@@ -348,15 +361,18 @@ public class pointsFragment extends Fragment {
         }
     }
 
-
-
-    private void navigateToCartWithVoucher(String voucherTitle, String voucherDiscount) {
+    private void navigateToCartWithVoucher(String voucherTitle, int voucherDiscount) {
         cartFragment cartFragment = new cartFragment();
 
         Bundle args = new Bundle();
         args.putString("voucherTitle", voucherTitle);
-        args.putString("voucherDiscount", voucherDiscount);
+        args.putInt("voucherDiscount", voucherDiscount);
         cartFragment.setArguments(args);
 
+        // Navigate to the cartFragment
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, cartFragment) // Replace with the ID of your container layout
+                .addToBackStack(null)
+                .commit();
     }
 }

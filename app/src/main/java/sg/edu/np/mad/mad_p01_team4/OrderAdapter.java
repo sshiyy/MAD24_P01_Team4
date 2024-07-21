@@ -1,14 +1,20 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +22,13 @@ import java.util.List;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private List<OrderGroup> orderGroups;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     public OrderAdapter(List<OrderGroup> orderGroups) {
         this.orderGroups = orderGroups;
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public void updateOrderGroups(List<OrderGroup> newOrderGroups) {
@@ -44,25 +54,52 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orderGroups.size();
     }
 
-    static class OrderViewHolder extends RecyclerView.ViewHolder {
+    class OrderViewHolder extends RecyclerView.ViewHolder {
 
         private TextView orderNumberTextView;
         private RecyclerView itemsRecyclerView;
         private OrderItemAdapter orderItemAdapter;
+        private RelativeLayout receivedBtn;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderNumberTextView = itemView.findViewById(R.id.ordernumber);
             itemsRecyclerView = itemView.findViewById(R.id.items_recyclerview);
+            receivedBtn = itemView.findViewById(R.id.receivedbtn);
 
             itemsRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
             orderItemAdapter = new OrderItemAdapter(new ArrayList<>());
             itemsRecyclerView.setAdapter(orderItemAdapter);
+
+            receivedBtn.setOnClickListener(v -> moveOrderToHistory(getAdapterPosition()));
         }
 
         public void bind(OrderGroup orderGroup) {
-            orderNumberTextView.setText("Order #" + orderGroup.getTimestamp()); // Customize order number display as needed
+            orderNumberTextView.setText("Order #" + orderGroup.getOrderId()); // Customize order number display as needed
             orderItemAdapter.updateOrderItems(orderGroup.getOrders());
+        }
+
+        private void moveOrderToHistory(int position) {
+            OrderGroup orderGroup = orderGroups.get(position);
+            List<Order> orders = orderGroup.getOrders();
+
+            for (Order order : orders) {
+                db.collection("order_history")
+                        .add(order)
+                        .addOnSuccessListener(documentReference -> {
+                            db.collection("ongoing_orders")
+                                    .document(order.getDocumentId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Order moved to order_history and deleted from ongoing_orders"))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete order from ongoing_orders", e));
+                        })
+                        .addOnFailureListener(e -> Log.e(TAG, "Failed to add order to order_history", e));
+            }
+
+            // Remove the order group from the list and notify the adapter
+            orderGroups.remove(position);
+            notifyItemRemoved(position);
         }
     }
 }
+

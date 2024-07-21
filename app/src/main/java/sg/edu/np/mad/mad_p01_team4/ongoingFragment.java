@@ -83,19 +83,20 @@ public class ongoingFragment extends Fragment {
                 .whereEqualTo("userId", currentUser.getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Map<Long, List<Order>> ordersMap = new HashMap<>();
+                    Map<String, List<Order>> ordersMap = new HashMap<>();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Order order = document.toObject(Order.class);
-                        long timestamp = order.getTimestamp(); // Assuming Order class has a timestamp field
+                        order.setDocumentId(document.getId()); // Set the document ID for deletion
+                        String orderId = order.getOrderId(); // Use orderId instead of timestamp
 
-                        if (!ordersMap.containsKey(timestamp)) {
-                            ordersMap.put(timestamp, new ArrayList<>());
+                        if (!ordersMap.containsKey(orderId)) {
+                            ordersMap.put(orderId, new ArrayList<>());
                         }
-                        ordersMap.get(timestamp).add(order);
+                        ordersMap.get(orderId).add(order);
                     }
 
                     List<OrderGroup> orderGroups = new ArrayList<>();
-                    for (Map.Entry<Long, List<Order>> entry : ordersMap.entrySet()) {
+                    for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
                         orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
                     }
 

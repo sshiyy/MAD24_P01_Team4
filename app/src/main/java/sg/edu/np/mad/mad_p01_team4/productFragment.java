@@ -39,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -50,7 +52,6 @@ import java.util.Map;
 
 public class productFragment extends Fragment {
 
-    // Default constructor - every fragment needs it
     public productFragment() {
         // Required empty public constructor
     }
@@ -64,6 +65,7 @@ public class productFragment extends Fragment {
     private TextView allRestaurantsText;
     private TextView sortedByText;
     private EditText searchEditText;
+    private OrderAgainAdapter orderAgainAdapter;
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
@@ -72,14 +74,12 @@ public class productFragment extends Fragment {
 
     private TextView noProductTextView;
 
-    // Map to store the relationship between menu item IDs and fragment classes
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.productpage, container, false);
 
-        // Initialize UI elements
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
@@ -88,17 +88,13 @@ public class productFragment extends Fragment {
         noProductTextView = view.findViewById(R.id.noProductTextView);
         ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
 
-        // Set up listeners
         voiceButton.setOnClickListener(v -> startVoiceRecognition());
-
-        // Check for microphone permission
         checkMicrophonePermission();
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.open());
 
         initializeFragmentMap();
 
-        // Set up the navigation drawer
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
             Log.d(TAG, "Navigation item clicked: " + itemId);
@@ -110,12 +106,16 @@ public class productFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
         foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
+        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext());
+
         setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
+        setUpRecyclerView(view, R.id.orderagainrecyclerView, orderAgainAdapter);
 
         allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
         sortedByText = view.findViewById(R.id.sortedByText);
 
         fetchFoodItems();
+        fetchOrderAgainItems();
 
         ImageButton filbtn = view.findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
@@ -134,10 +134,8 @@ public class productFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Set OnClickListener for viewAllButton
         Button viewAllButton = view.findViewById(R.id.viewallbutton);
         viewAllButton.setOnClickListener(v -> {
-            // Navigate to the ViewAllActivity
             Intent intent = new Intent(getActivity(), viewallFragment.class);
             startActivity(intent);
         });
@@ -206,22 +204,18 @@ public class productFragment extends Fragment {
 
             @Override
             public void onBeginningOfSpeech() {
-                // Optional: Show some indication that speech recognition has started
             }
 
             @Override
             public void onRmsChanged(float rmsdB) {
-                // Optional: Handle changes in the input signal
             }
 
             @Override
             public void onBufferReceived(byte[] buffer) {
-                // Optional: Handle received buffer
             }
 
             @Override
             public void onEndOfSpeech() {
-                // Optional: Show some indication that speech recognition has ended
             }
 
             @Override
@@ -231,7 +225,6 @@ public class productFragment extends Fragment {
                 String errorMessage = getErrorText(error);
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 if (error == SpeechRecognizer.ERROR_NO_MATCH) {
-                    // Retry listening
                     startVoiceRecognition();
                 }
             }
@@ -252,7 +245,6 @@ public class productFragment extends Fragment {
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-                // Optional: Handle events
             }
         });
     }
@@ -326,7 +318,7 @@ public class productFragment extends Fragment {
         }
     }
 
-    private void setUpRecyclerView(View view, int recyclerViewId, FoodAdapter adapter) {
+    private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(recyclerViewId);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -350,6 +342,30 @@ public class productFragment extends Fragment {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+    }
+
+    private void fetchOrderAgainItems() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        db.collection("order_history")
+                .whereEqualTo("userId", currentUser.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Map<String, Order> uniqueOrdersMap = new HashMap<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Order order = document.toObject(Order.class);
+                        if (!uniqueOrdersMap.containsKey(order.getFoodName())) {
+                            uniqueOrdersMap.put(order.getFoodName(), order);
+                        }
+                    }
+
+                    List<Order> uniqueOrders = new ArrayList<>(uniqueOrdersMap.values());
+                    orderAgainAdapter.updateOrderItems(uniqueOrders);
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
     }
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
@@ -402,10 +418,7 @@ public class productFragment extends Fragment {
 
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
-        double[] priceRange = new double[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            priceRange = priceRangeMap.getOrDefault(selectedPriceRange, new double[]{0, Double.MAX_VALUE});
-        }
+        double[] priceRange = priceRangeMap.getOrDefault(selectedPriceRange, new double[]{0, Double.MAX_VALUE});
         double minPrice = priceRange[0];
         double maxPrice = priceRange[1];
 
@@ -492,7 +505,6 @@ public class productFragment extends Fragment {
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
         fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
         fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
-        // Add more mappings as needed
     }
 
     private void displaySelectedFragment(int itemId) {

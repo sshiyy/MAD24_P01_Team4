@@ -11,8 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <!-- Toolbar with menu button and Cart text -->
         <androidx.appcompat.widget.Toolbar
@@ -45,15 +44,13 @@
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
-
-
         <!-- Nested scroll view and recyclerview to display the items that were added to cart -->
         <androidx.core.widget.NestedScrollView
             android:id="@+id/ongoingpagesv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/ongoing_toolbar"
-
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

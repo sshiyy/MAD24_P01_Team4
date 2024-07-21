@@ -3,10 +3,13 @@ package sg.edu.np.mad.mad_p01_team4;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -45,16 +48,23 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         private TextView itemNameTextView;
         private TextView itemPriceTextView;
+        private ImageView itemImageView; // Add this field
 
         public OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
             itemNameTextView = itemView.findViewById(R.id.tvcartName);
             itemPriceTextView = itemView.findViewById(R.id.tvcartPrice);
+            itemImageView = itemView.findViewById(R.id.ivcartImage); // Initialize the ImageView
         }
 
         public void bind(Order order) {
             itemNameTextView.setText(order.getFoodName());
             itemPriceTextView.setText("$" + order.getPrice());
+
+            // Load the image using Glide
+            Glide.with(itemView.getContext())
+                    .load(order.getImg()) // Load the image from the URL
+                    .into(itemImageView); // Set into ImageView
         }
     }
 }

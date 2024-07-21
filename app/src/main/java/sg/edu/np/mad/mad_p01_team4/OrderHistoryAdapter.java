@@ -9,16 +9,26 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
     private List<OrderGroup> orderGroups;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private orderhistoryFragment fragment;
 
     public OrderHistoryAdapter(List<OrderGroup> orderGroups) {
         this.orderGroups = orderGroups;
+        this.db = FirebaseFirestore.getInstance();
+        this.mAuth = FirebaseAuth.getInstance();
+        this.fragment = fragment;
     }
 
     public void updateOrderGroups(List<OrderGroup> newOrderGroups) {
@@ -29,7 +39,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @NonNull
     @Override
     public OrderHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.customhistoryorder, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.customhistorycard, parent, false);
         return new OrderHistoryViewHolder(view);
     }
 
@@ -68,6 +78,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             if (!orderGroup.getOrders().isEmpty()) {
                 Order firstOrder = orderGroup.getOrders().get(0);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore")); // Set to Singapore time
                 String dateTime = sdf.format(firstOrder.getTimestamp());
                 timeDateDisplayTextView.setText(dateTime);
             }

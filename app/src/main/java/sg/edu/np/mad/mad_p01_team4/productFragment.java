@@ -106,7 +106,7 @@ public class productFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
         foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
-        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext());
+        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext(), foodAdapter);
 
         setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
         setUpRecyclerView(view, R.id.orderagainrecyclerView, orderAgainAdapter);
@@ -350,23 +350,44 @@ public class productFragment extends Fragment {
             return;
         }
 
-        db.collection("order_history")
-                .whereEqualTo("userId", currentUser.getUid())
+        String userId = currentUser.getUid();
+        db.collection("favorites")
+                .whereEqualTo("userId", userId)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Map<String, Order> uniqueOrdersMap = new HashMap<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Order order = document.toObject(Order.class);
-                        if (!uniqueOrdersMap.containsKey(order.getFoodName())) {
-                            uniqueOrdersMap.put(order.getFoodName(), order);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> favoriteFoodNames = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String foodName = document.getString("foodName");
+                            favoriteFoodNames.add(foodName);
                         }
-                    }
 
-                    List<Order> uniqueOrders = new ArrayList<>(uniqueOrdersMap.values());
-                    orderAgainAdapter.updateOrderItems(uniqueOrders);
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
+                        db.collection("order_history")
+                                .whereEqualTo("userId", userId)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    Map<String, Order> uniqueOrdersMap = new HashMap<>();
+                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                        Order order = document.toObject(Order.class);
+                                        if (!uniqueOrdersMap.containsKey(order.getFoodName())) {
+                                            if (favoriteFoodNames.contains(order.getFoodName())) {
+                                                order.setFavorite(true);
+                                            }
+                                            uniqueOrdersMap.put(order.getFoodName(), order);
+                                        }
+                                    }
+
+                                    List<Order> uniqueOrders = new ArrayList<>(uniqueOrdersMap.values());
+                                    orderAgainAdapter.updateOrderItems(uniqueOrders);
+                                })
+                                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
+                    } else {
+                        Log.w(TAG, "Error getting favorites.", task.getException());
+                    }
+                });
     }
+
+
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
         foodAdapter.updateList(foodList);

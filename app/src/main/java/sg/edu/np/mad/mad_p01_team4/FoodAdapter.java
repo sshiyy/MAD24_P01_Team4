@@ -43,6 +43,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         this.context = context;
     }
 
+    public List<Food> getFoodList() {
+        return foodList;
+    }
+
     @NonNull
     @Override
     public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

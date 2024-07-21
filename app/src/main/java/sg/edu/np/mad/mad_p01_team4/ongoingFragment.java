@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class ongoingFragment extends Fragment {
 
     private static final String TAG = "OngoingFragment";
@@ -39,6 +39,7 @@ public class ongoingFragment extends Fragment {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
+    private TextView noordermsg;
 
     @Nullable
     @Override
@@ -50,12 +51,13 @@ public class ongoingFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.ongoingrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        orderAdapter = new OrderAdapter(new ArrayList<>());
+        orderAdapter = new OrderAdapter(new ArrayList<>(), this); // Pass the fragment reference
         recyclerView.setAdapter(orderAdapter);
 
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
+        noordermsg = view.findViewById(R.id.noongoingMessage);
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
@@ -73,7 +75,7 @@ public class ongoingFragment extends Fragment {
         return view;
     }
 
-    private void loadOrders() {
+    public void loadOrders() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             return;
@@ -100,7 +102,14 @@ public class ongoingFragment extends Fragment {
                         orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
                     }
 
-                    orderAdapter.updateOrderGroups(orderGroups);
+                    if (orderGroups.isEmpty()) {
+                        noordermsg.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        noordermsg.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        orderAdapter.updateOrderGroups(orderGroups);
+                    }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to load orders", e));
     }

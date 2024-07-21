@@ -44,6 +44,22 @@
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
+        <!-- TextView for "no ongoing orders" message -->
+        <TextView
+            android:id="@+id/noongoingMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No ongoing orders. Make some orders now!"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:padding="16dp"/>
+
         <!-- Nested scroll view and recyclerview to display the items that were added to cart -->
         <androidx.core.widget.NestedScrollView
             android:id="@+id/ongoingpagesv"

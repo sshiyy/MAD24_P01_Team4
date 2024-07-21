@@ -48,13 +48,13 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         private TextView itemNameTextView;
         private TextView itemPriceTextView;
-        private ImageView itemImageView; // Add this field
+        private ImageView itemImageView;
 
         public OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
             itemNameTextView = itemView.findViewById(R.id.tvcartName);
             itemPriceTextView = itemView.findViewById(R.id.tvcartPrice);
-            itemImageView = itemView.findViewById(R.id.ivcartImage); // Initialize the ImageView
+            itemImageView = itemView.findViewById(R.id.ivcartImage);
         }
 
         public void bind(Order order) {

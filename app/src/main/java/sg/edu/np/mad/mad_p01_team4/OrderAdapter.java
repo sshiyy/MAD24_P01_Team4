@@ -24,11 +24,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<OrderGroup> orderGroups;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private ongoingFragment fragment; // Add reference to ongoingFragment
 
-    public OrderAdapter(List<OrderGroup> orderGroups) {
+    public OrderAdapter(List<OrderGroup> orderGroups, ongoingFragment fragment) {
         this.orderGroups = orderGroups;
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+        this.db = FirebaseFirestore.getInstance();
+        this.mAuth = FirebaseAuth.getInstance();
+        this.fragment = fragment; // Initialize the reference
     }
 
     public void updateOrderGroups(List<OrderGroup> newOrderGroups) {
@@ -90,7 +92,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             db.collection("ongoing_orders")
                                     .document(order.getDocumentId())
                                     .delete()
-                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Order moved to order_history and deleted from ongoing_orders"))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "Order moved to order_history and deleted from ongoing_orders");
+                                        // Notify the fragment to reload orders
+                                        fragment.loadOrders();
+                                    })
                                     .addOnFailureListener(e -> Log.e(TAG, "Failed to delete order from ongoing_orders", e));
                         })
                         .addOnFailureListener(e -> Log.e(TAG, "Failed to add order to order_history", e));
@@ -102,4 +108,3 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
     }
 }
-

@@ -9,6 +9,7 @@ public class OrderGroup {
     public OrderGroup(String orderId, List<Order> orders) {
         this.orderId = orderId;
         this.orders = orders;
+
     }
 
     public String getOrderId() {

@@ -27,10 +27,12 @@ public class OrderAgainAdapter extends RecyclerView.Adapter<OrderAgainAdapter.Or
     private List<Order> orderItems;
     private Context context;
     private FirebaseFirestore db;
+    private FoodAdapter foodAdapter; // Reference to the FoodAdapter
 
-    public OrderAgainAdapter(List<Order> orderItems, Context context) {
+    public OrderAgainAdapter(List<Order> orderItems, Context context, FoodAdapter foodAdapter) {
         this.orderItems = orderItems;
         this.context = context;
+        this.foodAdapter = foodAdapter;
         this.db = FirebaseFirestore.getInstance();
     }
 
@@ -115,6 +117,7 @@ public class OrderAgainAdapter extends RecyclerView.Adapter<OrderAgainAdapter.Or
                     .addOnSuccessListener(documentReference -> {
                         order.setFavorite(true);
                         favButton.setImageResource(R.drawable.redfavbtn);
+                        updateFoodAdapter(order, true);
                     })
                     .addOnFailureListener(e -> Log.e("OrderAgainAdapter", "Error adding to favorites", e));
         }
@@ -136,11 +139,23 @@ public class OrderAgainAdapter extends RecyclerView.Adapter<OrderAgainAdapter.Or
                                     .addOnSuccessListener(aVoid -> {
                                         order.setFavorite(false);
                                         favButton.setImageResource(R.drawable.favbtn);
+                                        updateFoodAdapter(order, false);
                                     })
                                     .addOnFailureListener(e -> Log.e("OrderAgainAdapter", "Error removing from favorites", e));
                         }
                     })
                     .addOnFailureListener(e -> Log.e("OrderAgainAdapter", "Error querying favorites", e));
+        }
+
+        private void updateFoodAdapter(Order order, boolean isFavorite) {
+            List<Food> foodList = foodAdapter.getFoodList();
+            for (Food food : foodList) {
+                if (food.getName().equals(order.getFoodName())) {
+                    food.setFavorite(isFavorite);
+                    foodAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
         }
     }
 }

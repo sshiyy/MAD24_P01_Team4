@@ -106,7 +106,7 @@ public class productFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
         foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
-        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext());
+        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext(), foodAdapter);
 
         setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
         setUpRecyclerView(view, R.id.orderagainrecyclerView, orderAgainAdapter);

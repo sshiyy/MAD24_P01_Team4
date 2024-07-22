@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -33,30 +33,25 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class productFragment extends Fragment {
 
-    // Default constructor - every fragment needs it
     public productFragment() {
         // Required empty public constructor
     }
@@ -65,14 +60,12 @@ public class productFragment extends Fragment {
     private static final int REQUEST_MIC_PERMISSION = 1;
 
     private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
-    private String userId;
     private ArrayList<Food> allFoodList;
     private FoodAdapter foodAdapter;
-    private FoodAdapter popularFoodAdapter;
     private TextView allRestaurantsText;
     private TextView sortedByText;
     private EditText searchEditText;
+    private OrderAgainAdapter orderAgainAdapter;
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
@@ -81,7 +74,6 @@ public class productFragment extends Fragment {
 
     private TextView noProductTextView;
 
-    // Map to store the relationship between menu item IDs and fragment classes
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Override
@@ -92,50 +84,38 @@ public class productFragment extends Fragment {
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
         searchEditText = view.findViewById(R.id.searchEditText);
-        voicePopup = view.findViewById(R.id.voice_popup); // Initialize the voice popup
-        noProductTextView = view.findViewById(R.id.noProductTextView); //for apply filter - when no products text view
+        voicePopup = view.findViewById(R.id.voice_popup);
+        noProductTextView = view.findViewById(R.id.noProductTextView);
+        ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
 
-        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                performSearch(v.getText().toString());
-                return true;
-            }
-            return false;
-        });
-
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
-        } else {
-            initializeSpeechRecognitionHelper();
-        }
+        voiceButton.setOnClickListener(v -> startVoiceRecognition());
+        checkMicrophonePermission();
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.open());
 
-
         initializeFragmentMap();
 
-        // Set up the navigation drawer
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
-            Log.d(TAG, "Navigation item clicked: " + itemId); // Log the item ID
+            Log.d(TAG, "Navigation item clicked: " + itemId);
             displaySelectedFragment(itemId);
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
-
         db = FirebaseFirestore.getInstance();
-
         allFoodList = new ArrayList<>();
-
         foodAdapter = new FoodAdapter(new ArrayList<>(), getContext());
-        setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
+        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext(), foodAdapter);
 
+        setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
+        setUpRecyclerView(view, R.id.orderagainrecyclerView, orderAgainAdapter);
 
         allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
         sortedByText = view.findViewById(R.id.sortedByText);
 
         fetchFoodItems();
+        fetchOrderAgainItems();
 
         ImageButton filbtn = view.findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
@@ -154,6 +134,19 @@ public class productFragment extends Fragment {
             startActivity(intent);
         });
 
+        Button viewAllButton = view.findViewById(R.id.viewallbutton);
+        viewAllButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), viewallFragment.class);
+            startActivity(intent);
+        });
+
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                performSearch(v.getText().toString());
+                return true;
+            }
+            return false;
+        });
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -170,12 +163,16 @@ public class productFragment extends Fragment {
             }
         });
 
-        ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
-        voiceButton.setOnClickListener(v -> startVoiceRecognition());
-
         return view;
     }
 
+    private void checkMicrophonePermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+        } else {
+            initializeSpeechRecognitionHelper();
+        }
+    }
 
     @Override
     public void onPause() {
@@ -189,7 +186,16 @@ public class productFragment extends Fragment {
         dismissMicPopup();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (speechRecognitionHelper != null) {
+            speechRecognitionHelper.destroy();
+        }
+    }
+
     private void initializeSpeechRecognitionHelper() {
+        Log.d(TAG, "Initializing SpeechRecognitionHelper");
         speechRecognitionHelper = new SpeechRecognitionHelper(getContext(), new SpeechRecognitionHelper.SpeechRecognitionListener() {
             @Override
             public void onReadyForSpeech() {
@@ -198,54 +204,63 @@ public class productFragment extends Fragment {
 
             @Override
             public void onBeginningOfSpeech() {
-                // Optional: Show some indication that speech recognition has started
             }
 
             @Override
             public void onRmsChanged(float rmsdB) {
-                // Optional: Handle changes in the input signal
             }
 
             @Override
             public void onBufferReceived(byte[] buffer) {
-                // Optional: Handle received buffer
             }
 
             @Override
             public void onEndOfSpeech() {
-                // Optional: Show some indication that speech recognition has ended
             }
 
             @Override
             public void onError(int error) {
                 dismissMicPopup();
                 Log.e(TAG, "Speech recognition error: " + error);
+                String errorMessage = getErrorText(error);
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                if (error == SpeechRecognizer.ERROR_NO_MATCH) {
+                    startVoiceRecognition();
+                }
             }
 
             @Override
             public void onResults(String result) {
                 Log.d(TAG, "Recognized result: " + result);
-                updateRecognizedText(result); // Update the Popup's TextView with the recognized text
-                handleVoiceCommand(result); // Handle voice command and dismiss popup
+                updateRecognizedText(result);
+                handleVoiceCommand(result);
                 dismissMicPopup();
             }
 
             @Override
             public void onPartialResults(String partialResult) {
                 Log.d(TAG, "Partial result: " + partialResult);
-                updateRecognizedText(partialResult); // Update the Popup's TextView with partial results
+                updateRecognizedText(partialResult);
             }
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-                // Optional: Handle events
             }
         });
     }
 
     private void startVoiceRecognition() {
-        speechRecognitionHelper.startListening();
-        showMicPopup(); // Show the popup when starting voice recognition
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+        } else {
+            if (speechRecognitionHelper != null) {
+                Log.d(TAG, "Starting voice recognition");
+                speechRecognitionHelper.startListening();
+                showMicPopup();
+            } else {
+                Log.e(TAG, "SpeechRecognitionHelper is not initialized");
+            }
+        }
     }
 
     private void showMicPopup() {
@@ -282,7 +297,7 @@ public class productFragment extends Fragment {
         if (command.contains("account")) {
             Log.d(TAG, "Navigating to account fragment");
             selectedFragment = new profileFragment();
-        } else if (command.contains("shopping")) {
+        } else if (command.contains("shopping") || command.contains("cart")) {
             Log.d(TAG, "Navigating to cart fragment");
             selectedFragment = new cartFragment();
         } else if (command.contains("product")) {
@@ -303,7 +318,7 @@ public class productFragment extends Fragment {
         }
     }
 
-    private void setUpRecyclerView(View view, int recyclerViewId, FoodAdapter adapter) {
+    private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(recyclerViewId);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -319,7 +334,7 @@ public class productFragment extends Fragment {
                         allFoodList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Food food = document.toObject(Food.class);
-                            food.setModifications((List<Map<String, Object>>) document.get("modifications")); // Set modifications
+                            food.setModifications((List<Map<String, Object>>) document.get("modifications"));
                             allFoodList.add(food);
                         }
                         updateAllAdapters(allFoodList);
@@ -328,6 +343,51 @@ public class productFragment extends Fragment {
                     }
                 });
     }
+
+    private void fetchOrderAgainItems() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        db.collection("favorites")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> favoriteFoodNames = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String foodName = document.getString("foodName");
+                            favoriteFoodNames.add(foodName);
+                        }
+
+                        db.collection("order_history")
+                                .whereEqualTo("userId", userId)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    Map<String, Order> uniqueOrdersMap = new HashMap<>();
+                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                        Order order = document.toObject(Order.class);
+                                        if (!uniqueOrdersMap.containsKey(order.getFoodName())) {
+                                            if (favoriteFoodNames.contains(order.getFoodName())) {
+                                                order.setFavorite(true);
+                                            }
+                                            uniqueOrdersMap.put(order.getFoodName(), order);
+                                        }
+                                    }
+
+                                    List<Order> uniqueOrders = new ArrayList<>(uniqueOrdersMap.values());
+                                    orderAgainAdapter.updateOrderItems(uniqueOrders);
+                                })
+                                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
+                    } else {
+                        Log.w(TAG, "Error getting favorites.", task.getException());
+                    }
+                });
+    }
+
+
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
         foodAdapter.updateList(foodList);
@@ -377,14 +437,9 @@ public class productFragment extends Fragment {
         put("All", "");
     }};
 
-
-
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
-        double[] priceRange = new double[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            priceRange = priceRangeMap.getOrDefault(selectedPriceRange, new double[]{0, Double.MAX_VALUE});
-        }
+        double[] priceRange = priceRangeMap.getOrDefault(selectedPriceRange, new double[]{0, Double.MAX_VALUE});
         double minPrice = priceRange[0];
         double maxPrice = priceRange[1];
 
@@ -398,7 +453,6 @@ public class productFragment extends Fragment {
         }
 
         updateAllAdapters(filteredList);
-
 
         if (filteredList.isEmpty()) {
             noProductTextView.setVisibility(View.VISIBLE);
@@ -423,7 +477,6 @@ public class productFragment extends Fragment {
         }
     }
 
-
     private void clearFilter() {
         allRestaurantsText.setText("All Category");
         sortedByText.setText("sorted by category");
@@ -432,7 +485,6 @@ public class productFragment extends Fragment {
 
     private void performSearch(String query) {
         ArrayList<Food> filteredList = new ArrayList<>();
-
         String lowercaseQuery = query.toLowerCase().trim();
 
         for (Food food : allFoodList) {
@@ -452,14 +504,6 @@ public class productFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (speechRecognitionHelper != null) {
-            speechRecognitionHelper.destroy();
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_MIC_PERMISSION) {
@@ -472,7 +516,6 @@ public class productFragment extends Fragment {
         }
     }
 
-    // Initialize the fragment map
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
         fragmentMap.put(R.id.navMenu, productFragment.class);
@@ -480,11 +523,11 @@ public class productFragment extends Fragment {
         fragmentMap.put(R.id.navAccount, profileFragment.class);
         fragmentMap.put(R.id.navMap, mapFragment.class);
         fragmentMap.put(R.id.navPoints, pointsFragment.class);
-        // Add more mappings as needed
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
+        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
+        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
     }
 
-
-    // Dynamically display the selected fragment based on the menu item ID
     private void displaySelectedFragment(int itemId) {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
         if (fragmentClass != null) {
@@ -506,5 +549,40 @@ public class productFragment extends Fragment {
         }
     }
 
-
+    private String getErrorText(int errorCode) {
+        String message;
+        switch (errorCode) {
+            case SpeechRecognizer.ERROR_AUDIO:
+                message = "Audio recording error, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_CLIENT:
+                message = "Client error, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                message = "Insufficient permissions, please enable microphone access.";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK:
+                message = "Network error, please check your connection and try again.";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                message = "Network timeout, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_NO_MATCH:
+                message = "Match not found, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                message = "Recognition service is busy, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_SERVER:
+                message = "Server error, please try again.";
+                break;
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                message = "No speech input, please try again.";
+                break;
+            default:
+                message = "Unknown error, please try again.";
+                break;
+        }
+        return message;
+    }
 }

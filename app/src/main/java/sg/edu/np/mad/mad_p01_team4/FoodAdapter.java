@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public FoodAdapter(ArrayList<Food> foodList, Context context) {
         this.foodList = foodList;
         this.filteredFoodList = new ArrayList<>(foodList);
+        sortFoodList(filteredFoodList); // Sort the filtered list initially
         this.context = context;
+    }
+
+    public List<Food> getFoodList() {
+        return foodList;
     }
 
     @NonNull
@@ -203,6 +209,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public void updateList(ArrayList<Food> newList) {
         filteredFoodList.clear();
         filteredFoodList.addAll(newList);
+        sortFoodList(filteredFoodList); // Sort the list after updating it
         notifyDataSetChanged();
     }
 
@@ -219,7 +226,17 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 }
             }
         }
+        sortFoodList(filteredFoodList); // Sort the list after filtering it
         notifyDataSetChanged(); // Notify adapter of data change
+    }
+
+    private void sortFoodList(ArrayList<Food> foodList) {
+        Collections.sort(foodList, new Comparator<Food>() {
+            @Override
+            public int compare(Food f1, Food f2) {
+                return f1.getName().compareToIgnoreCase(f2.getName());
+            }
+        });
     }
 
     private void checkIfFavorite(Food food, ImageButton favBtn) {

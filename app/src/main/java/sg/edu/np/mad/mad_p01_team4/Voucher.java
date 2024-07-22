@@ -2,14 +2,16 @@ package sg.edu.np.mad.mad_p01_team4;
 
 public class Voucher {
     private String title;
-    private String discount;
+    private String description;
+    private int discountAmt;
 
     // Required for Firestore serialization
     public Voucher() {}
 
-    public Voucher(String title, String discount) {
+    public Voucher(String title, String description, int discountAmt) {
         this.title = title;
-        this.discount = discount;
+        this.description = description;
+        this.discountAmt = discountAmt;
     }
 
     public String getTitle() {
@@ -20,11 +22,19 @@ public class Voucher {
         this.title = title;
     }
 
-    public String getDiscount() {
-        return discount;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDiscount(String discount) {
-        this.discount = discount;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(int discountAmt) {
+        this.discountAmt = discountAmt;
     }
 }

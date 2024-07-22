@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.recyclerview)
     implementation(libs.firebase.storage)
+    implementation(libs.smart.reply.common)
     testImplementation(libs.junit)
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
@@ -64,6 +65,9 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.google.android.material:material:1.4.0")
+    implementation ("com.google.firebase:firebase-ml-natural-language:22.0.0")
+    implementation ("com.google.firebase:firebase-ml-natural-language-smart-reply-model:20.0.7")
 
 }
 

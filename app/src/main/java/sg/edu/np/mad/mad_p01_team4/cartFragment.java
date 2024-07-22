@@ -1,6 +1,5 @@
 package sg.edu.np.mad.mad_p01_team4;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -29,13 +31,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class cartFragment extends Fragment {
 
@@ -53,7 +59,11 @@ public class cartFragment extends Fragment {
     private TextView totalpricing;
     private TextView totalprice;
     private TextView discountPrice;
+
+    private ImageButton crossBtn;
     private TextView emptyCartMessage;
+
+    private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Nullable
     @Override
@@ -62,14 +72,6 @@ public class cartFragment extends Fragment {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        // Cross button in cart page
-        ImageView cartcrossbtn = view.findViewById(R.id.crossicon);
-        cartcrossbtn.setOnClickListener(v -> {
-            if (requireActivity().getSupportFragmentManager() != null) {
-                requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back to the previous fragment
-            }
-        });
 
         // Initialize TextViews
         noGSTprice = view.findViewById(R.id.noGSTprice);
@@ -84,6 +86,9 @@ public class cartFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        crossBtn = view.findViewById(R.id.crossBtn);
+        crossBtn.setOnClickListener(v -> getActivity().onBackPressed());
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
@@ -101,13 +106,35 @@ public class cartFragment extends Fragment {
         // Check for voucher discount in the arguments
         Bundle arguments = getArguments();
         if (arguments != null) {
-            String voucherDiscount = arguments.getString("voucherDiscount");
-            if (voucherDiscount != null) {
+            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
+            Log.d(TAG, "Voucher discount: " + voucherDiscount);
+            if (voucherDiscount != 0) {
                 applyVoucherDiscount(voucherDiscount);
             }
         }
 
         return view;
+    }
+
+    private void applyVoucherDiscount(int voucherDiscount) {
+        String totalPriceText = totalprice.getText().toString();
+        Log.d(TAG, "Total price text before applying discount: " + totalPriceText);
+
+        try {
+            double totalPrice = Double.parseDouble(totalPriceText);
+            double newTotalPrice = totalPrice - voucherDiscount;
+            totalprice.setText(String.format("%.2f", newTotalPrice));
+
+            // Set the discount price and make it visible
+            discountPrice.setText(String.format("-$%.2f", (double) voucherDiscount));
+            discountPrice.setVisibility(View.VISIBLE);
+
+            Log.d(TAG, "Discount applied: " + voucherDiscount);
+            Log.d(TAG, "New total price: " + newTotalPrice);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Invalid total price format", e);
+            Toast.makeText(getActivity(), "Invalid total price format", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updatePricing() {
@@ -128,7 +155,18 @@ public class cartFragment extends Fragment {
                         noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
                         GST.setText(String.format("$%.2f", gst));
                         totalpricing.setText(String.format("$%.2f", totalPrice));
-                        totalprice.setText(String.format("$%.2f", totalPrice));
+                        totalprice.setText(String.format("$%.2f", totalPrice)); // Ensure the dollar sign is included
+
+                        Log.d(TAG, "Total price text after update: " + totalprice.getText().toString());
+
+                        // Apply the voucher discount if any
+                        Bundle arguments = getArguments();
+                        if (arguments != null) {
+                            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
+                            if (voucherDiscount != 0) {
+                                applyVoucherDiscount(voucherDiscount);
+                            }
+                        }
 
                         if (totalPrice == 0) {
                             emptyCartMessage.setVisibility(View.VISIBLE);
@@ -144,17 +182,6 @@ public class cartFragment extends Fragment {
                         Toast.makeText(getActivity(), "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
-    }
-
-    private void applyVoucherDiscount(String voucherDiscount) {
-        // Convert the discount string to a double value
-        double discountValue = Double.parseDouble(voucherDiscount.replaceAll("[^0-9.]", ""));
-        discountPrice.setText(String.format("-$%.2f", discountValue));
-
-        // Update the total price with the discount applied
-        double totalPrice = Double.parseDouble(totalprice.getText().toString().substring(1));
-        double newTotalPrice = totalPrice - discountValue;
-        totalprice.setText(String.format("$%.2f", newTotalPrice));
     }
 
     // Define the callback for the ItemTouchHelper
@@ -349,7 +376,9 @@ public class cartFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            String orderId = generateRandomOrderId();
             for (Order order : currentOrders) {
+                order.setOrderId(orderId); // Set the orderId field
                 db.collection("ongoing_orders")
                         .add(order)
                         .addOnSuccessListener(documentReference -> {
@@ -366,6 +395,11 @@ public class cartFragment extends Fragment {
             cartAdapter.notifyDataSetChanged();
             updateConfirmButtonState();
         }
+    }
+
+    private String generateRandomOrderId() {
+        Random random = new Random();
+        return String.format("%04d", random.nextInt(10000)); // Generates a random 4-digit number and formats it as String
     }
 
     private void updatePointsAfterCheckout(double totalPrice) {

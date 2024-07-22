@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class cartFragment extends Fragment {
 
@@ -103,7 +104,6 @@ public class cartFragment extends Fragment {
         updatePricing();
 
         // Check for voucher discount in the arguments
-        // In onCreateView
         Bundle arguments = getArguments();
         if (arguments != null) {
             int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
@@ -112,7 +112,6 @@ public class cartFragment extends Fragment {
                 applyVoucherDiscount(voucherDiscount);
             }
         }
-
 
         return view;
     }
@@ -137,8 +136,6 @@ public class cartFragment extends Fragment {
             Toast.makeText(getActivity(), "Invalid total price format", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     private void updatePricing() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -186,9 +183,6 @@ public class cartFragment extends Fragment {
                     });
         }
     }
-
-
-
 
     // Define the callback for the ItemTouchHelper
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -382,7 +376,9 @@ public class cartFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            String orderId = generateRandomOrderId();
             for (Order order : currentOrders) {
+                order.setOrderId(orderId); // Set the orderId field
                 db.collection("ongoing_orders")
                         .add(order)
                         .addOnSuccessListener(documentReference -> {
@@ -399,6 +395,11 @@ public class cartFragment extends Fragment {
             cartAdapter.notifyDataSetChanged();
             updateConfirmButtonState();
         }
+    }
+
+    private String generateRandomOrderId() {
+        Random random = new Random();
+        return String.format("%04d", random.nextInt(10000)); // Generates a random 4-digit number and formats it as String
     }
 
     private void updatePointsAfterCheckout(double totalPrice) {

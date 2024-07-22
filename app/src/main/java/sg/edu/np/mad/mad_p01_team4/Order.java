@@ -12,6 +12,8 @@ public class Order {
     private long timestamp;
     private String img;
     private String documentId;
+    private String orderId;
+    private Boolean isFavorite = false;
 
     // Default constructor required for calls to DataSnapshot.getValue(Order.class)
     public Order() {}
@@ -86,5 +88,20 @@ public class Order {
 
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

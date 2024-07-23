@@ -1,11 +1,15 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.smartreply.FirebaseSmartReply;
 import com.google.firebase.ml.naturallanguage.smartreply.FirebaseTextMessage;
@@ -30,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class chatbot extends AppCompatActivity {
 
@@ -39,10 +45,13 @@ public class chatbot extends AppCompatActivity {
     ChatBotAdapter adapter;
     FirebaseFirestore db;
     FirebaseSmartReply smartReply;
+    ChipGroup chipGroup;
 
     private final String user = "user";
     private final String bot = "bot";
     private final Map<String, String> keywordMapping = new HashMap<>();
+    private final Map<String, String> predefinedResponses = new HashMap<>();
+    private boolean isKeywordLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,7 @@ public class chatbot extends AppCompatActivity {
         setContentView(R.layout.activity_chatbot);
         recyclerView = findViewById(R.id.recycler_view);
         editText = findViewById(R.id.edit);
+        chipGroup = findViewById(R.id.chip_group);
         list = new ArrayList<>();
         adapter = new ChatBotAdapter(this, list);
         db = FirebaseFirestore.getInstance();
@@ -58,6 +68,9 @@ public class chatbot extends AppCompatActivity {
         // Initialize keyword mappings
         initializeKeywordMappings();
 
+        // Initialize predefined responses
+        initializePredefinedResponses();
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -65,7 +78,7 @@ public class chatbot extends AppCompatActivity {
         sendWelcomeMessage();
 
         editText.setOnTouchListener(new View.OnTouchListener() {
-           @Override
+            @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
@@ -84,6 +97,20 @@ public class chatbot extends AppCompatActivity {
             }
         });
 
+        // Add TextWatcher to EditText
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateSuggestions(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         // Close button functionality
         ImageView closeButton = findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +122,38 @@ public class chatbot extends AppCompatActivity {
     }
 
     private void initializeKeywordMappings() {
-        // Add mappings from keywords to document IDs
-        keywordMapping.put("payment", "payment_methods");
-        keywordMapping.put("order", "order");
-        keywordMapping.put("track", "track_order");
-        // Add more mappings as needed
+        CollectionReference faqsRef = db.collection("FAQs");
+        faqsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        String keyword = document.getString("keyword");
+                        String documentId = document.getId(); // Get the document ID
+                        if (keyword != null && !keyword.isEmpty()) {
+                            String[] words = keyword.toLowerCase().split("\\s+");
+                            for (String word : words) {
+                                keywordMapping.put(word, documentId);
+                            }
+                            Log.d("Firestore", "Keyword: " + keyword + " Document ID: " + documentId);
+                        }
+                    }
+                    isKeywordLoaded = true;
+                    Log.d("Firestore", "Keywords successfully loaded");
+                } else {
+                    Log.w("Firestore", "Error getting keywords.", task.getException());
+                }
+            }
+        });
+    }
+
+    private void initializePredefinedResponses() {
+        predefinedResponses.put("hi", "Hi, nice to meet you! Do you need help?");
+        predefinedResponses.put("hello", "Hello! How can I assist you today?");
+        predefinedResponses.put("yes", "Great! What do you need help with?");
+        predefinedResponses.put("no", "Alright. If you have any questions, feel free to ask.");
+        predefinedResponses.put("thanks", "You're welcome!");
+        predefinedResponses.put("thank you", "You're welcome!");
     }
 
     private void sendWelcomeMessage() {
@@ -107,38 +161,107 @@ public class chatbot extends AppCompatActivity {
         list.add(new MessageModel(welcomeMessage, bot, getCurrentTime()));
         adapter.notifyDataSetChanged();
         recyclerView.smoothScrollToPosition(list.size() - 1);
+
+        // Add predefined suggestions to the ChipGroup
+        String[] suggestions = {
+                "How can I order?",
+                "Customize order",
+                "Track my order",
+                "What are the payment methods?",
+                "How to forget password?",
+                "Is my payment info secure?",
+                "Update account settings"
+        };
+        chipGroup.removeAllViews();
+        for (String suggestion : suggestions) {
+            Chip chip = new Chip(chatbot.this);
+            chip.setText(suggestion);
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    list.add(new MessageModel(suggestion, user, getCurrentTime()));
+                    adapter.notifyDataSetChanged();
+                    recyclerView.smoothScrollToPosition(list.size() - 1);
+                    handleUserMessage(suggestion);
+                }
+            });
+            chipGroup.addView(chip);
+        }
     }
 
     private void handleUserMessage(String message) {
-        String documentId = getDocumentIdForMessage(message);
+        if (!isKeywordLoaded) {
+            list.add(new MessageModel("Keywords are still loading. Please try again shortly.", bot, getCurrentTime()));
+            adapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(list.size() - 1);
+            return;
+        }
+
+        String lowerCaseMessage = message.toLowerCase().trim();
+        if (predefinedResponses.containsKey(lowerCaseMessage)) {
+            list.add(new MessageModel(predefinedResponses.get(lowerCaseMessage), bot, getCurrentTime()));
+            adapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(list.size() - 1);
+            return;
+        }
+
+        String documentId = getDocumentIdForMessage(lowerCaseMessage);
         if (documentId != null) {
             fetchFAQAnswer(documentId);
         } else {
             // Check for typos and find the closest matching keyword
-            String closestKeyword = findClosestKeyword(message);
+            String closestKeyword = findClosestKeyword(lowerCaseMessage);
             if (closestKeyword != null) {
                 list.add(new MessageModel("Did you mean '" + closestKeyword + "'?", bot, getCurrentTime()));
                 adapter.notifyDataSetChanged();
                 recyclerView.smoothScrollToPosition(list.size() - 1);
             } else {
                 // If no keyword is found, generate Smart Reply suggestions
-                generateSmartReply(message);
+                generateSmartReply(lowerCaseMessage);
             }
         }
+
+        // Update suggestions based on the user's input
+        updateSuggestions(lowerCaseMessage);
     }
 
-
-
-
     private String getDocumentIdForMessage(String message) {
-        for (String keyword : keywordMapping.keySet()) {
-            if (message.toLowerCase().contains(keyword)) {
-                return keywordMapping.get(keyword);
+        String[] words = message.toLowerCase().split("\\s+");
+        for (String word : words) {
+            if (keywordMapping.containsKey(word)) {
+                return keywordMapping.get(word);
             }
         }
         return null;
     }
 
+
+    private void updateSuggestions(String message) {
+        chipGroup.removeAllViews();
+        String[] suggestions = {"How can I order?",
+                "Customize order",
+                "Track my order",
+                "What are the payment methods?",
+                "How to forget password?",
+                "Is my payment info secure?",
+                "Update account settings"};
+        for (String suggestion : suggestions) {
+            if (suggestion.toLowerCase().contains(message.toLowerCase())) {
+                Chip chip = new Chip(chatbot.this);
+                chip.setText(suggestion);
+                chip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        list.add(new MessageModel(suggestion, user, getCurrentTime()));
+                        adapter.notifyDataSetChanged();
+                        recyclerView.smoothScrollToPosition(list.size() - 1);
+                        handleUserMessage(suggestion);
+                    }
+                });
+                chipGroup.addView(chip);
+            }
+        }
+    }
 
     private void generateSmartReply(String message) {
         List<FirebaseTextMessage> conversation = new ArrayList<>();
@@ -161,9 +284,29 @@ public class chatbot extends AppCompatActivity {
                             } else if (result.getStatus() == SmartReplySuggestionResult.STATUS_SUCCESS) {
                                 List<SmartReplySuggestion> suggestions = result.getSuggestions();
                                 if (!suggestions.isEmpty()) {
-                                    String reply = suggestions.get(0).getText();
-                                    list.add(new MessageModel(reply, bot, getCurrentTime()));
-                                    Log.d("SmartReply", "Reply: " + reply);
+                                    boolean validSuggestionFound = false;
+                                    for (SmartReplySuggestion suggestion : suggestions) {
+                                        String reply = suggestion.getText();
+                                        if (!isInvalidSmartReply(reply)) {
+                                            Chip chip = new Chip(chatbot.this);
+                                            chip.setText(reply);
+                                            chip.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    list.add(new MessageModel(reply, user, getCurrentTime()));
+                                                    adapter.notifyDataSetChanged();
+                                                    recyclerView.smoothScrollToPosition(list.size() - 1);
+                                                    handleUserMessage(reply);
+                                                }
+                                            });
+                                            chipGroup.addView(chip);
+                                            validSuggestionFound = true;
+                                        }
+                                    }
+                                    if (!validSuggestionFound) {
+                                        list.add(new MessageModel("I don't understand the question.", bot, getCurrentTime()));
+                                        Log.d("SmartReply", "No valid suggestions available.");
+                                    }
                                 } else {
                                     list.add(new MessageModel("I don't understand the question.", bot, getCurrentTime()));
                                     Log.d("SmartReply", "No suggestions available.");
@@ -173,10 +316,20 @@ public class chatbot extends AppCompatActivity {
                             recyclerView.smoothScrollToPosition(list.size() - 1);
                         } else {
                             Log.e("SmartReply", "Smart Reply task failed", task.getException());
+                            list.add(new MessageModel("I don't understand the question.", bot, getCurrentTime()));
+                            adapter.notifyDataSetChanged();
+                            recyclerView.smoothScrollToPosition(list.size() - 1);
                         }
                     }
                 });
     }
+
+    private boolean isInvalidSmartReply(String reply) {
+        String lowerReply = reply.toLowerCase();
+        return lowerReply.contains("ok") || lowerReply.contains("okay") || lowerReply.contains("yes") || lowerReply.contains("no") || lowerReply.contains("emoji");
+    }
+
+
     private void fetchFAQAnswer(String documentId) {
         CollectionReference faqsRef = db.collection("FAQs");
         faqsRef.document(documentId).get()
@@ -214,7 +367,6 @@ public class chatbot extends AppCompatActivity {
         return dp[s1.length()][s2.length()];
     }
 
-
     private String findClosestKeyword(String message) {
         String closestKeyword = null;
         int minDistance = Integer.MAX_VALUE;
@@ -231,11 +383,10 @@ public class chatbot extends AppCompatActivity {
         return minDistance <= 2 ? closestKeyword : null;
     }
 
-
-
-
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
         return sdf.format(new Date());
     }
+
 }

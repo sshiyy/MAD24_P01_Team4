@@ -163,8 +163,6 @@ a hamburger menu  for the navigation using fragments to
 organize the app sections efficiently. using FRAGMENT .. 
 Using a hash for fragment navigation in an Android app can be done using a HashMap to map menu item IDs to their respective fragments. This approach simplifies the fragment navigation logic and makes it more maintainable.
 
-1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press credit card they will be able to pay with fingerprint
-
 2. Voice Commands and Assistant Integration
 Concepts: Speech Recognition, Voice Assistant Integration.
 Implementation: Use SpeechRecognizer for capturing voice input, and integrate with Google Assistant for handling voice commands.
@@ -173,7 +171,6 @@ Implementation: Use SpeechRecognizer for capturing voice input, and integrate wi
 Concepts: Natural Language Processing (NLP)
 Implementation: Create a chatbot using firstore and provide automated responses.
 
-4. Try implementing backstack too? - not sure about this yet 
 
 
 ```

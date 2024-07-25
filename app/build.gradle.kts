@@ -68,6 +68,8 @@ dependencies {
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("com.google.firebase:firebase-ml-natural-language:22.0.0")
     implementation ("com.google.firebase:firebase-ml-natural-language-smart-reply-model:20.0.7")
+    implementation ("com.google.android.material:material:1.3.0")
+
 
 }
 

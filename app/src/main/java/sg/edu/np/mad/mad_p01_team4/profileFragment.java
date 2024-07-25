@@ -65,9 +65,11 @@ public class profileFragment extends Fragment {
     private String currentEmail;
     private String profilePicUrl;
 
+    //for hamburger
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
+    //end of hamburger
 
     ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
@@ -80,16 +82,18 @@ public class profileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_profile_page, container, false);
 
+        //this hamburger...
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.open());
+        // end of hamburger
 
         fragmentMap = new HashMap<>();
         initializeFragmentMap();
 
-        // Set up the navigation drawer
+        // Set up the navigation drawer - hambuger
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
             Log.d(TAG, "Navigation item clicked: " + itemId);

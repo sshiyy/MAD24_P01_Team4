@@ -18,7 +18,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
     private OnVoucherUseListener onVoucherUseListener;
 
     public interface OnVoucherUseListener {
-        void onVoucherUse(String voucherTitle, int voucherDiscount);
+        void onVoucherUse(Voucher voucher);
     }
 
     public VoucherAdapter(List<Voucher> voucherList, Context context, OnVoucherUseListener onVoucherUseListener) {
@@ -43,7 +43,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
 
         holder.useButton.setOnClickListener(v -> {
             if (onVoucherUseListener != null) {
-                onVoucherUseListener.onVoucherUse(voucher.getTitle(), voucher.getDiscountAmt());
+                onVoucherUseListener.onVoucherUse(voucher);
             }
         });
     }

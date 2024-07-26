@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -87,19 +86,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/below"
-        android:layout_above="@+id/above"
+        android:layout_above="@+id/chip_group"
         android:layout_marginBottom="6dp">
 
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recycler_view">
-            </androidx.recyclerview.widget.RecyclerView>
-        </ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view">
+        </androidx.recyclerview.widget.RecyclerView>
     </RelativeLayout>
+
+    <!-- Place ChipGroup above the EditText -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        app:singleLine="true"
+        android:layout_above="@+id/above"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -135,6 +140,4 @@
 
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
-
-
 </RelativeLayout>

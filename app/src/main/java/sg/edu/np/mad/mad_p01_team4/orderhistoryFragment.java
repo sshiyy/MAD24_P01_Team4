@@ -23,8 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,35 +91,50 @@ public class orderhistoryFragment extends Fragment {
 
         db.collection("order_history")
                 .whereEqualTo("userId", currentUser.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Map<String, List<Order>> ordersMap = new HashMap<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Order order = document.toObject(Order.class);
-                        order.setDocumentId(document.getId()); // Set the document ID for potential future use
-                        String orderId = order.getOrderId(); // Use orderId for grouping
-
-                        if (!ordersMap.containsKey(orderId)) {
-                            ordersMap.put(orderId, new ArrayList<>());
-                        }
-                        ordersMap.get(orderId).add(order);
+                .get(Source.CACHE) // First try to get data from the cache
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // If cache data is available, proceed with it
+                        processOrderHistory(task.getResult());
                     }
 
-                    List<OrderGroup> orderGroups = new ArrayList<>();
-                    for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
-                        orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
-                    }
+                    // Now, force fetch data from the server to get the latest updates
+                    db.collection("order_history")
+                            .whereEqualTo("userId", currentUser.getUid())
+                            .get(Source.SERVER)
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                processOrderHistory(queryDocumentSnapshots);
+                            })
+                            .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history from server", e));
+                });
+    }
 
-                    if (orderGroups.isEmpty()) {
-                        nohistoryMessage.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else {
-                        nohistoryMessage.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        orderHistoryAdapter.updateOrderGroups(orderGroups);
-                    }
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
+    private void processOrderHistory(QuerySnapshot queryDocumentSnapshots) {
+        Map<String, List<Order>> ordersMap = new HashMap<>();
+        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+            Order order = document.toObject(Order.class);
+            order.setDocumentId(document.getId()); // Set the document ID for potential future use
+            String orderId = order.getOrderId(); // Use orderId for grouping
+
+            if (!ordersMap.containsKey(orderId)) {
+                ordersMap.put(orderId, new ArrayList<>());
+            }
+            ordersMap.get(orderId).add(order);
+        }
+
+        List<OrderGroup> orderGroups = new ArrayList<>();
+        for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
+            orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
+        }
+
+        if (orderGroups.isEmpty()) {
+            nohistoryMessage.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            nohistoryMessage.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            orderHistoryAdapter.updateOrderGroups(orderGroups);
+        }
     }
 
     private void initializeFragmentMap() {

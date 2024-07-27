@@ -85,6 +85,7 @@ public class orderhistoryFragment extends Fragment {
         return view;
     }
 
+    // method to fetch order from order history collection
     private void loadOrderHistory() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {

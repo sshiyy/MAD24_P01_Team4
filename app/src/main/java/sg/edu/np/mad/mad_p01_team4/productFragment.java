@@ -80,6 +80,7 @@ public class productFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.productpage, container, false);
 
+        // initializing
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
@@ -88,9 +89,11 @@ public class productFragment extends Fragment {
         noProductTextView = view.findViewById(R.id.noProductTextView);
         ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
 
+        // voice button click listener
         voiceButton.setOnClickListener(v -> startVoiceRecognition());
         checkMicrophonePermission();
 
+        // drawer button listener
         buttonDrawer.setOnClickListener(v -> drawerLayout.open());
 
         initializeFragmentMap();
@@ -115,9 +118,11 @@ public class productFragment extends Fragment {
 
         fetchFoodItems();
 
+        // filter button click listener
         ImageButton filbtn = view.findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
 
+        // cart button click listener
         RelativeLayout cartbutton = view.findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
@@ -126,6 +131,7 @@ public class productFragment extends Fragment {
                     .commit();
         });
 
+        // floating action button click listener
         FloatingActionButton floatingActionButton = view.findViewById(R.id.chatbot_button);
         floatingActionButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), chatbot.class);
@@ -134,6 +140,7 @@ public class productFragment extends Fragment {
 
 
 
+        // search edit text
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                 performSearch(v.getText().toString());
@@ -288,16 +295,16 @@ public class productFragment extends Fragment {
 
         Fragment selectedFragment = null;
 
-        if (command.contains("account")) {
+        if (command.contains("account")|| command.contains("profile")|| command.contains("account")) {
             Log.d(TAG, "Navigating to account fragment");
             selectedFragment = new profileFragment();
-        } else if (command.contains("shopping") || command.contains("cart")) {
+        } else if (command.contains("shopping") || command.contains("cart")|| command.contains("checkout")) {
             Log.d(TAG, "Navigating to cart fragment");
             selectedFragment = new cartFragment();
-        } else if (command.contains("product")) {
+        } else if (command.contains("product")|| command.contains("Home")|| command.contains("Food")) {
             Log.d(TAG, "Navigating to product fragment");
             selectedFragment = new productFragment();
-        } else if (command.contains("points")) {
+        } else if (command.contains("points")|| command.contains("rewards")) {
             Log.d(TAG, "Navigating to points fragment");
             selectedFragment = new pointsFragment();
         } else {
@@ -312,6 +319,7 @@ public class productFragment extends Fragment {
         }
     }
 
+    // method to set up and layout recyclerview
     private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(recyclerViewId);
         int numberOfColumns = 2; // Set the number of columns for the grid layout
@@ -321,6 +329,7 @@ public class productFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    // fetch food items from food items collection
     private void fetchFoodItems() {
         db.collection("Food_Items")
                 .get()

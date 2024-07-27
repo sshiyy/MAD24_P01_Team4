@@ -32,7 +32,7 @@
                 android:layout_margin="18dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:text="Hello, I am Sourabh" />
+                android:text="Hello, I am Raeann" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -57,5 +57,6 @@
         android:layout_below="@+id/time"
         android:layout_marginRight="100dp"
         android:layout_alignParentRight="true"
+        android:textColor="@color/black"
         android:text="9:30 PM" />
 </RelativeLayout>

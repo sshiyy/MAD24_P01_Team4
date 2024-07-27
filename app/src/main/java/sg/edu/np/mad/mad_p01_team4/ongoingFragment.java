@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,35 +85,50 @@ public class ongoingFragment extends Fragment {
 
         db.collection("ongoing_orders")
                 .whereEqualTo("userId", currentUser.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Map<String, List<Order>> ordersMap = new HashMap<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Order order = document.toObject(Order.class);
-                        order.setDocumentId(document.getId()); // Set the document ID for deletion
-                        String orderId = order.getOrderId(); // Use orderId instead of timestamp
-
-                        if (!ordersMap.containsKey(orderId)) {
-                            ordersMap.put(orderId, new ArrayList<>());
-                        }
-                        ordersMap.get(orderId).add(order);
+                .get(Source.CACHE) // First try to get data from the cache
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // If cache data is available, proceed with it
+                        processOrders(task.getResult());
                     }
 
-                    List<OrderGroup> orderGroups = new ArrayList<>();
-                    for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
-                        orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
-                    }
+                    // Now, force fetch data from the server to get the latest updates
+                    db.collection("ongoing_orders")
+                            .whereEqualTo("userId", currentUser.getUid())
+                            .get(Source.SERVER)
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                processOrders(queryDocumentSnapshots);
+                            })
+                            .addOnFailureListener(e -> Log.e(TAG, "Failed to load orders from server", e));
+                });
+    }
 
-                    if (orderGroups.isEmpty()) {
-                        noordermsg.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else {
-                        noordermsg.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        orderAdapter.updateOrderGroups(orderGroups);
-                    }
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to load orders", e));
+    private void processOrders(QuerySnapshot queryDocumentSnapshots) {
+        Map<String, List<Order>> ordersMap = new HashMap<>();
+        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+            Order order = document.toObject(Order.class);
+            order.setDocumentId(document.getId()); // Set the document ID for deletion
+            String orderId = order.getOrderId(); // Use orderId instead of timestamp
+
+            if (!ordersMap.containsKey(orderId)) {
+                ordersMap.put(orderId, new ArrayList<>());
+            }
+            ordersMap.get(orderId).add(order);
+        }
+
+        List<OrderGroup> orderGroups = new ArrayList<>();
+        for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
+            orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
+        }
+
+        if (orderGroups.isEmpty()) {
+            noordermsg.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            noordermsg.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            orderAdapter.updateOrderGroups(orderGroups);
+        }
     }
 
     private void initializeFragmentMap() {

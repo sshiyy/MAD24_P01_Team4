@@ -81,9 +81,12 @@ public class FavoritesFragment extends Fragment {
 
         // Set up RecyclerView
         favoriteItems = new ArrayList<>();
-        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext(), R.layout.custom_itemlist_small, this); // Pass FavoritesFragment instance
+        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext(), R.layout.custom_itemlist_small, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         favoritesRecyclerView.setLayoutManager(gridLayoutManager);
+
+
+
         favoritesRecyclerView.setAdapter(foodAdapter);
 
         // Load favorite items

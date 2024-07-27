@@ -38,7 +38,7 @@
                 android:text="Enchante Rewards"
                 android:layout_marginLeft="30dp"
                 android:layout_gravity="center_vertical"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>

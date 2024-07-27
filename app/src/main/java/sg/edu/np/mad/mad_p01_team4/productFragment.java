@@ -93,6 +93,7 @@ public class productFragment extends Fragment { // Main fragment class extending
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.open()); // Set click listener for drawer button
 
+
         initializeFragmentMap(); // Initialize fragment map
 
         navigationView.setNavigationItemSelectedListener(menuItem -> { // Set navigation item selected listener
@@ -117,6 +118,8 @@ public class productFragment extends Fragment { // Main fragment class extending
         ImageButton filbtn = view.findViewById(R.id.filterIcon); // Find filter button by ID
         filbtn.setOnClickListener(v -> showFilterPopup()); // Set click listener for filter button
 
+
+
         RelativeLayout cartbutton = view.findViewById(R.id.cart_button); // Find cart button by ID
         cartbutton.setOnClickListener(v -> { // Set click listener for cart button
             requireActivity().getSupportFragmentManager().beginTransaction()
@@ -125,6 +128,8 @@ public class productFragment extends Fragment { // Main fragment class extending
                     .commit();
         });
 
+
+
         FloatingActionButton floatingActionButton = view.findViewById(R.id.chatbot_button); // Find floating action button by ID
         floatingActionButton.setOnClickListener(v -> { // Set click listener for floating action button
             Intent intent = new Intent(getActivity(), chatbot.class); // Create intent for chatbot activity
@@ -132,6 +137,7 @@ public class productFragment extends Fragment { // Main fragment class extending
         });
 
         searchEditText.setOnEditorActionListener((v, actionId, event) -> { // Set editor action listener for search EditText
+
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                 performSearch(v.getText().toString()); // Perform search when search action is triggered
                 return true;
@@ -309,6 +315,7 @@ public class productFragment extends Fragment { // Main fragment class extending
         }
     }
 
+    // method to set up and layout recyclerview
     private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(recyclerViewId); // Find RecyclerView by ID
         int numberOfColumns = 2; // Set the number of columns for the grid layout
@@ -318,6 +325,7 @@ public class productFragment extends Fragment { // Main fragment class extending
         recyclerView.setAdapter(adapter); // Set adapter to RecyclerView
     }
 
+    // fetch food items from food items collection
     private void fetchFoodItems() {
         db.collection("Food_Items") // Reference to Food_Items collection in Firestore
                 .get()

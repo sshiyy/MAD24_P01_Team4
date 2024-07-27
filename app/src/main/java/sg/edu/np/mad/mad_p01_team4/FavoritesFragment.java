@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,8 +81,12 @@ public class FavoritesFragment extends Fragment {
 
         // Set up RecyclerView
         favoriteItems = new ArrayList<>();
-        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext()); // Use FoodAdapter
-        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext(), R.layout.custom_itemlist_small, this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        favoritesRecyclerView.setLayoutManager(gridLayoutManager);
+
+
+
         favoritesRecyclerView.setAdapter(foodAdapter);
 
         // Load favorite items
@@ -89,6 +94,7 @@ public class FavoritesFragment extends Fragment {
 
         return view;
     }
+
 
     private void loadFavoriteItems() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -144,7 +150,7 @@ public class FavoritesFragment extends Fragment {
     }
 
 
-    private void toggleEmptyMessage() {
+    public void toggleEmptyMessage() {
         if (favoriteItems.isEmpty()) {
             emptyFavoritesMessage.setVisibility(View.VISIBLE);
             favoritesRecyclerView.setVisibility(View.GONE);
@@ -152,6 +158,12 @@ public class FavoritesFragment extends Fragment {
             emptyFavoritesMessage.setVisibility(View.GONE);
             favoritesRecyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void updateFavoriteItems(List<Food> newList) {
+        favoriteItems.clear();
+        favoriteItems.addAll(newList);
+        toggleEmptyMessage();
     }
 
     private void initializeFragmentMap() {

@@ -189,9 +189,9 @@ Firestore Integration: Firestore, a flexible and scalable NoSQL cloud database f
 ```
 
 ```
-5.  External notification - Kaylea
+5.  Notification - Kaylea
 
-
+Trigger notification upon starting the app and after successful checkout
 
 ```
 

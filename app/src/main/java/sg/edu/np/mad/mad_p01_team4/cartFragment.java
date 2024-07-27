@@ -1,10 +1,15 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +25,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -323,6 +331,9 @@ public class cartFragment extends Fragment {
                 double totalPrice = Double.parseDouble(totalpricing.getText().toString().substring(1));
                 updatePointsAfterCheckout(totalPrice);
 
+                // Trigger the notification
+                triggerCheckoutNotification();
+
                 // Navigate to the points fragment to show updated points
                 Fragment pointsFragment = new pointsFragment();
                 FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -342,6 +353,49 @@ public class cartFragment extends Fragment {
         ImageView cross = dialog.findViewById(R.id.cross);
         cross.setOnClickListener(v -> dialog.dismiss());
     }
+
+    private void triggerCheckoutNotification() {
+        Context context = getActivity();
+
+        if (context != null) {
+            // Create the NotificationChannel, but only on API 26+ because the NotificationChannel class is new and not in the support library
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "Checkout Channel";
+                String description = "Channel for Checkout Notifications";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel("checkout_channel_id", name, importance);
+                channel.setDescription(description);
+
+                // Register the channel with the system; you can't change the importance or other notification behaviors after this
+                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "checkout_channel_id")
+                    .setSmallIcon(R.drawable.mainlogo) // Replace with your app's icon
+                    .setContentTitle("Checkout Successful")
+                    .setContentText("Thank you for your purchase!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+            // Notification ID is a unique int for each notification that you must define
+            int notificationId = 2;
+            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            notificationManager.notify(notificationId, builder.build());
+        }
+    }
+
+
 
 
     private void loadCurrentOrders() {

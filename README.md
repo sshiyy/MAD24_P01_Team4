@@ -144,15 +144,11 @@ Jason's References
 ```
 3. Advance cart UI feature - Shiying 
 
-Users can now swipe left on the item to add it to favorites/unfavorite, view more
-and also finding other relevant items in the same category.
-allow user to ammend order
+1. Added 'Favorite' feature for users to add items to favorites. Users can view their favorites in the 'Favorites' page.
+2. Added a feature for users to apply modifications and special request for orders.
+3. Improved cart by allowing users to swipe right on cart items to delete and swipe left to edit.
+4. Added 'Ongoing orders' and 'Order History' page for users to view. Users can select order received in Ongoing orders page.
 
-popular recommendations
-order again function
-ongoing order
-order history
-payment
 
 
 ```

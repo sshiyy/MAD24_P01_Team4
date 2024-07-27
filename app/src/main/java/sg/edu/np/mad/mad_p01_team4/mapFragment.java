@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -23,6 +25,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,19 +40,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.navigation.NavigationView;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,15 +56,16 @@ import java.util.Map;
 public class mapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "mapFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private ProgressBar progressBar;
 
-    // UI elements
+    // UI Elements
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
     private TextView distanceTextView;
     private Spinner modeSpinner;
 
-    // Map and location
+    // Map and Location Variables
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
@@ -80,6 +83,7 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_maps, container, false);
+        progressBar = view.findViewById(R.id.progressBar);
 
         // Set up the toolbar and navigation drawer
         drawerLayout = view.findViewById(R.id.drawer_layout);
@@ -107,17 +111,18 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (mMap != null) {
-                    // Recalculate the route when the mode changes
+                    // Recalculate the route when the mode of transportation changes
                     checkLocationPermission();
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+
             }
         });
 
+        // Apply window insets for proper layout adjustments
         ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -139,7 +144,7 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
                 .setFastestInterval(5000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        // Create location callback
+        // Create location callback to handle location updates
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -161,15 +166,18 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void checkLocationPermission() {
+        // Check for location permissions and request if not granted
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
+            // Enable location on the map
             mMap.setMyLocationEnabled(true);
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
         }
     }
 
     private void updateLocationUI(Location location) {
+        showProgressBar();
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
 
@@ -196,52 +204,57 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
 
             // Fetch and display route
             fetchRoute(userLocation, closestCafe);
+        } else {
+            hideProgressBar();
         }
     }
 
     private void fetchRoute(LatLng origin, LatLng destination) {
-        String apiKey = getString(R.string.google_maps_key); // Your Google Maps API key
+        String apiKey = getString(R.string.google_maps_key); // Retrieve the Google Maps API key from strings.xml
+        showProgressBar(); // Display progress bar
 
         // Get the selected mode of transportation
-        String mode = modeSpinner.getSelectedItem().toString().toLowerCase();
-        if (mode.equals("driving")) {
-            mode = "driving";
-        } else if (mode.equals("walking")) {
-            mode = "walking";
-        } else if (mode.equals("bicycling")) {
-            mode = "bicycling";
-        } else if (mode.equals("transit")) {
-            mode = "transit";
-        }
+        String mode = getTransportMode();
 
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude + "," + origin.longitude + "&destination=" + destination.latitude + "," + destination.longitude + "&mode=" + mode + "&key=" + apiKey;
 
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray routes = response.getJSONArray("routes");
-                    if (routes.length() > 0) {
-                        JSONObject route = routes.getJSONObject(0);
-                        JSONObject overviewPolyline = route.getJSONObject("overview_polyline");
-                        String points = overviewPolyline.getString("points");
-                        List<LatLng> decodedPath = PolyUtil.decode(points);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                JSONArray routes = response.getJSONArray("routes");
+                if (routes.length() > 0) {
+                    hideProgressBar();
+                    JSONObject route = routes.getJSONObject(0);
+                    JSONObject overviewPolyline = route.getJSONObject("overview_polyline");
+                    String points = overviewPolyline.getString("points");
+                    List<LatLng> decodedPath = PolyUtil.decode(points);
 
-                        mMap.addPolyline(new PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    mMap.addPolyline(new PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10));
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Error parsing route", Toast.LENGTH_SHORT).show();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
+        }, error -> {
+            error.printStackTrace();
+            hideProgressBar();
+            Toast.makeText(getContext(), "Error fetching route", Toast.LENGTH_SHORT).show();
         });
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private String getTransportMode() {
+        String mode = modeSpinner.getSelectedItem().toString().toLowerCase();
+        switch (mode) {
+            case "driving":
+            case "walking":
+            case "bicycling":
+            case "transit":
+                return mode;
+            default:
+                return "driving";
+        }
     }
 
     private void initializeFragmentMap() {
@@ -260,13 +273,14 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
         if (fragmentClass != null) {
             try {
-                Fragment selectedFragment = fragmentClass.newInstance();
+                Fragment selectedFragment = fragmentClass.getDeclaredConstructor().newInstance();
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
                         .addToBackStack(null)
                         .commit();
                 Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 e.printStackTrace();
                 Log.e(TAG, "Error instantiating fragment: " + e.getMessage());
             } catch (java.lang.InstantiationException e) {
@@ -287,6 +301,14 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
                 Log.e(TAG, "Location permission denied.");
             }
         }
+    }
+
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

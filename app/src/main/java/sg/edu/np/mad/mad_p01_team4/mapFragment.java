@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -42,8 +41,13 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private final LatLng cafeLocation = new LatLng(1.3333222656771135, 103.77592584043202); // Example cafe coordinates
     private TextView distanceTextView;
+
+    private final LatLng[] cafeLocations = {
+            new LatLng(1.3366473055287562, 103.77138756904179), // Café 1
+            new LatLng(1.337653013114712, 103.78039747684988), // Café 2
+            new LatLng(37.42039711108658, -122.0861325112942)  // Café 3
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,9 +77,9 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker for the cafe and move the camera
-        mMap.addMarker(new MarkerOptions().position(cafeLocation).title("Cafe Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cafeLocation, 15));
+        for (LatLng cafeLocation : cafeLocations) {
+            mMap.addMarker(new MarkerOptions().position(cafeLocation).title("Cafe Location"));
+        }
 
         // Get the user's location
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -93,15 +97,17 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
                             mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
 
-                            float[] results = new float[1];
-                            Location.distanceBetween(userLocation.latitude, userLocation.longitude, cafeLocation.latitude, cafeLocation.longitude, results);
-                            float distanceInMeters = results[0];
+                            for (LatLng cafeLocation : cafeLocations) {
+                                float[] results = new float[1];
+                                Location.distanceBetween(userLocation.latitude, userLocation.longitude, cafeLocation.latitude, cafeLocation.longitude, results);
+                                float distanceInMeters = results[0];
 
-                            // Show distance to the cafe
-                            distanceTextView.setText(String.format("Distance: %.2f meters", distanceInMeters));
+                                // Show distance to the closest cafe
+                                distanceTextView.append(String.format("Distance to cafe: %.2f meters\n", distanceInMeters));
 
-                            // Fetch and show the route
-                            fetchRoute(userLocation, cafeLocation);
+                                // Fetch and show the route
+                                fetchRoute(userLocation, cafeLocation);
+                            }
                         }
                     }
                 });
@@ -112,7 +118,7 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
             try {
                 String urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
                         origin.latitude + "," + origin.longitude + "&destination=" +
-                        destination.latitude + "," + destination.longitude + "&key=YOUR_API_KEY";
+                        destination.latitude + "," + destination.longitude + "&key=AIzaSyDGJRH2YB6yHLy9FVCdhA0MV2H6xnauKB0";
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -200,15 +206,17 @@ public class mapFragment extends Fragment implements OnMapReadyCallback {
                                         mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
                                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
 
-                                        float[] results = new float[1];
-                                        Location.distanceBetween(userLocation.latitude, userLocation.longitude, cafeLocation.latitude, cafeLocation.longitude, results);
-                                        float distanceInMeters = results[0];
+                                        for (LatLng cafeLocation : cafeLocations) {
+                                            float[] results = new float[1];
+                                            Location.distanceBetween(userLocation.latitude, userLocation.longitude, cafeLocation.latitude, cafeLocation.longitude, results);
+                                            float distanceInMeters = results[0];
 
-                                        // Show distance to the cafe
-                                        distanceTextView.setText(String.format("Distance: %.2f meters", distanceInMeters));
+                                            // Show distance to the closest cafe
+                                            distanceTextView.append(String.format("Distance to cafe: %.2f meters\n", distanceInMeters));
 
-                                        // Fetch and show the route
-                                        fetchRoute(userLocation, cafeLocation);
+                                            // Fetch and show the route
+                                            fetchRoute(userLocation, cafeLocation);
+                                        }
                                     }
                                 }
                             });

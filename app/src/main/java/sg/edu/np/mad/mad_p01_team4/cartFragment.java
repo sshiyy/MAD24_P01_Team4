@@ -1,5 +1,6 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -16,8 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,6 +41,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
@@ -47,6 +52,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,14 +254,14 @@ public class cartFragment extends Fragment {
             return false;
         }
 
+
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             Order order = currentOrders.get(position);
             if (direction == ItemTouchHelper.RIGHT) {
                 // Handle edit order
-                editOrder(order);
-                cartAdapter.notifyItemChanged(position);
+                showEditDialog(order, position);
             } else if (direction == ItemTouchHelper.LEFT) {
                 // Handle remove order
                 removeOrderFromDatabase(order);
@@ -265,6 +271,7 @@ public class cartFragment extends Fragment {
                 updatePricing();
             }
         }
+
 
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -441,11 +448,77 @@ public class cartFragment extends Fragment {
                 });
     }
 
-    // Method to edit order
-    private void editOrder(Order order) {
-        // Implement edit order logic here
-        Toast.makeText(getActivity(), "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
+    private void showEditDialog(Order order, int position) {
+        // Inflate the dialog view
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_food_detail, null);
+
+        ImageView ivFoodImage = dialogView.findViewById(R.id.foodImage);
+        TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
+        LinearLayout modificationsLayout = dialogView.findViewById(R.id.modificationsLayout);
+        EditText specialRequestInput = dialogView.findViewById(R.id.specialRequestInput);
+
+        // Load image using Glide
+        Glide.with(getContext())
+                .load(order.getImg()) // Assuming img is a URL or path to the image
+                .into(ivFoodImage);
+
+        // Set food description (assuming description is the food name in this context)
+        tvFoodDescription.setText(order.getFoodName());
+
+        // Add checkboxes for modifications and tick the ones already made
+        List<Map<String, Object>> modifications = order.getModifications();
+        List<CheckBox> checkBoxes = new ArrayList<>();
+        if (modifications != null) {
+            for (Map<String, Object> modification : modifications) {
+                String name = modification.keySet().iterator().next();
+                Boolean value = (Boolean) modification.values().iterator().next();
+
+                CheckBox checkBox = new CheckBox(getContext());
+                checkBox.setText(name);
+                checkBox.setChecked(value);
+                checkBoxes.add(checkBox);
+                modificationsLayout.addView(checkBox);
+            }
+        }
+
+        // Set the special request input text
+        specialRequestInput.setText(order.getSpecialRequest());
+
+        // Create and show alert dialog
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setView(dialogView)
+                .setPositiveButton("Update", (dialog, which) -> {
+                    List<Map<String, Object>> newModifications = new ArrayList<>();
+                    for (CheckBox checkBox : checkBoxes) {
+                        newModifications.add(Collections.singletonMap(checkBox.getText().toString(), checkBox.isChecked()));
+                    }
+                    String specialRequest = specialRequestInput.getText().toString();
+
+                    // Update the order
+                    order.setModifications(newModifications);
+                    order.setSpecialRequest(specialRequest);
+                    updateOrderInDatabase(order);
+                    currentOrders.set(position, order);
+                    cartAdapter.notifyItemChanged(position);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    cartAdapter.notifyItemChanged(position); // Reset the swipe state
+                    dialog.dismiss();
+                })
+                .create();
+        alertDialog.show();
     }
+
+    private void updateOrderInDatabase(Order order) {
+        // Update the order in the database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("currently_ordering").document(order.getDocumentId())
+                .set(order)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Order successfully updated"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating order", e));
+    }
+
 
     private void updateConfirmButtonState() {
         if (currentOrders.isEmpty()) {

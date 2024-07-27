@@ -29,5 +29,12 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
 
+    <string name="google_maps_key" translatable="false">AIzaSyDGJRH2YB6yHLy9FVCdhA0MV2H6xnauKB0</string>
 
+    <string-array name="transport_modes">
+        <item>Driving</item>
+        <item>Walking</item>
+        <item>Bicycling</item>
+        <item>Transit</item>
+    </string-array>
 </resources>

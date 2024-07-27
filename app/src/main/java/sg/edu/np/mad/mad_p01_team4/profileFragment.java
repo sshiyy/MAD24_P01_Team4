@@ -93,7 +93,7 @@ public class profileFragment extends Fragment {
         fragmentMap = new HashMap<>();
         initializeFragmentMap();
 
-        // Set up the navigation drawer - hambuger
+        // Set up the navigation drawer - hamburger
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
             Log.d(TAG, "Navigation item clicked: " + itemId);

@@ -424,16 +424,16 @@ public class productFragment extends Fragment {
     }
 
     private final Map<String, double[]> priceRangeMap = new HashMap<String, double[]>() {{
-        put("$", new double[]{0, 10.0});
-        put("$$", new double[]{10.0, 20.0});
-        put("$$$", new double[]{20.0, Double.MAX_VALUE});
+        put("$0 - $10", new double[]{0, 10.0});
+        put("$10 - $20", new double[]{10.0, 20.0});
+        put("$20 and above", new double[]{20.0, Double.MAX_VALUE});
         put("All", new double[]{0, Double.MAX_VALUE});
     }};
 
     private final Map<String, String> priceRangeSymbolMap = new HashMap<String, String>() {{
-        put("$", "$");
-        put("$$", "$$");
-        put("$$$", "$$$");
+        put("$0 - $10", "$0 - $10");
+        put("$10 - $20", "$10 - $20");
+        put("$20 and above", "$20 and above");
         put("All", "");
     }};
 

@@ -24,6 +24,10 @@
         <item>$$</item>
         <item>$$$</item>
     </string-array>
+    <string name="widget_text">Your order will be ready in %s</string>
+    <string name="order_ready_text">Your order is ready</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 
 
 </resources>

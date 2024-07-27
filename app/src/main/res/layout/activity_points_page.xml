@@ -142,7 +142,7 @@
                         android:backgroundTint="@color/orange"
                         android:elevation="4dp"
                         android:padding="12dp"
-                        android:text="100 points, get $5 off" />
+                        android:text="100 points, get $2 off" />
 
                     <Button
                         android:id="@+id/button_200_points"

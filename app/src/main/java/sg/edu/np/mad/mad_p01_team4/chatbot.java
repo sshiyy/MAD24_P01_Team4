@@ -150,14 +150,12 @@ public class chatbot extends AppCompatActivity {
     private void initializePredefinedResponses() {
         predefinedResponses.put("hi", "Hi, nice to meet you! Do you need help?");
         predefinedResponses.put("hello", "Hello! How can I assist you today?");
-        predefinedResponses.put("yes", "Great! What do you need help with?");
-        predefinedResponses.put("no", "Alright. If you have any questions, feel free to ask.");
         predefinedResponses.put("thanks", "You're welcome!");
         predefinedResponses.put("thank you", "You're welcome!");
     }
 
     private void sendWelcomeMessage() {
-        String welcomeMessage = "Welcome! How can I assist you today? You can ask me questions like 'how to pay' or 'what are the payment methods'.";
+        String welcomeMessage = "Welcome To Enchante ! How can I assist you today?";
         list.add(new MessageModel(welcomeMessage, bot, getCurrentTime()));
         adapter.notifyDataSetChanged();
         recyclerView.smoothScrollToPosition(list.size() - 1);
@@ -212,18 +210,28 @@ public class chatbot extends AppCompatActivity {
             // Check for typos and find the closest matching keyword
             String closestKeyword = findClosestKeyword(lowerCaseMessage);
             if (closestKeyword != null) {
-                list.add(new MessageModel("Did you mean '" + closestKeyword + "'?", bot, getCurrentTime()));
-                adapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(list.size() - 1);
+                suggestCorrection(closestKeyword);
             } else {
-                // If no keyword is found, generate Smart Reply suggestions
-                generateSmartReply(lowerCaseMessage);
+                // Use Smart Reply to generate suggestions
+                generateSmartReply(lowerCaseMessage, message);
             }
         }
 
         // Update suggestions based on the user's input
         updateSuggestions(lowerCaseMessage);
     }
+
+
+
+    private void suggestCorrection(String suggestedKeyword) {
+        list.add(new MessageModel("Did you mean '" + suggestedKeyword + "'?", bot, getCurrentTime()));
+        adapter.notifyDataSetChanged();
+        recyclerView.smoothScrollToPosition(list.size() - 1);
+
+        // Automatically fetch the FAQ answer for the suggested keyword
+        fetchFAQAnswer(keywordMapping.get(suggestedKeyword));
+    }
+
 
     private String getDocumentIdForMessage(String message) {
         String[] words = message.toLowerCase().split("\\s+");
@@ -238,13 +246,13 @@ public class chatbot extends AppCompatActivity {
 
     private void updateSuggestions(String message) {
         chipGroup.removeAllViews();
-        String[] suggestions = {"How can I order?",
-                "Customize order",
-                "Track my order",
-                "What are the payment methods?",
-                "How to forget password?",
-                "Is my payment info secure?",
-                "Update account settings"};
+        String[] suggestions = {"How can I place my order ?",
+                "Can i customize my order ?",
+                "How to track my order",
+                "What are the payment methods available ?",
+                "How to forget password ?",
+                "Is the security good for my payment ?",
+                "Where to update account settings ?"};
         for (String suggestion : suggestions) {
             if (suggestion.toLowerCase().contains(message.toLowerCase())) {
                 Chip chip = new Chip(chatbot.this);
@@ -256,6 +264,7 @@ public class chatbot extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                         recyclerView.smoothScrollToPosition(list.size() - 1);
                         handleUserMessage(suggestion);
+
                     }
                 });
                 chipGroup.addView(chip);
@@ -263,7 +272,7 @@ public class chatbot extends AppCompatActivity {
         }
     }
 
-    private void generateSmartReply(String message) {
+    private void generateSmartReply(String lowerCaseMessage, String originalMessage) {
         List<FirebaseTextMessage> conversation = new ArrayList<>();
         for (MessageModel msg : list) {
             if (msg.getSender().equals(user)) {
@@ -285,6 +294,7 @@ public class chatbot extends AppCompatActivity {
                                 List<SmartReplySuggestion> suggestions = result.getSuggestions();
                                 if (!suggestions.isEmpty()) {
                                     boolean validSuggestionFound = false;
+                                    chipGroup.removeAllViews();
                                     for (SmartReplySuggestion suggestion : suggestions) {
                                         String reply = suggestion.getText();
                                         if (!isInvalidSmartReply(reply)) {
@@ -323,6 +333,7 @@ public class chatbot extends AppCompatActivity {
                     }
                 });
     }
+
 
     private boolean isInvalidSmartReply(String reply) {
         String lowerReply = reply.toLowerCase();

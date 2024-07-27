@@ -35,6 +35,9 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -69,6 +72,11 @@ dependencies {
     implementation ("com.google.firebase:firebase-ml-natural-language:22.0.0")
     implementation ("com.google.firebase:firebase-ml-natural-language-smart-reply-model:20.0.7")
     implementation ("com.google.android.material:material:1.3.0")
+    implementation ("com.google.android.material:material:1.5.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
+
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("androidx.core:core-ktx:1.10.1")
 
 
 }

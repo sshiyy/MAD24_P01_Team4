@@ -2,7 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="Assignment.MAD_P01_Team4.app">
+        <State />
+      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="chatbot">
+        <State />
+      </entry>
+      <entry key="loginPage">
         <State />
       </entry>
     </value>

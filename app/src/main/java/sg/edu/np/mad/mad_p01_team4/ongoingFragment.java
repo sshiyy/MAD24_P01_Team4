@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +122,17 @@ public class ongoingFragment extends Fragment {
         for (Map.Entry<String, List<Order>> entry : ordersMap.entrySet()) {
             orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
         }
+
+        // Sort the orderGroups by the timestamp of the first order in each group in descending order
+        Collections.sort(orderGroups, new Comparator<OrderGroup>() {
+            @Override
+            public int compare(OrderGroup o1, OrderGroup o2) {
+                if (!o1.getOrders().isEmpty() && !o2.getOrders().isEmpty()) {
+                    return Long.compare(o2.getOrders().get(0).getTimestamp(), o1.getOrders().get(0).getTimestamp());
+                }
+                return 0;
+            }
+        });
 
         if (orderGroups.isEmpty()) {
             noordermsg.setVisibility(View.VISIBLE);

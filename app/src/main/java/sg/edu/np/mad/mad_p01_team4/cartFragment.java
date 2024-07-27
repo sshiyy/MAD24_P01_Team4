@@ -359,6 +359,9 @@ public class cartFragment extends Fragment {
                 transaction.addToBackStack(null);
                 transaction.commit();
                 dialog.dismiss();
+
+                // Show AlertDialog to prompt user to add widget
+                showAddWidgetDialog();
             });
             dialog.show();
         }
@@ -406,6 +409,28 @@ public class cartFragment extends Fragment {
             }
             notificationManager.notify(notificationId, builder.build());
         }
+    }
+    // Method to show AlertDialog
+    private void showAddWidgetDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Add Widget")
+                .setMessage("Do you want to add the order widget to your home screen to track your order?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Start TimerService to update the widget
+                    requireContext().startService(new Intent(requireContext(), TimerService.class));
+
+                    // Provide instructions to the user
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Instructions")
+                            .setMessage("To add the widget to your home screen:\n\n" +
+                                    "1. Long press on an empty area on your home screen.\n" +
+                                    "2. Select 'Widgets'.\n" +
+                                    "3. Find and drag the 'Order Widget' to your home screen.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void loadCurrentOrders() {

@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,14 +50,17 @@ public class ongoingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_ongoingorders, container, false);
 
+        // initialize firebase and firestore
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // initialise recyclerview and set layout
         recyclerView = view.findViewById(R.id.ongoingrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        orderAdapter = new OrderAdapter(new ArrayList<>(), this); // Pass the fragment reference
+        orderAdapter = new OrderAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(orderAdapter);
 
+        // initialize
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
@@ -77,6 +82,7 @@ public class ongoingFragment extends Fragment {
         return view;
     }
 
+    // method to load order from firebase
     public void loadOrders() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -85,14 +91,13 @@ public class ongoingFragment extends Fragment {
 
         db.collection("ongoing_orders")
                 .whereEqualTo("userId", currentUser.getUid())
-                .get(Source.CACHE) // First try to get data from the cache
+                .get(Source.CACHE)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // If cache data is available, proceed with it
                         processOrders(task.getResult());
                     }
 
-                    // Now, force fetch data from the server to get the latest updates
+                    // fetch data from the server to get the latest updates
                     db.collection("ongoing_orders")
                             .whereEqualTo("userId", currentUser.getUid())
                             .get(Source.SERVER)
@@ -103,12 +108,13 @@ public class ongoingFragment extends Fragment {
                 });
     }
 
+    // method to process the orders retrieved from firestore
     private void processOrders(QuerySnapshot queryDocumentSnapshots) {
         Map<String, List<Order>> ordersMap = new HashMap<>();
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
             Order order = document.toObject(Order.class);
-            order.setDocumentId(document.getId()); // Set the document ID for deletion
-            String orderId = order.getOrderId(); // Use orderId instead of timestamp
+            order.setDocumentId(document.getId());
+            String orderId = order.getOrderId();
 
             if (!ordersMap.containsKey(orderId)) {
                 ordersMap.put(orderId, new ArrayList<>());
@@ -121,6 +127,17 @@ public class ongoingFragment extends Fragment {
             orderGroups.add(new OrderGroup(entry.getKey(), entry.getValue()));
         }
 
+        // Sort the orderGroups by the timestamp of the first order in each group in descending order
+        Collections.sort(orderGroups, new Comparator<OrderGroup>() {
+            @Override
+            public int compare(OrderGroup o1, OrderGroup o2) {
+                if (!o1.getOrders().isEmpty() && !o2.getOrders().isEmpty()) {
+                    return Long.compare(o2.getOrders().get(0).getTimestamp(), o1.getOrders().get(0).getTimestamp());
+                }
+                return 0;
+            }
+        });
+
         if (orderGroups.isEmpty()) {
             noordermsg.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -131,6 +148,7 @@ public class ongoingFragment extends Fragment {
         }
     }
 
+    // method to initialize the fragment map for navigation
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
         fragmentMap.put(R.id.navMenu, productFragment.class);
@@ -144,6 +162,7 @@ public class ongoingFragment extends Fragment {
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
     }
 
+    // method to display the selected fragment based on the item id
     private void displaySelectedFragment(int itemId) {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
         if (fragmentClass != null) {

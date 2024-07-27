@@ -50,6 +50,7 @@ public class FavoritesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_favorites, container, false);
 
+        // initialize views and components
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
@@ -57,8 +58,10 @@ public class FavoritesFragment extends Fragment {
         emptyFavoritesMessage = view.findViewById(R.id.emptyFavoritesMessage);
         buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
+        // initialize fragment map
         initializeFragmentMap();
 
+        // set navigation view item
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
             Log.d(TAG, "Navigation item clicked: " + itemId);
@@ -67,6 +70,7 @@ public class FavoritesFragment extends Fragment {
             return true;
         });
 
+        // set cart button click listener
         RelativeLayout cartbutton = view.findViewById(R.id.cart_button);
         cartbutton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
@@ -84,9 +88,6 @@ public class FavoritesFragment extends Fragment {
         foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext(), R.layout.custom_itemlist_small, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         favoritesRecyclerView.setLayoutManager(gridLayoutManager);
-
-
-
         favoritesRecyclerView.setAdapter(foodAdapter);
 
         // Load favorite items
@@ -96,6 +97,7 @@ public class FavoritesFragment extends Fragment {
     }
 
 
+    // load favorite items for the current user from firestore
     private void loadFavoriteItems() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -104,7 +106,7 @@ public class FavoritesFragment extends Fragment {
             return;
         }
 
-        // First fetch the list of favorites for the current user
+        // fetch the list of favorites for the current user
         db.collection("favorites")
                 .whereEqualTo("userId", currentUser.getUid())
                 .get()
@@ -115,7 +117,7 @@ public class FavoritesFragment extends Fragment {
                             favoriteFoodNames.add(document.getString("foodName"));
                         }
 
-                        // Now fetch the food items from the Food_Items collection
+                        // fetch the food items from the Food_Items collection
                         fetchFoodItems(favoriteFoodNames);
                     } else {
                         Log.w(TAG, "Error getting favorites.", task.getException());
@@ -126,6 +128,7 @@ public class FavoritesFragment extends Fragment {
                 });
     }
 
+    // fetch food items based on the list of favorite food names
     private void fetchFoodItems(List<String> favoriteFoodNames) {
         db.collection("Food_Items")
                 .get()
@@ -150,6 +153,7 @@ public class FavoritesFragment extends Fragment {
     }
 
 
+    // toggle the visibility of empty favorites message
     public void toggleEmptyMessage() {
         if (favoriteItems.isEmpty()) {
             emptyFavoritesMessage.setVisibility(View.VISIBLE);
@@ -160,12 +164,15 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
+    // update list of favorite items
     public void updateFavoriteItems(List<Food> newList) {
         favoriteItems.clear();
         favoriteItems.addAll(newList);
         toggleEmptyMessage();
     }
 
+
+    // initialize fragment map for navigation
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
         fragmentMap.put(R.id.navMenu, productFragment.class);
@@ -178,6 +185,8 @@ public class FavoritesFragment extends Fragment {
         fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
     }
 
+
+    // display selected fragment based on the item id
     private void displaySelectedFragment(int itemId) {
         Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
         if (fragmentClass != null) {

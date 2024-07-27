@@ -34,7 +34,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -65,7 +65,7 @@ public class productFragment extends Fragment {
     private TextView allRestaurantsText;
     private TextView sortedByText;
     private EditText searchEditText;
-    private OrderAgainAdapter orderAgainAdapter;
+
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
@@ -105,17 +105,15 @@ public class productFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         allFoodList = new ArrayList<>();
-        foodAdapter = new FoodAdapter(new ArrayList<>(), getContext(), R.layout.custom_productlist); // Use the default layout for products
-        orderAgainAdapter = new OrderAgainAdapter(new ArrayList<>(), getContext(), foodAdapter);
+        foodAdapter = new FoodAdapter(new ArrayList<>(), getContext(), R.layout.custom_itemlist_small); // Use the default layout for products
+
 
         setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
-        setUpRecyclerView(view, R.id.orderagainrecyclerView, orderAgainAdapter);
 
         allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
         sortedByText = view.findViewById(R.id.sortedByText);
 
         fetchFoodItems();
-        fetchOrderAgainItems();
 
         ImageButton filbtn = view.findViewById(R.id.filterIcon);
         filbtn.setOnClickListener(v -> showFilterPopup());
@@ -134,11 +132,7 @@ public class productFragment extends Fragment {
             startActivity(intent);
         });
 
-        Button viewAllButton = view.findViewById(R.id.viewallbutton);
-        viewAllButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), viewallFragment.class);
-            startActivity(intent);
-        });
+
 
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -320,7 +314,8 @@ public class productFragment extends Fragment {
 
     private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(recyclerViewId);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        int numberOfColumns = 2; // Set the number of columns for the grid layout
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -343,51 +338,6 @@ public class productFragment extends Fragment {
                     }
                 });
     }
-
-    private void fetchOrderAgainItems() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            return;
-        }
-
-        String userId = currentUser.getUid();
-        db.collection("favorites")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<String> favoriteFoodNames = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String foodName = document.getString("foodName");
-                            favoriteFoodNames.add(foodName);
-                        }
-
-                        db.collection("order_history")
-                                .whereEqualTo("userId", userId)
-                                .get()
-                                .addOnSuccessListener(queryDocumentSnapshots -> {
-                                    Map<String, Order> uniqueOrdersMap = new HashMap<>();
-                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                        Order order = document.toObject(Order.class);
-                                        if (!uniqueOrdersMap.containsKey(order.getFoodName())) {
-                                            if (favoriteFoodNames.contains(order.getFoodName())) {
-                                                order.setFavorite(true);
-                                            }
-                                            uniqueOrdersMap.put(order.getFoodName(), order);
-                                        }
-                                    }
-
-                                    List<Order> uniqueOrders = new ArrayList<>(uniqueOrdersMap.values());
-                                    orderAgainAdapter.updateOrderItems(uniqueOrders);
-                                })
-                                .addOnFailureListener(e -> Log.e(TAG, "Failed to load order history", e));
-                    } else {
-                        Log.w(TAG, "Error getting favorites.", task.getException());
-                    }
-                });
-    }
-
-
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
         foodAdapter.updateList(foodList);

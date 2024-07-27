@@ -292,6 +292,8 @@ public class cartFragment extends Fragment {
             int iconMargin;
             int iconTop;
             int iconBottom;
+            int iconLeft;
+            int iconRight;
 
             if (dX > 0) { // Swiping to the right
                 icon = ContextCompat.getDrawable(getActivity(), R.drawable.editicon);
@@ -305,22 +307,33 @@ public class cartFragment extends Fragment {
                 background.setBounds(0, 0, 0, 0);
             }
 
+            background.draw(c);
+
             if (icon != null) {
-                iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int itemHeight = itemView.getBottom() - itemView.getTop();
+                int iconHeight = itemHeight / 3; // Make the icon one-third of the item's height
+                int iconWidth = icon.getIntrinsicWidth() * iconHeight / icon.getIntrinsicHeight();
+
+                iconMargin = (itemHeight - iconHeight) / 2;
                 iconTop = itemView.getTop() + iconMargin;
-                iconBottom = iconTop + icon.getIntrinsicHeight();
+                iconBottom = iconTop + iconHeight;
 
                 if (dX > 0) { // Swiping to the right
-                    icon.setBounds(itemView.getLeft() + iconMargin, iconTop, itemView.getLeft() + iconMargin + icon.getIntrinsicWidth(), iconBottom);
-                } else if (dX < 0) { // Swiping to the left
-                    icon.setBounds(itemView.getRight() - iconMargin - icon.getIntrinsicWidth(), iconTop, itemView.getRight() - iconMargin, iconBottom);
+                    iconLeft = itemView.getLeft() + iconMargin;
+                    iconRight = iconLeft + iconWidth;
+                } else { // Swiping to the left
+                    iconRight = itemView.getRight() - iconMargin;
+                    iconLeft = iconRight - iconWidth;
                 }
+
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
                 icon.draw(c);
             }
 
-            background.draw(c);
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
+
+
     };
 
     // Method to show payment options

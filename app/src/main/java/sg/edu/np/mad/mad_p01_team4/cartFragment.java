@@ -98,14 +98,17 @@ public class cartFragment extends Fragment {
         discountPrice = view.findViewById(R.id.discountPrice);
         emptyCartMessage = view.findViewById(R.id.emptyCartMessage);
 
+        // Initialize buttons
         btnConfirm = view.findViewById(R.id.cfmbtn);
         btnConfirm.setOnClickListener(v -> showPayment());
 
+        crossBtn = view.findViewById(R.id.crossBtn);
+        crossBtn.setOnClickListener(v -> getActivity().onBackPressed());
+
+        // Initialize recyclerviews
         recyclerView = view.findViewById(R.id.cartrv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        crossBtn = view.findViewById(R.id.crossBtn);
-        crossBtn.setOnClickListener(v -> getActivity().onBackPressed());
 
         // Initialize currentOrders list and cartAdapter
         currentOrders = new ArrayList<>();
@@ -133,6 +136,7 @@ public class cartFragment extends Fragment {
         return view;
     }
 
+    // Apply voucher discount to the total price
     private void applyVoucherDiscount(int voucherDiscount) {
         String totalPriceText = totalprice.getText().toString().replace("$", "");
         Log.d(TAG, "Total price text before applying discount: " + totalPriceText);
@@ -157,6 +161,7 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // Remove used voucher from database
     private void removeVoucherFromDatabase() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -201,6 +206,7 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // Update pricing details
     private void updatePricing() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -227,6 +233,7 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // process pricing details from query results
     private void processPricing(QuerySnapshot queryDocumentSnapshots) {
         double totalPrice = 0;
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -287,6 +294,7 @@ public class cartFragment extends Fragment {
             }
         }
 
+        // Customise the swipe action appearance
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             View itemView = viewHolder.itemView;
@@ -295,6 +303,8 @@ public class cartFragment extends Fragment {
             int iconMargin;
             int iconTop;
             int iconBottom;
+            int iconLeft;
+            int iconRight;
 
             if (dX > 0) { // Swiping to the right
                 icon = ContextCompat.getDrawable(getActivity(), R.drawable.editicon);
@@ -308,22 +318,33 @@ public class cartFragment extends Fragment {
                 background.setBounds(0, 0, 0, 0);
             }
 
+            background.draw(c);
+
             if (icon != null) {
-                iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int itemHeight = itemView.getBottom() - itemView.getTop();
+                int iconHeight = itemHeight / 3; // Make the icon one-third of the item's height
+                int iconWidth = icon.getIntrinsicWidth() * iconHeight / icon.getIntrinsicHeight();
+
+                iconMargin = (itemHeight - iconHeight) / 2;
                 iconTop = itemView.getTop() + iconMargin;
-                iconBottom = iconTop + icon.getIntrinsicHeight();
+                iconBottom = iconTop + iconHeight;
 
                 if (dX > 0) { // Swiping to the right
-                    icon.setBounds(itemView.getLeft() + iconMargin, iconTop, itemView.getLeft() + iconMargin + icon.getIntrinsicWidth(), iconBottom);
-                } else if (dX < 0) { // Swiping to the left
-                    icon.setBounds(itemView.getRight() - iconMargin - icon.getIntrinsicWidth(), iconTop, itemView.getRight() - iconMargin, iconBottom);
+                    iconLeft = itemView.getLeft() + iconMargin;
+                    iconRight = iconLeft + iconWidth;
+                } else { // Swiping to the left
+                    iconRight = itemView.getRight() - iconMargin;
+                    iconLeft = iconRight - iconWidth;
                 }
+
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
                 icon.draw(c);
             }
 
-            background.draw(c);
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
+
+
     };
 
     // Method to show payment options
@@ -457,6 +478,7 @@ public class cartFragment extends Fragment {
             notificationManager.notify(notificationId, builder.build());
         }
     }
+
     // Method to show AlertDialog
     private void showAddWidgetDialog() {
         new AlertDialog.Builder(requireContext())
@@ -480,6 +502,7 @@ public class cartFragment extends Fragment {
                 .show();
     }
 
+    // load current orders from the database
     private void loadCurrentOrders() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -491,14 +514,13 @@ public class cartFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("currently_ordering")
                 .whereEqualTo("userId", currentUser.getUid())
-                .get(Source.CACHE) // First try to get data from the cache
+                .get(Source.CACHE)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // If cache data is available, proceed with it
                         processCurrentOrders(task.getResult());
                     }
 
-                    // Now, force fetch data from the server to get the latest updates
+
                     db.collection("currently_ordering")
                             .whereEqualTo("userId", currentUser.getUid())
                             .get(Source.SERVER)
@@ -511,6 +533,7 @@ public class cartFragment extends Fragment {
                 });
     }
 
+    // process the current orders from the query results
     private void processCurrentOrders(QuerySnapshot queryDocumentSnapshots) {
         currentOrders.clear();
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -539,6 +562,7 @@ public class cartFragment extends Fragment {
                 });
     }
 
+    // edit dialog for modifying order details
     private void showEditDialog(Order order, int position) {
         // Inflate the dialog view
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -548,7 +572,7 @@ public class cartFragment extends Fragment {
         TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
         LinearLayout modificationsLayout = dialogView.findViewById(R.id.modificationsLayout);
         EditText specialRequestInput = dialogView.findViewById(R.id.specialRequestInput);
-        Button updateButton = dialogView.findViewById(R.id.addToCartButton); // Change to update button
+        Button updateButton = dialogView.findViewById(R.id.addToCartButton);
         ImageButton closeButton = dialogView.findViewById(R.id.dialogcross);
 
         // Change the text of the button to "Update"
@@ -556,13 +580,13 @@ public class cartFragment extends Fragment {
 
         // Load image using Glide
         Glide.with(getContext())
-                .load(order.getImg()) // Assuming img is a URL or path to the image
+                .load(order.getImg())
                 .into(ivFoodImage);
 
-        // Set food description (assuming description is the food name in this context)
+        // Set food description
         tvFoodDescription.setText(order.getFoodName());
 
-        // Add checkboxes for modifications and tick the ones already made
+        // add checkboxes for modifications and tick the ones already made
         List<Map<String, Object>> modifications = order.getModifications();
         List<CheckBox> checkBoxes = new ArrayList<>();
         if (modifications != null) {
@@ -578,7 +602,7 @@ public class cartFragment extends Fragment {
             }
         }
 
-        // Set the special request input text
+        // set the special request input text
         specialRequestInput.setText(order.getSpecialRequest());
 
         // Create and show alert dialog
@@ -611,6 +635,7 @@ public class cartFragment extends Fragment {
         });
     }
 
+    // update the order in the database
     private void updateOrderInDatabase(Order order) {
         // Update the order in the database
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -620,6 +645,7 @@ public class cartFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating order", e));
     }
 
+    // update the state if the confirm button based on the current orders
     private void updateConfirmButtonState() {
         if (currentOrders.isEmpty()) {
             btnConfirm.setEnabled(false);
@@ -628,6 +654,7 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // move current orders to ongoing orders collection
     private void moveOrdersToOngoing() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -657,11 +684,13 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // generate a random number id
     private String generateRandomOrderId() {
         Random random = new Random();
         return String.format("%04d", random.nextInt(10000)); // Generates a random 4-digit number and formats it as String
     }
 
+    // update user points after checkout
     private void updatePointsAfterCheckout(double totalPrice) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -695,6 +724,7 @@ public class cartFragment extends Fragment {
         }
     }
 
+    // calculate tier based on points
     private String calculateTier(long points) {
         if (points >= 450) {
             return "Platinum";

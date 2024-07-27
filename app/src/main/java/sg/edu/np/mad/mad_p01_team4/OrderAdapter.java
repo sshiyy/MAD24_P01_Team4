@@ -26,13 +26,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private FirebaseAuth mAuth;
     private ongoingFragment fragment; // Add reference to ongoingFragment
 
+    // constructor to initialize orderadapter with a list of order groups and reference to order fragment
     public OrderAdapter(List<OrderGroup> orderGroups, ongoingFragment fragment) {
         this.orderGroups = orderGroups;
         this.db = FirebaseFirestore.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
-        this.fragment = fragment; // Initialize the reference
+        this.fragment = fragment;
     }
 
+    // method to update the list of order groups and notify the adapter
     public void updateOrderGroups(List<OrderGroup> newOrderGroups) {
         this.orderGroups = newOrderGroups;
         notifyDataSetChanged();
@@ -69,6 +71,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             itemsRecyclerView = itemView.findViewById(R.id.items_recyclerview);
             receivedBtn = itemView.findViewById(R.id.receivedbtn);
 
+            // set up recyclerview with layout
             itemsRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
             orderItemAdapter = new OrderItemAdapter(new ArrayList<>());
             itemsRecyclerView.setAdapter(orderItemAdapter);
@@ -81,6 +84,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderItemAdapter.updateOrderItems(orderGroup.getOrders());
         }
 
+        // method to move the order to the history and delete from the ongoing
         private void moveOrderToHistory(int position) {
             OrderGroup orderGroup = orderGroups.get(position);
             List<Order> orders = orderGroup.getOrders();

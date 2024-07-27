@@ -26,7 +26,6 @@ public class TimerService extends Service {
                 Intent intent = new Intent(ACTION_UPDATE_WIDGET);
                 intent.putExtra("time", time);
                 intent.putExtra("order_ready", false);
-
                 sendBroadcast(intent);
 
                 handler.postDelayed(this, 1000);

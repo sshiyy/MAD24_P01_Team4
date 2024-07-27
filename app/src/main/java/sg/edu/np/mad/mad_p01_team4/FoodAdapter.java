@@ -130,7 +130,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         // Load image using Glide
         Glide.with(context)
-                .load(food.getImg()) // Assuming img is a URL or path to the image
+                .load(food.getImg())
                 .into(ivFoodImage);
 
         // set food description
@@ -187,6 +187,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         });
     }
 
+    // method to add an order to firebase
     private void addOrderToFirebase(Order order) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -243,6 +244,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         notifyDataSetChanged(); // Notify adapter of data change
     }
 
+    // method to sort food list alphabetically
     private void sortFoodList(ArrayList<Food> foodList) {
         Collections.sort(foodList, new Comparator<Food>() {
             @Override
@@ -252,6 +254,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         });
     }
 
+    // method to check if a food item is in the favorite list
     private void checkIfFavorite(Food food, ImageButton favBtn) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -270,6 +273,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         }
     }
 
+    // method to toggle the favorite status of a food item
     private void toggleFavorite(Food food, ImageButton favBtn) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -314,6 +318,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     }
 
 
+    // method to remove a food item from the filtered list
     private void removeItemFromList(Food food) {
         filteredFoodList.remove(food);
         notifyDataSetChanged();

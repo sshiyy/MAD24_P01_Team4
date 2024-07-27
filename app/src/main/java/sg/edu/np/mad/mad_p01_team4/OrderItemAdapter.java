@@ -16,12 +16,14 @@ import java.util.Map;
 
 public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.OrderItemViewHolder> {
 
+    // list to hold order items
     private List<Order> orderItems;
 
     public OrderItemAdapter(List<Order> orderItems) {
         this.orderItems = orderItems;
     }
 
+    // method to update the list of order items and notify the adapter
     public void updateOrderItems(List<Order> newOrderItems) {
         this.orderItems = newOrderItems;
         notifyDataSetChanged();

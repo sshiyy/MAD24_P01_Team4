@@ -115,7 +115,7 @@ public class pointsFragment extends Fragment {
         fetchVouchers();
 
         // Handle redeem button clicks
-        redeemButton.setOnClickListener(v -> redeemPoints(100, "$5 off your next purchase", 5));
+        redeemButton.setOnClickListener(v -> redeemPoints(100, "$2 off your next purchase", 2));
         redeemButton2.setOnClickListener(v -> redeemPoints(200, "$10 off your next purchase", 10));
         redeemButton3.setOnClickListener(v -> redeemPoints(350, "$20 off your next purchase", 20));
 

@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- for voice recognition -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <package android:name="com.google.android.googlequicksearchbox" />
+    </queries> <!-- Jason's Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/mainlogo"
+        android:label="Enchante"
+        android:roundIcon="@drawable/mainlogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.madAssignment1"
         tools:targetApi="31">
         <activity
-            android:name=".ProfilePage"
+            android:name=".viewallproduct"
             android:exported="true" />
         <activity
-            android:name=".cartpage"
+            android:name=".favorites"
             android:exported="true" />
         <activity
-            android:name=".productpage"
-            android:exported="true"></activity>
-            android:name=".VoucherListActivity"
+            android:name=".orderhistory"
+            android:exported="true" />
+        <activity
+            android:name=".ongoingorders"
+            android:exported="true" />
+        <activity
+            android:name=".chatbot"
             android:exported="false" />
         <activity
-            android:name=".Points_Page"
+            android:name=".registerPage"
             android:exported="true" />
         <activity
-            android:name=".Register_Page"
-            android:exported="true" />
-        <activity
-            android:name=".Login_Page"
-            android:exported="true" />
-        <activity
-            android:name=".FliteringPage"
+            android:name=".loginPage"
             android:exported="true" />
         <activity
             android:name=".MainActivity"
@@ -44,13 +53,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Checkout"
-            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDGJRH2YB6yHLy9FVCdhA0MV2H6xnauKB0" />
     </application>
 
 </manifest>

@@ -15,6 +15,8 @@ firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.0.0"
 firebaseAuth = "23.0.0"
 recyclerview = "1.3.2"
+firebaseStorage = "21.0.0"
+smartReplyCommon = "16.1.0"
 
 [libraries]
 firebase-firestore-v3300 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
@@ -31,6 +33,8 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+smart-reply-common = { group = "com.google.mlkit", name = "smart-reply-common", version.ref = "smartReplyCommon" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

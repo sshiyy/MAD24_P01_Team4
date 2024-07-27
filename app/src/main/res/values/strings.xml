@@ -8,27 +8,22 @@
     <string name="select_price_hint">Select Price</string>
 
 
+    <string-array name="category_array">
+        <item>All</item>
+        <item>Main</item>
+        <item>Pizza</item>
+        <item>Appetizer</item>
+        <item>Side Dish</item>
+        <item>Dessert</item>
+        <item>Beverage</item>
+    </string-array>
 
-
-        <string-array name="category_array">
-            <item>All</item>
-            <item>Main</item>
-            <item>Pizza</item>
-            <item>Appetizer</item>
-            <item>Side Dish</item>
-            <item>Dessert</item>
-            <item>Beverage</item>
-        </string-array>
-
-        <string-array name="price_array">
-            <item>Any price</item>
-            <item>$</item>
-            <item>$$</item>
-            <item>$$$</item>
-        </string-array>
-
-
-
+    <string-array name="price_array">
+        <item>Any price</item>
+        <item>$</item>
+        <item>$$</item>
+        <item>$$$</item>
+    </string-array>
 
 
 </resources>

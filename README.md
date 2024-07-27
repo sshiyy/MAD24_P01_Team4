@@ -121,16 +121,17 @@ they want to remove they can click on the 'X' button.
 # Stage 2 
 
 **Planned task and feature - one person one or more feature**
-
 ```
-1. User authentication - Jason
-        - A new owner role will be added which will allow them to view the current orders and allow them to mark as completed or remove them.
-        - When a new user sign up, there will be verification to confirm the email is valid 
-
-1.1 Image Upload 
-        - Users can now upload a custom profile image to their profile
-
+Jason 
+Stage 1 Improvements
+1. Allow user to upload profile image 
+-------------------------------------- 
+Stage 2 Features
+1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
 ```
+Jason's References
+1. [Image Uploader](https://www.youtube.com/watch?v=mHR9Lof_VHQ&t=61s)
+--------------------------------------------
 ```
 2. Widget and searchbar  - MingQi
 
@@ -145,13 +146,45 @@ they want to remove they can click on the 'X' button.
 
 Users can now swipe left on the item to add it to favorites/unfavorite, view more
 and also finding other relevant items in the same category.
+allow user to ammend order
+
+popular recommendations
+order again function
+ongoing order
+order history
+payment
+
 
 ```
 ```
-4. Navigation Bar - Raeann 
+4. Navigation Bar - Raeann
 
-a hamburger menu and a bottom button popup for the navigation using fragments to
-organize the app sections efficiently.
+Stage 1 Improvements: 
+
+1. Hamburger Menu for Navigation Using Fragments
+Concepts: Fragment Navigation, HashMap for Fragment Mapping
+Implementation:
+Fragment Navigation: Implementing a hamburger menu in an Android app can help in efficiently organizing different sections of the app. Fragments are used to display different UI components within the same activity. This approach allows for a modular and flexible design where each section of the app is represented by a fragment.
+HashMap for Fragment Mapping: To simplify the fragment navigation logic, a HashMap can be used to map menu item IDs to their respective fragments. This makes the code more maintainable and scalable. For example, when a menu item is selected, the corresponding fragment can be retrieved from the HashMap and displayed, streamlining the process of fragment transactions.
+
+2. More advance and working point system using firestore
+
+
+Stage 2 Features: 
+
+1. Voice Commands and Assistant Integration
+Concepts: Speech Recognition, Voice Assistant Integration
+Implementation:
+Speech Recognition: Using the SpeechRecognizer class in Android, the app can capture voice input from the user. This involves initializing the SpeechRecognizer, setting up the necessary permissions, and handling the speech input events.
+Voice Assistant Integration: Integrating with Google Assistant can enhance the app’s functionality by allowing users to perform actions through voice commands. This can be achieved by creating intents that the Google Assistant can trigger based on specific voice commands. By integrating voice commands, users can interact with the app more naturally and perform tasks hands-free, improving the overall user experience.
+
+2. Chatbot for Customer Support
+Concepts: Natural Language Processing (NLP), Firestore
+Implementation:
+Natural Language Processing (NLP): Creating a chatbot involves using NLP techniques to understand and process user queries. NLP allows the chatbot to interpret the intent behind user messages and respond appropriately.
+Firestore Integration: Firestore, a flexible and scalable NoSQL cloud database from Firebase, can be used to store and manage the data required for the chatbot. This includes storing predefined responses, user queries, and other relevant information. The chatbot can fetch responses from Firestore based on the user's input, providing real-time, automated support. This implementation enhances customer support by offering instant responses and handling common queries efficiently.
+
+
 
 ```
 

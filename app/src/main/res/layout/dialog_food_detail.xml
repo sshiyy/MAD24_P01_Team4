@@ -1,31 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <!-- This page is how the dialog that would pop up upon users clicking on the item cardview from product page look like -->
-    <ImageView
-        android:id="@+id/ivFoodImage"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center"
-        android:src="@drawable/pastacarbonara"
-        android:background="@color/background"
-        />
-
-    <TextView
-        android:id="@+id/tvFoodDescription"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="This is the description of the food."
-        android:textSize="20sp"
-        android:paddingTop="8dp"
-        android:gravity="center_horizontal"
-        android:paddingBottom="8dp" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <ImageButton
+            android:id="@+id/dialogcross"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/cross"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20px"
+                android:layout_marginTop="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+
+                <ImageView
+                    android:id="@+id/foodImage"
+                    android:layout_width="0dp"
+                    android:layout_height="312dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/pastacarbonara" />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_footer"
+                    android:backgroundTint="@color/background"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp">
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="Description"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/descriptionTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Description of food"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <!-- Modifications section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Modification(s)"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingTop="15dp"
+                        android:textColor="@color/black"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/modificationsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="16dp"/>
+
+                    <!-- Special Request section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Special Request"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingTop="15dp"
+                        android:textColor="@color/black"/>
+
+                    <EditText
+                        android:id="@+id/specialRequestInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter any special requests"
+                        android:layout_marginTop="16dp"/>
+
+                    <!-- Add to Cart button -->
+                    <Button
+                        android:id="@+id/addToCartButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add to Cart"
+                        android:backgroundTint="@color/orange"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"/>
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

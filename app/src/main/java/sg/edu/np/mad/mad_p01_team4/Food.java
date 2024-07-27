@@ -1,6 +1,10 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import java.util.List;
+import java.util.Map;
+
 public class Food {
+    private static Food instance;
     private String name;
     private int price;
     private String img;
@@ -8,12 +12,15 @@ public class Food {
     private int quantity;
     private String category;
     private int imageResourceId; // Add imageResourceId field
+    private List<Map<String,Object>> modifications;
+    private String specialrequest;
+    private boolean isFavorite;
 
     // No-argument constructor required for Firestore deserialization
     public Food() {
     }
 
-    public Food(String name, int price, String img, String description, int quantity, String category, int imageResourceId) {
+    public Food(String name, int price, String img, String description, int quantity, String category, int imageResourceId, List<Map<String, Object>>modifications) {
         this.name = name;
         this.price = price;
         this.img = img;
@@ -21,6 +28,7 @@ public class Food {
         this.quantity = 0;
         this.category = category;
         this.imageResourceId = imageResourceId;
+        this.modifications = modifications;
     }
 
     // Getters and setters for all fields
@@ -52,16 +60,22 @@ public class Food {
         return description;
     }
 
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public String getCategory() {
@@ -80,6 +94,31 @@ public class Food {
         this.imageResourceId = imageResourceId;
     }
 
-    public void incrementQuantity() {
+    public List<Map<String,Object>>getModifications()
+    {
+        return modifications;
+    }
+
+    public void setModifications(List<Map<String,Object>>modifications)
+    {
+        this.modifications = modifications;
+    }
+
+    public String getSpecialrequest() {
+        return specialrequest;
+    }
+
+    public void setSpecialrequest(String specialrequest) {
+        this.specialrequest = specialrequest;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+    public static Food getInstance(){
+        if (instance == null) {
+            instance = new Food();
+        }
+        return instance;
     }
 }

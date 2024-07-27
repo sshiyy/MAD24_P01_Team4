@@ -1,254 +1,383 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    android:background="#f4efe9">
 
-
-
-    <!-- All Restaurants Section -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/allRestaurantsLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:padding="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
-        <TextView
-            android:id="@+id/logo"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:text="Menu"
-            android:textColor="@color/black"
-            android:textSize="35sp"
-            android:textStyle="bold"
-            android:paddingLeft="10dp"
-            android:paddingTop="40dp"
-            android:background="@color/background"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Toolbar with menu button and Cart -->
 
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/filtercard"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
+            <!-- Top Section with Tagline and Search Bar -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="0dp">
+                android:background="@color/orange"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
-                    android:id="@+id/filterIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/filter"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:padding="0dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerInside"
-                    android:contentDescription="filter button" />
+                    android:id="@+id/buttonDrawerToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:src="@drawable/drawer_menu" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp">
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/allRestaurantsText"
+                        android:id="@+id/logo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="All Category"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingStart="20dp"
-                        android:gravity="center_vertical" />
+                        android:text="Enchante Menu"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/sortedByText"
+                        android:id="@+id/tagline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="sorted by category"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp"
-                        android:paddingStart="20dp"
-                        android:gravity="center_vertical" />
+                        android:text="Taste is Best"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/crossicon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/cross"
+                <RelativeLayout
+                    android:id="@+id/cart_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="0dp"
+                    android:background="@drawable/cart_button_background_rounded"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/cart_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/shopping_cart_icon" />
+
+                    <TextView
+                        android:id="@+id/cart_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/cart_icon"
+                        android:text="Cart"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/top_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/searchBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:padding="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/tagline"
+                    tools:ignore="NotSibling">
+
+                    <RelativeLayout
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="70dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <EditText
+                            android:id="@+id/searchEditText"
+                            android:layout_width="450dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/search_view_bg"
+                            android:backgroundTint="@color/lightGray"
+                            android:hint="Search food here..."
+                            android:padding="8dp"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+                    <ImageButton
+                        android:id="@+id/search_voice_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="60dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/voice_recognition_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <ImageButton
+                        android:id="@+id/filterIcon"
+                        android:layout_width="52dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/filter_button_design"
+                        android:padding="7.9dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/filter_icon_image" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- TextViews for displaying current filter status -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/displayfilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                app:layout_constraintTop_toBottomOf="@id/top_section">
+
+                <TextView
+                    android:id="@+id/allRestaurantsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Categories"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/sortedByText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="sorted by category"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- RecyclerView for displaying all products -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clallproduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/displayfilter"
+                app:layout_constraintBottom_toTopOf="@id/clorderagainproduct"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/allproductslayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="20dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <TextView
+                        android:id="@+id/tvproduct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All Items"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/viewallbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@android:color/transparent"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:padding="0dp"
+                        android:text="View All"
+                        android:textAllCaps="false"
+                        android:textColor="@color/grey"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productrecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:layout_marginLeft="135dp"
-                    android:padding="0dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerInside"
-                    android:contentDescription="filter button" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/allproductslayout" />
 
-    <!-- RecyclerView for combined sections and items -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/productrecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/background"
-        android:paddingTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/allRestaurantsLayout"
-        app:layout_constraintBottom_toTopOf="@id/bottomLinear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/noProductTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="There is no product available in that price and category"
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/productrecyclerView"
+                    app:layout_constraintBottom_toBottomOf="@id/productrecyclerView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Navigation bar -->
-    <LinearLayout
-        android:id="@+id/bottomLinear"
+
+
+            <!-- RecyclerView for displaying order again products -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clorderagainproduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/clallproduct"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/tvorderagainproduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order Again"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:paddingLeft="16dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/orderagainrecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvorderagainproduct" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Floating Chatbot Button -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="bottom"
-        android:padding="10dp"
-        android:background="@color/white"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- For home page navigation -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chatbot_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/chatbotimage"
+            app:backgroundTint="@color/orange"
+            app:fabSize="normal" />
+    </FrameLayout>
 
-            <ImageButton
-                android:id="@+id/home"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Home Image"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/home" />
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-            <TextView
-                android:id="@+id/homeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Home"
-                android:textSize="12sp" />
-        </LinearLayout>
+    <!-- Popup Layout -->
+    <LinearLayout
+        android:id="@+id/voice_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="100dp"
+        android:background="@color/lightGray"
+        android:gravity="center"
+        android:elevation="10dp"
+        android:visibility="gone">
 
-        <!-- For points page navigation -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="Mic Icon" />
 
-            <ImageButton
-                android:id="@+id/points"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Home Image"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/star" />
-
-            <TextView
-                android:id="@+id/pointsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Points"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- For cart page navigation -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:text="Listening..."
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
 
-            <ImageButton
-                android:id="@+id/cart_button"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Cart Image"
-                android:padding="12dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/shoppingcartimg" />
-
-
-            <TextView
-                android:id="@+id/carttext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Cart"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- For account/profile page navigation -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/recognized_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/account"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="Account Image"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/account" />
-
-
-            <TextView
-                android:id="@+id/accountText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Account"
-                android:textSize="12sp" />
-        </LinearLayout>
+            android:text=""
+            android:hint="speech to text.."
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:dividerInsetStart="50dp"
+        app:headerLayout="@layout/drawer_header"
+        app:itemIconPadding="30dp"
+        app:menu="@menu/drawer_items"
+        android:visibility="gone"/>
+</androidx.drawerlayout.widget.DrawerLayout>

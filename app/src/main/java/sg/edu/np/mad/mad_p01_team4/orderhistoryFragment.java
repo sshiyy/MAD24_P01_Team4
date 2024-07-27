@@ -131,6 +131,7 @@ public class orderhistoryFragment extends Fragment {
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
         fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
         fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
     }
 
     private void displaySelectedFragment(int itemId) {

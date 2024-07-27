@@ -20,9 +20,9 @@
 
     <string-array name="price_array">
         <item>Any price</item>
-        <item>$</item>
-        <item>$$</item>
-        <item>$$$</item>
+        <item>$0 - $10</item>
+        <item>$10 - $20</item>
+        <item>$20 and above</item>
     </string-array>
     <string name="widget_text">Your order will be ready in %s</string>
     <string name="order_ready_text">Your order is ready</string>

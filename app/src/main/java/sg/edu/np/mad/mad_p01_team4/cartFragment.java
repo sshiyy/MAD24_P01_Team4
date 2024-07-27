@@ -1,19 +1,27 @@
 package sg.edu.np.mad.mad_p01_team4;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,25 +29,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,51 +198,65 @@ public class cartFragment extends Fragment {
         }
     }
 
-
     private void updatePricing() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             db.collection("currently_ordering")
                     .whereEqualTo("userId", currentUser.getUid())
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        double totalPrice = 0;
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Order order = document.toObject(Order.class);
-                            totalPrice += order.getPrice();
-                        }
-                        double gst = totalPrice * 0.09;
-                        double priceWithoutGST = totalPrice - gst;
-
-                        noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
-                        GST.setText(String.format("$%.2f", gst));
-                        totalpricing.setText(String.format("$%.2f", totalPrice));
-                        totalprice.setText(String.format("$%.2f", totalPrice)); // Ensure the dollar sign is included
-
-                        Log.d(TAG, "Total price text after update: " + totalprice.getText().toString());
-
-                        // Apply the voucher discount if any
-                        Bundle arguments = getArguments();
-                        if (arguments != null) {
-                            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
-                            if (voucherDiscount != 0) {
-                                applyVoucherDiscount(voucherDiscount);
-                            }
+                    .get(Source.CACHE) // First try to get data from the cache
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // If cache data is available, proceed with it
+                            processPricing(task.getResult());
                         }
 
-                        if (totalPrice == 0) {
-                            emptyCartMessage.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                            btnConfirm.setEnabled(false);
-                        } else {
-                            emptyCartMessage.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-                            btnConfirm.setEnabled(true);
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getActivity(), "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        // Now, force fetch data from the server to get the latest updates
+                        db.collection("currently_ordering")
+                                .whereEqualTo("userId", currentUser.getUid())
+                                .get(Source.SERVER)
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    processPricing(queryDocumentSnapshots);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(getActivity(), "Failed to load pricing details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                     });
+        }
+    }
+
+    private void processPricing(QuerySnapshot queryDocumentSnapshots) {
+        double totalPrice = 0;
+        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+            Order order = document.toObject(Order.class);
+            totalPrice += order.getPrice();
+        }
+        double gst = totalPrice * 0.09;
+        double priceWithoutGST = totalPrice - gst;
+
+        noGSTprice.setText(String.format("$%.2f", priceWithoutGST));
+        GST.setText(String.format("$%.2f", gst));
+        totalpricing.setText(String.format("$%.2f", totalPrice));
+        totalprice.setText(String.format("$%.2f", totalPrice)); // Ensure the dollar sign is included
+
+        Log.d(TAG, "Total price text after update: " + totalprice.getText().toString());
+
+        // Apply the voucher discount if any
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            int voucherDiscount = arguments.getInt("voucherDiscount", 0); // Default to 0 if not found
+            if (voucherDiscount != 0) {
+                applyVoucherDiscount(voucherDiscount);
+            }
+        }
+
+        if (totalPrice == 0) {
+            emptyCartMessage.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            btnConfirm.setEnabled(false);
+        } else {
+            emptyCartMessage.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            btnConfirm.setEnabled(true);
         }
     }
 
@@ -247,8 +273,7 @@ public class cartFragment extends Fragment {
             Order order = currentOrders.get(position);
             if (direction == ItemTouchHelper.RIGHT) {
                 // Handle edit order
-                editOrder(order);
-                cartAdapter.notifyItemChanged(position);
+                showEditDialog(order, position);
             } else if (direction == ItemTouchHelper.LEFT) {
                 // Handle remove order
                 removeOrderFromDatabase(order);
@@ -324,6 +349,9 @@ public class cartFragment extends Fragment {
                 double totalPrice = Double.parseDouble(totalpricing.getText().toString().substring(1));
                 updatePointsAfterCheckout(totalPrice);
 
+                // Trigger the notification
+                triggerCheckoutNotification();
+
                 // Navigate to the points fragment to show updated points
                 Fragment pointsFragment = new pointsFragment();
                 FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -338,15 +366,50 @@ public class cartFragment extends Fragment {
             dialog.show();
         }
 
-        Button cancelButton = dialog.findViewById(R.id.cancelButton);
-        if (cancelButton != null) {
-            cancelButton.setOnClickListener(v -> dialog.dismiss());
-        }
-
         ImageView cross = dialog.findViewById(R.id.cross);
         cross.setOnClickListener(v -> dialog.dismiss());
     }
 
+    private void triggerCheckoutNotification() {
+        Context context = getActivity();
+
+        if (context != null) {
+            // Create the NotificationChannel, but only on API 26+ because the NotificationChannel class is new and not in the support library
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "Checkout Channel";
+                String description = "Channel for Checkout Notifications";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel("checkout_channel_id", name, importance);
+                channel.setDescription(description);
+
+                // Register the channel with the system; you can't change the importance or other notification behaviors after this
+                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "checkout_channel_id")
+                    .setSmallIcon(R.drawable.mainlogo) // Replace with your app's icon
+                    .setContentTitle("Checkout Successful")
+                    .setContentText("Thank you for your purchase!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+            // Notification ID is a unique int for each notification that you must define
+            int notificationId = 2;
+            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            notificationManager.notify(notificationId, builder.build());
+        }
+    }
     // Method to show AlertDialog
     private void showAddWidgetDialog() {
         new AlertDialog.Builder(requireContext())
@@ -381,20 +444,36 @@ public class cartFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("currently_ordering")
                 .whereEqualTo("userId", currentUser.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    currentOrders.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Order order = document.toObject(Order.class);
-                        order.setDocumentId(document.getId()); // Set the document ID
-                        currentOrders.add(order);
+                .get(Source.CACHE) // First try to get data from the cache
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // If cache data is available, proceed with it
+                        processCurrentOrders(task.getResult());
                     }
-                    cartAdapter.notifyDataSetChanged();
-                    updateConfirmButtonState();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    // Now, force fetch data from the server to get the latest updates
+                    db.collection("currently_ordering")
+                            .whereEqualTo("userId", currentUser.getUid())
+                            .get(Source.SERVER)
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                processCurrentOrders(queryDocumentSnapshots);
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getActivity(), "Failed to load current orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
                 });
+    }
+
+    private void processCurrentOrders(QuerySnapshot queryDocumentSnapshots) {
+        currentOrders.clear();
+        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+            Order order = document.toObject(Order.class);
+            order.setDocumentId(document.getId()); // Set the document ID
+            currentOrders.add(order);
+        }
+        cartAdapter.notifyDataSetChanged();
+        updateConfirmButtonState();
+        updatePricing();
     }
 
     // Method to remove order from database
@@ -413,10 +492,85 @@ public class cartFragment extends Fragment {
                 });
     }
 
-    // Method to edit order
-    private void editOrder(Order order) {
-        // Implement edit order logic here
-        Toast.makeText(getActivity(), "Edit order: " + order.getFoodName(), Toast.LENGTH_SHORT).show();
+    private void showEditDialog(Order order, int position) {
+        // Inflate the dialog view
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_food_detail, null);
+
+        ImageView ivFoodImage = dialogView.findViewById(R.id.foodImage);
+        TextView tvFoodDescription = dialogView.findViewById(R.id.descriptionTxt);
+        LinearLayout modificationsLayout = dialogView.findViewById(R.id.modificationsLayout);
+        EditText specialRequestInput = dialogView.findViewById(R.id.specialRequestInput);
+        Button updateButton = dialogView.findViewById(R.id.addToCartButton); // Change to update button
+        ImageButton closeButton = dialogView.findViewById(R.id.dialogcross);
+
+        // Change the text of the button to "Update"
+        updateButton.setText("Update");
+
+        // Load image using Glide
+        Glide.with(getContext())
+                .load(order.getImg()) // Assuming img is a URL or path to the image
+                .into(ivFoodImage);
+
+        // Set food description (assuming description is the food name in this context)
+        tvFoodDescription.setText(order.getFoodName());
+
+        // Add checkboxes for modifications and tick the ones already made
+        List<Map<String, Object>> modifications = order.getModifications();
+        List<CheckBox> checkBoxes = new ArrayList<>();
+        if (modifications != null) {
+            for (Map<String, Object> modification : modifications) {
+                String name = modification.keySet().iterator().next();
+                Boolean value = (Boolean) modification.values().iterator().next();
+
+                CheckBox checkBox = new CheckBox(getContext());
+                checkBox.setText(name);
+                checkBox.setChecked(value);
+                checkBoxes.add(checkBox);
+                modificationsLayout.addView(checkBox);
+            }
+        }
+
+        // Set the special request input text
+        specialRequestInput.setText(order.getSpecialRequest());
+
+        // Create and show alert dialog
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setView(dialogView)
+                .create();
+        alertDialog.show();
+
+        // Set the click listener for the update button
+        updateButton.setOnClickListener(v -> {
+            List<Map<String, Object>> newModifications = new ArrayList<>();
+            for (CheckBox checkBox : checkBoxes) {
+                newModifications.add(Collections.singletonMap(checkBox.getText().toString(), checkBox.isChecked()));
+            }
+            String specialRequest = specialRequestInput.getText().toString();
+
+            // Update the order
+            order.setModifications(newModifications);
+            order.setSpecialRequest(specialRequest);
+            updateOrderInDatabase(order);
+            currentOrders.set(position, order);
+            cartAdapter.notifyItemChanged(position);
+            alertDialog.dismiss(); // Close the dialog
+        });
+
+        // Set the click listener for the close button
+        closeButton.setOnClickListener(v -> {
+            cartAdapter.notifyItemChanged(position); // Reset the swipe state
+            alertDialog.dismiss();
+        });
+    }
+
+    private void updateOrderInDatabase(Order order) {
+        // Update the order in the database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("currently_ordering").document(order.getDocumentId())
+                .set(order)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Order successfully updated"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating order", e));
     }
 
     private void updateConfirmButtonState() {
@@ -432,7 +586,9 @@ public class cartFragment extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String orderId = generateRandomOrderId();
-            for (Order order : currentOrders) {
+            List<Order> ordersToMove = new ArrayList<>(currentOrders); // Copy current orders to a new list
+
+            for (Order order : ordersToMove) {
                 order.setOrderId(orderId); // Set the orderId field
                 db.collection("ongoing_orders")
                         .add(order)
@@ -445,10 +601,12 @@ public class cartFragment extends Fragment {
                         })
                         .addOnFailureListener(e -> Log.e(TAG, "Failed to add order to ongoing_orders", e));
             }
+
             // Clear the current orders list and notify the adapter
             currentOrders.clear();
             cartAdapter.notifyDataSetChanged();
             updateConfirmButtonState();
+            updatePricing();
         }
     }
 

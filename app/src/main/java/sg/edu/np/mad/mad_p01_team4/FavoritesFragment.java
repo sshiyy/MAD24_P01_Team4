@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +33,7 @@ import java.util.Map;
 
 public class FavoritesFragment extends Fragment {
 
-    private TextView emptyFavoritesMessage;
+    private RecyclerView favoritesRecyclerView;
     private FoodAdapter foodAdapter;
     private List<Food> favoriteItems;
     private FirebaseFirestore db;
@@ -40,6 +41,7 @@ public class FavoritesFragment extends Fragment {
     private DrawerLayout drawerLayout;
     private ImageButton buttonDrawer;
     private NavigationView navigationView;
+    private TextView emptyFavoritesMessage;
     private Map<Integer, Class<? extends Fragment>> fragmentMap;
 
     @Nullable
@@ -51,8 +53,8 @@ public class FavoritesFragment extends Fragment {
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
+        favoritesRecyclerView = view.findViewById(R.id.favoriterv);
         emptyFavoritesMessage = view.findViewById(R.id.emptyFavoritesMessage);
-
         buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         initializeFragmentMap();
@@ -79,8 +81,13 @@ public class FavoritesFragment extends Fragment {
 
         // Set up RecyclerView
         favoriteItems = new ArrayList<>();
-        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext()); // Use FoodAdapter
+        foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext(), R.layout.custom_itemlist_small, this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        favoritesRecyclerView.setLayoutManager(gridLayoutManager);
 
+
+
+        favoritesRecyclerView.setAdapter(foodAdapter);
 
         // Load favorite items
         loadFavoriteItems();
@@ -88,31 +95,76 @@ public class FavoritesFragment extends Fragment {
         return view;
     }
 
+
     private void loadFavoriteItems() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             // Handle user not logged in
+            Log.e(TAG, "User not logged in");
             return;
         }
 
+        // First fetch the list of favorites for the current user
         db.collection("favorites")
                 .whereEqualTo("userId", currentUser.getUid())
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    favoriteItems.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Food food = document.toObject(Food.class);
-                        favoriteItems.add(food);
-                    }
-                    foodAdapter.updateList(new ArrayList<>(favoriteItems)); // Update FoodAdapter
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> favoriteFoodNames = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            favoriteFoodNames.add(document.getString("foodName"));
+                        }
 
+                        // Now fetch the food items from the Food_Items collection
+                        fetchFoodItems(favoriteFoodNames);
+                    } else {
+                        Log.w(TAG, "Error getting favorites.", task.getException());
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    // Handle failure to load favorites
+                    Log.e(TAG, "Failed to load favorites", e);
+                });
+    }
+
+    private void fetchFoodItems(List<String> favoriteFoodNames) {
+        db.collection("Food_Items")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        favoriteItems.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Food food = document.toObject(Food.class);
+                            food.setModifications((List<Map<String, Object>>) document.get("modifications"));
+
+                            // Check if this food item is in the list of favorite food names
+                            if (favoriteFoodNames.contains(food.getName())) {
+                                favoriteItems.add(food);
+                            }
+                        }
+                        foodAdapter.updateList(new ArrayList<>(favoriteItems)); // Update FoodAdapter
+                        toggleEmptyMessage();
+                    } else {
+                        Log.w(TAG, "Error getting food items.", task.getException());
+                    }
                 });
     }
 
 
+    public void toggleEmptyMessage() {
+        if (favoriteItems.isEmpty()) {
+            emptyFavoritesMessage.setVisibility(View.VISIBLE);
+            favoritesRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyFavoritesMessage.setVisibility(View.GONE);
+            favoritesRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void updateFavoriteItems(List<Food> newList) {
+        favoriteItems.clear();
+        favoriteItems.addAll(newList);
+        toggleEmptyMessage();
+    }
 
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();

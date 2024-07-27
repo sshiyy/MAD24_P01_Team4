@@ -144,15 +144,18 @@ Jason's References
 ```
 3. Advance cart UI feature - Shiying 
 
-Users can now swipe left on the item to add it to favorites/unfavorite, view more
-and also finding other relevant items in the same category.
-allow user to ammend order
+1. Added 'Favorite' feature for users to add items to favorites. Users can view and manage their favorite items.
+Implementation: The 'Favorites' page utilizes recyclerview to display the list of favorite items in an organised and user-friendly manner.
 
-popular recommendations
-order again function
-ongoing order
-order history
-payment
+2. Added a feature for users to apply modifications and special request for orders.This feature allows for customisation of food items based on user preferences.
+Implementation: A dialog interface allowing users to select modifications and add special requests when placing an order.
+
+3. Improved cart by allowing users to swipe right on cart items to delete and swipe left to edit.
+Implementation: Enhanced recyclerview item touch functionality to incorporate swipe gestures. The swipe actions reveal buttons that perform delete or edit operations.
+
+4. Added 'Ongoing orders' and 'Order History' page for users to view. Users can select order received in Ongoing orders page. Orders are grouped by order number for better organisation and easier tracking.
+Implementation: These two pages made use of recyclerview in a recyclerview to display the orders based on their order number.
+
 
 
 ```

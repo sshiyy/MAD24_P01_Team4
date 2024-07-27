@@ -20,8 +20,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+// adapter for displaying order history in a recyclerview
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
     private List<OrderGroup> orderGroups;
+
 
     public OrderHistoryAdapter(List<OrderGroup> orderGroups) {
         this.orderGroups = orderGroups;
@@ -93,6 +95,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             tvTotalWithGST.setText("Total with GST: $" + String.format(Locale.US, "%.2f", totalWithGST));
         }
 
+        // method to calculate total price of the orders
         private double calculateTotalPrice(List<Order> orders) {
             double totalPrice = 0;
             for (Order order : orders) {

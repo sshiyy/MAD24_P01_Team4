@@ -9,7 +9,8 @@
 
     <queries>
         <package android:name="com.google.android.googlequicksearchbox" />
-    </queries> <!-- Jason's Permissions -->
+    </queries>
+    <!-- Jason's Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />

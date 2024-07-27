@@ -157,23 +157,33 @@ payment
 
 ```
 ```
-4. Navigation Bar - Raeann 
+4. Navigation Bar - Raeann
 
-a hamburger menu  for the navigation using fragments to
-organize the app sections efficiently. using FRAGMENT .. 
-Using a hash for fragment navigation in an Android app can be done using a HashMap to map menu item IDs to their respective fragments. This approach simplifies the fragment navigation logic and makes it more maintainable.
+Stage 1 Improvements: 
 
-1. Biometrics - Able to register fingerprint  and login with it , same for payment when they press credit card they will be able to pay with fingerprint
+1. Hamburger Menu for Navigation Using Fragments
+Concepts: Fragment Navigation, HashMap for Fragment Mapping
+Implementation:
+Fragment Navigation: Implementing a hamburger menu in an Android app can help in efficiently organizing different sections of the app. Fragments are used to display different UI components within the same activity. This approach allows for a modular and flexible design where each section of the app is represented by a fragment.
+HashMap for Fragment Mapping: To simplify the fragment navigation logic, a HashMap can be used to map menu item IDs to their respective fragments. This makes the code more maintainable and scalable. For example, when a menu item is selected, the corresponding fragment can be retrieved from the HashMap and displayed, streamlining the process of fragment transactions.
 
-2. Voice Commands and Assistant Integration
-Concepts: Speech Recognition, Voice Assistant Integration.
-Implementation: Use SpeechRecognizer for capturing voice input, and integrate with Google Assistant for handling voice commands.
+2. More advance and working point system using firestore
 
-3. Chatbot for Customer Support
-Concepts: Natural Language Processing (NLP)
-Implementation: Create a chatbot using firstore and provide automated responses.
 
-4. Try implementing backstack too? - not sure about this yet 
+Stage 2 Features: 
+
+1. Voice Commands and Assistant Integration
+Concepts: Speech Recognition, Voice Assistant Integration
+Implementation:
+Speech Recognition: Using the SpeechRecognizer class in Android, the app can capture voice input from the user. This involves initializing the SpeechRecognizer, setting up the necessary permissions, and handling the speech input events.
+Voice Assistant Integration: Integrating with Google Assistant can enhance the app’s functionality by allowing users to perform actions through voice commands. This can be achieved by creating intents that the Google Assistant can trigger based on specific voice commands. By integrating voice commands, users can interact with the app more naturally and perform tasks hands-free, improving the overall user experience.
+
+2. Chatbot for Customer Support
+Concepts: Natural Language Processing (NLP), Firestore
+Implementation:
+Natural Language Processing (NLP): Creating a chatbot involves using NLP techniques to understand and process user queries. NLP allows the chatbot to interpret the intent behind user messages and respond appropriately.
+Firestore Integration: Firestore, a flexible and scalable NoSQL cloud database from Firebase, can be used to store and manage the data required for the chatbot. This includes storing predefined responses, user queries, and other relevant information. The chatbot can fetch responses from Firestore based on the user's input, providing real-time, automated support. This implementation enhances customer support by offering instant responses and handling common queries efficiently.
+
 
 
 ```

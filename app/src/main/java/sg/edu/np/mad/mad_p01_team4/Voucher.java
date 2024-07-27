@@ -1,5 +1,8 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Voucher {
     private String title;
     private String description;
@@ -36,5 +39,13 @@ public class Voucher {
 
     public void setDiscountAmt(int discountAmt) {
         this.discountAmt = discountAmt;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", title);
+        map.put("description", description);
+        map.put("discountAmt", discountAmt);
+        return map;
     }
 }

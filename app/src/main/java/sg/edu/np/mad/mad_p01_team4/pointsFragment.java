@@ -80,11 +80,12 @@ public class pointsFragment extends Fragment {
         redeemButton3 = view.findViewById(R.id.button_350_points);
 
         // Initialize RecyclerView and Adapter
-        voucherRecyclerView = view.findViewById(R.id.voucherRecyclerView);
-        voucherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         voucherList = new ArrayList<>();
         voucherAdapter = new VoucherAdapter(voucherList, getContext(), this::navigateToCartWithVoucher);
+        RecyclerView voucherRecyclerView = view.findViewById(R.id.voucherRecyclerView); // Ensure this ID matches your layout
+        voucherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         voucherRecyclerView.setAdapter(voucherAdapter);
+
 
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
@@ -120,6 +121,8 @@ public class pointsFragment extends Fragment {
 
         return view;
     }
+
+
 
     private void initializeFragmentMap() {
         fragmentMap = new HashMap<>();
@@ -361,12 +364,12 @@ public class pointsFragment extends Fragment {
         }
     }
 
-    private void navigateToCartWithVoucher(String voucherTitle, int voucherDiscount) {
+    private void navigateToCartWithVoucher(Voucher voucher) {
         cartFragment cartFragment = new cartFragment();
 
         Bundle args = new Bundle();
-        args.putString("voucherTitle", voucherTitle);
-        args.putInt("voucherDiscount", voucherDiscount);
+        args.putString("voucherTitle", voucher.getTitle());
+        args.putInt("voucherDiscount", voucher.getDiscountAmt());
         cartFragment.setArguments(args);
 
         // Navigate to the cartFragment
@@ -374,5 +377,46 @@ public class pointsFragment extends Fragment {
                 .replace(R.id.fragment_container, cartFragment) // Replace with the ID of your container layout
                 .addToBackStack(null)
                 .commit();
+
+        // Remove the voucher from the database and update the UI
+        removeVoucherFromDatabase(voucher);
+    }
+
+    private void removeVoucherFromDatabase(Voucher voucher) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            db.collection("Accounts")
+                    .whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                db.collection("Accounts").document(document.getId())
+                                        .update("vouchers", FieldValue.arrayRemove(voucher.toMap()))
+                                        .addOnSuccessListener(aVoid -> {
+                                            voucherList.remove(voucher);
+                                            voucherAdapter.notifyDataSetChanged();
+                                            Toast.makeText(getActivity(), "Voucher removed successfully!", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("pointsFragment", "Failed to remove voucher", e);
+                                            Toast.makeText(getActivity(), "Failed to remove voucher: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                                break;
+                            }
+                        } else {
+                            Log.e("pointsFragment", "Failed to find document with email: " + userEmail, task.getException());
+                            Toast.makeText(getActivity(), "Failed to find user account", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("pointsFragment", "Failed to fetch document with email: " + userEmail, e);
+                        Toast.makeText(getActivity(), "Failed to fetch user account", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            Log.e("pointsFragment", "No authenticated user found");
+            Toast.makeText(getActivity(), "No authenticated user found", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -32,7 +32,6 @@ import java.util.Map;
 
 public class FavoritesFragment extends Fragment {
 
-    private TextView emptyFavoritesMessage;
     private FoodAdapter foodAdapter;
     private List<Food> favoriteItems;
     private FirebaseFirestore db;
@@ -51,7 +50,6 @@ public class FavoritesFragment extends Fragment {
         drawerLayout = view.findViewById(R.id.drawer_layout);
         buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
         navigationView = view.findViewById(R.id.navigationView);
-        emptyFavoritesMessage = view.findViewById(R.id.emptyFavoritesMessage);
 
         buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
@@ -82,36 +80,8 @@ public class FavoritesFragment extends Fragment {
         foodAdapter = new FoodAdapter(new ArrayList<>(favoriteItems), getContext()); // Use FoodAdapter
 
 
-        // Load favorite items
-        loadFavoriteItems();
-
         return view;
     }
-
-    private void loadFavoriteItems() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            // Handle user not logged in
-            return;
-        }
-
-        db.collection("favorites")
-                .whereEqualTo("userId", currentUser.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    favoriteItems.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Food food = document.toObject(Food.class);
-                        favoriteItems.add(food);
-                    }
-                    foodAdapter.updateList(new ArrayList<>(favoriteItems)); // Update FoodAdapter
-
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure to load favorites
-                });
-    }
-
 
 
     private void initializeFragmentMap() {

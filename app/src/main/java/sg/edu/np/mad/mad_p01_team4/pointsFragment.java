@@ -2,111 +2,110 @@ package sg.edu.np.mad.mad_p01_team4;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.SharedPreferences; // Import for SharedPreferences
+import android.content.res.ColorStateList; // Import for ColorStateList
+import android.os.Bundle; // Import for handling Activity lifecycle events
+import android.util.Log; // Import for logging
+import android.view.LayoutInflater; // Import for layout inflater
+import android.view.View; // Import for handling view interactions
+import android.view.ViewGroup; // Import for view groups
+import android.widget.Button; // Import for Button widget
+import android.widget.ImageButton; // Import for ImageButton widget
+import android.widget.ProgressBar; // Import for ProgressBar widget
+import android.widget.TextView; // Import for TextView widget
+import android.widget.Toast; // Import for Toast messages
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull; // Import for non-null annotation
+import androidx.annotation.Nullable; // Import for nullable annotation
+import androidx.core.view.GravityCompat; // Import for handling drawer gravity
+import androidx.drawerlayout.widget.DrawerLayout; // Import for DrawerLayout
+import androidx.fragment.app.Fragment; // Import for fragment handling
+import androidx.fragment.app.FragmentManager; // Import for fragment manager
+import androidx.fragment.app.FragmentTransaction; // Import for fragment transaction
+import androidx.recyclerview.widget.LinearLayoutManager; // Import for linear layout manager in RecyclerView
+import androidx.recyclerview.widget.RecyclerView; // Import for RecyclerView
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.android.material.navigation.NavigationView; // Import for navigation view
+import com.google.firebase.auth.FirebaseAuth; // Import for Firebase authentication
+import com.google.firebase.auth.FirebaseUser; // Import for Firebase user
+import com.google.firebase.firestore.FieldValue; // Import for Firestore field value
+import com.google.firebase.firestore.FirebaseFirestore; // Import for Firestore database
+import com.google.firebase.firestore.QueryDocumentSnapshot; // Import for Firestore query document snapshot
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList; // Import for ArrayList
+import java.util.HashMap; // Import for HashMap
+import java.util.List; // Import for List interface
+import java.util.Map; // Import for Map interface
 
-public class pointsFragment extends Fragment {
+public class pointsFragment extends Fragment { // Main fragment class extending Fragment
 
-    private TextView currentTier;
-    private TextView pointsCount;
-    private TextView goalPointsText;
-    private ProgressBar progressBar;
-    private Button redeemButton;
-    private Button redeemButton2;
-    private Button redeemButton3;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private long userPoints;
-    private SharedPreferences sharedPreferences;
+    private TextView currentTier; // TextView for displaying current tier
+    private TextView pointsCount; // TextView for displaying points count
+    private TextView goalPointsText; // TextView for displaying goal points text
+    private ProgressBar progressBar; // ProgressBar for displaying points progress
+    private Button redeemButton; // Button for redeeming points
+    private Button redeemButton2; // Button for redeeming points
+    private Button redeemButton3; // Button for redeeming points
+    private FirebaseAuth mAuth; // Firebase authentication instance
+    private FirebaseFirestore db; // Firestore database instance
+    private long userPoints; // Variable for storing user points
+    private SharedPreferences sharedPreferences; // SharedPreferences instance
 
-    private RecyclerView voucherRecyclerView;
-    private VoucherAdapter voucherAdapter;
-    private List<Voucher> voucherList;
+    private RecyclerView voucherRecyclerView; // RecyclerView for displaying vouchers
+    private VoucherAdapter voucherAdapter; // Adapter for the RecyclerView
+    private List<Voucher> voucherList; // List to store vouchers
 
-    private ImageButton buttonDrawer;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+    private ImageButton buttonDrawer; // ImageButton for opening the drawer
+    private DrawerLayout drawerLayout; // DrawerLayout for navigation drawer
+    private NavigationView navigationView; // NavigationView for navigation items
 
-    private Map<Integer, Class<? extends Fragment>> fragmentMap;
+    private Map<Integer, Class<? extends Fragment>> fragmentMap; // Map to store fragment classes
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_points_page, container, false);
+        View view = inflater.inflate(R.layout.activity_points_page, container, false); // Inflate the layout for this fragment
 
         // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         // Get References
-        currentTier = view.findViewById(R.id.levelLabel);
-        pointsCount = view.findViewById(R.id.pointsValue);
-        goalPointsText = view.findViewById(R.id.pointsToNextLevel);
-        progressBar = view.findViewById(R.id.levelProgressBar);
-        redeemButton = view.findViewById(R.id.button_100_points);
-        redeemButton2 = view.findViewById(R.id.button_200_points);
-        redeemButton3 = view.findViewById(R.id.button_350_points);
+        currentTier = view.findViewById(R.id.levelLabel); // Find TextView by ID
+        pointsCount = view.findViewById(R.id.pointsValue); // Find TextView by ID
+        goalPointsText = view.findViewById(R.id.pointsToNextLevel); // Find TextView by ID
+        progressBar = view.findViewById(R.id.levelProgressBar); // Find ProgressBar by ID
+        redeemButton = view.findViewById(R.id.button_100_points); // Find Button by ID
+        redeemButton2 = view.findViewById(R.id.button_200_points); // Find Button by ID
+        redeemButton3 = view.findViewById(R.id.button_350_points); // Find Button by ID
 
         // Initialize RecyclerView and Adapter
-        voucherList = new ArrayList<>();
-        voucherAdapter = new VoucherAdapter(voucherList, getContext(), this::navigateToCartWithVoucher);
+        voucherList = new ArrayList<>(); // Initialize voucher list
+        voucherAdapter = new VoucherAdapter(voucherList, getContext(), this::navigateToCartWithVoucher); // Initialize the adapter with the voucher list
         RecyclerView voucherRecyclerView = view.findViewById(R.id.voucherRecyclerView); // Ensure this ID matches your layout
-        voucherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        voucherRecyclerView.setAdapter(voucherAdapter);
+        voucherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Set layout manager to RecyclerView
+        voucherRecyclerView.setAdapter(voucherAdapter); // Set adapter to RecyclerView
 
+        drawerLayout = view.findViewById(R.id.drawer_layout); // Find DrawerLayout by ID
+        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle); // Find ImageButton by ID
+        navigationView = view.findViewById(R.id.navigationView); // Find NavigationView by ID
 
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
-        navigationView = view.findViewById(R.id.navigationView);
+        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START)); // Set click listener for drawer button
 
-        buttonDrawer.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
-        initializeFragmentMap();
+        initializeFragmentMap(); // Initialize fragment map
 
         // Initialize NavigationView
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            int itemId = menuItem.getItemId();
-            displaySelectedFragment(itemId);
-            drawerLayout.closeDrawer(GravityCompat.START);
+        navigationView.setNavigationItemSelectedListener(menuItem -> { // Set navigation item selected listener
+            int itemId = menuItem.getItemId(); // Get selected item ID
+            displaySelectedFragment(itemId); // Display selected fragment
+            drawerLayout.closeDrawer(GravityCompat.START); // Close the drawer
             return true;
         });
 
         // Fetch user details to update points and tier
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Get current authenticated user
         if (currentUser != null) {
-            fetchUserDetails(currentUser.getEmail());
+            fetchUserDetails(currentUser.getEmail()); // Fetch user details if user is authenticated
         } else {
             Log.e(TAG, "User is not authenticated.");
         }
@@ -115,35 +114,33 @@ public class pointsFragment extends Fragment {
         fetchVouchers();
 
         // Handle redeem button clicks
-        redeemButton.setOnClickListener(v -> redeemPoints(100, "$2 off your next purchase", 2));
-        redeemButton2.setOnClickListener(v -> redeemPoints(200, "$10 off your next purchase", 10));
-        redeemButton3.setOnClickListener(v -> redeemPoints(350, "$20 off your next purchase", 20));
+        redeemButton.setOnClickListener(v -> redeemPoints(100, "$2 off your next purchase", 2)); // Set click listener for redeem button
+        redeemButton2.setOnClickListener(v -> redeemPoints(200, "$10 off your next purchase", 10)); // Set click listener for redeem button
+        redeemButton3.setOnClickListener(v -> redeemPoints(350, "$20 off your next purchase", 20)); // Set click listener for redeem button
 
-        return view;
+        return view; // Return the inflated view
     }
 
-
-
     private void initializeFragmentMap() {
-        fragmentMap = new HashMap<>();
-        fragmentMap.put(R.id.navMenu, productFragment.class);
-        fragmentMap.put(R.id.navCart, cartFragment.class);
-        fragmentMap.put(R.id.navAccount, profileFragment.class);
-        fragmentMap.put(R.id.navMap, mapFragment.class);
-        fragmentMap.put(R.id.navPoints, pointsFragment.class);
-        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
-        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
-        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
+        fragmentMap = new HashMap<>(); // Initialize fragment map
+        fragmentMap.put(R.id.navMenu, productFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navCart, cartFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navAccount, profileFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navMap, mapFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navPoints, pointsFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navFavourite, FavoritesFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class); // Map navigation item to fragment
+        fragmentMap.put(R.id.navHistory, orderhistoryFragment.class); // Map navigation item to fragment
         // Add more mappings as needed
     }
 
     private void displaySelectedFragment(int itemId) {
-        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId); // Get fragment class based on item ID
         if (fragmentClass != null) {
             try {
-                Fragment selectedFragment = fragmentClass.newInstance();
+                Fragment selectedFragment = fragmentClass.newInstance(); // Create a new instance of the fragment
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
+                        .replace(R.id.fragment_container, selectedFragment) // Replace current fragment with selected fragment
                         .addToBackStack(null)
                         .commit();
                 Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
@@ -159,26 +156,26 @@ public class pointsFragment extends Fragment {
     }
 
     private void fetchVouchers() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Get current authenticated user
         if (currentUser != null) {
-            db.collection("Accounts")
-                    .whereEqualTo("email", currentUser.getEmail())
+            db.collection("Accounts") // Reference to Accounts collection in Firestore
+                    .whereEqualTo("email", currentUser.getEmail()) // Query documents where email matches
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                List<Map<String, Object>> vouchers = (List<Map<String, Object>>) document.get("vouchers");
-                                voucherList.clear();
+                                List<Map<String, Object>> vouchers = (List<Map<String, Object>>) document.get("vouchers"); // Get vouchers from document
+                                voucherList.clear(); // Clear current voucher list
                                 if (vouchers != null) {
                                     for (Map<String, Object> voucherData : vouchers) {
-                                        String title = (String) voucherData.get("title");
-                                        String description = (String) voucherData.get("description");
-                                        Long discountAmt = (Long) voucherData.get("discountAmt");
-                                        Voucher voucher = new Voucher(title, description, discountAmt != null ? discountAmt.intValue() : 0);
-                                        voucherList.add(voucher);
+                                        String title = (String) voucherData.get("title"); // Get voucher title
+                                        String description = (String) voucherData.get("description"); // Get voucher description
+                                        Long discountAmt = (Long) voucherData.get("discountAmt"); // Get voucher discount amount
+                                        Voucher voucher = new Voucher(title, description, discountAmt != null ? discountAmt.intValue() : 0); // Create new voucher object
+                                        voucherList.add(voucher); // Add voucher to list
                                     }
                                 }
-                                voucherAdapter.notifyDataSetChanged();
+                                voucherAdapter.notifyDataSetChanged(); // Notify adapter of data change
                                 break;
                             }
                         } else {
@@ -189,20 +186,20 @@ public class pointsFragment extends Fragment {
     }
 
     private void fetchUserDetails(@NonNull String userEmail) {
-        db.collection("Accounts")
-                .whereEqualTo("email", userEmail)
+        db.collection("Accounts") // Reference to Accounts collection in Firestore
+                .whereEqualTo("email", userEmail) // Query documents where email matches
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Long points = document.getLong("points");
-                            userPoints = points != null ? points : 0;
-                            updateTier(userPoints);
-                            updateProgressBar(userPoints);
+                            Long points = document.getLong("points"); // Get points from document
+                            userPoints = points != null ? points : 0; // Set user points
+                            updateTier(userPoints); // Update user tier
+                            updateProgressBar(userPoints); // Update progress bar
 
                             if (pointsCount != null && goalPointsText != null) {
-                                pointsCount.setText(userPoints + "");
-                                goalPointsText.setText(calculateGoalPointsText(userPoints));
+                                pointsCount.setText(userPoints + ""); // Update points count
+                                goalPointsText.setText(calculateGoalPointsText(userPoints)); // Update goal points text
 
                                 // Show success message
                                 Toast.makeText(getContext(), "Points fetched successfully!", Toast.LENGTH_SHORT).show();
@@ -222,8 +219,8 @@ public class pointsFragment extends Fragment {
 
     private void redeemPoints(int pointsRequired, String discountDescription, int discountAmt) {
         if (userPoints >= pointsRequired) {
-            userPoints -= pointsRequired;
-            updatePointsInFirestore(userPoints, discountDescription, discountAmt);
+            userPoints -= pointsRequired; // Deduct points from user points
+            updatePointsInFirestore(userPoints, discountDescription, discountAmt); // Update points in Firestore
         } else {
             Log.d("PointsFragment", "Not enough points to redeem this voucher");
             Toast.makeText(getActivity(), "Not enough points to redeem this voucher.", Toast.LENGTH_SHORT).show();
@@ -231,25 +228,25 @@ public class pointsFragment extends Fragment {
     }
 
     private void updatePointsInFirestore(long newPoints, String discountDescription, int discountAmt) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Get current authenticated user
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
-            db.collection("Accounts")
-                    .whereEqualTo("email", userEmail)
+            db.collection("Accounts") // Reference to Accounts collection in Firestore
+                    .whereEqualTo("email", userEmail) // Query documents where email matches
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String tier = calculateTier(newPoints);
+                                String tier = calculateTier(newPoints); // Calculate new tier
                                 db.collection("Accounts").document(document.getId())
-                                        .update("points", newPoints, "tier", tier)
+                                        .update("points", newPoints, "tier", tier) // Update points and tier in document
                                         .addOnSuccessListener(aVoid -> {
-                                            pointsCount.setText(newPoints + " pts");
-                                            goalPointsText.setText(calculateGoalPointsText(newPoints));
-                                            currentTier.setText(tier);
-                                            updateProgressBar(newPoints);
+                                            pointsCount.setText(newPoints + " pts"); // Update points count
+                                            goalPointsText.setText(calculateGoalPointsText(newPoints)); // Update goal points text
+                                            currentTier.setText(tier); // Update current tier
+                                            updateProgressBar(newPoints); // Update progress bar
                                             Log.d("Points_Page", "Points and tier updated successfully in Firestore");
-                                            addVoucher(currentUser.getUid(), discountDescription, discountAmt);
+                                            addVoucher(currentUser.getUid(), discountDescription, discountAmt); // Add voucher to user account
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Points_Page", "Failed to update points and tier in Firestore", e);
@@ -273,11 +270,11 @@ public class pointsFragment extends Fragment {
     }
 
     private void addVoucher(String userId, String discountDescription, int discountAmt) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Get current authenticated user
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
-            db.collection("Accounts")
-                    .whereEqualTo("email", userEmail)
+            db.collection("Accounts") // Reference to Accounts collection in Firestore
+                    .whereEqualTo("email", userEmail) // Query documents where email matches
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
@@ -290,12 +287,12 @@ public class pointsFragment extends Fragment {
 
                                 // Add voucher to the user's account
                                 db.collection("Accounts").document(document.getId())
-                                        .update("vouchers", FieldValue.arrayUnion(voucher))
+                                        .update("vouchers", FieldValue.arrayUnion(voucher)) // Add voucher to array
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("pointsFragment", "Voucher added successfully");
-                                            Voucher newVoucher = new Voucher(discountDescription, discountDescription, discountAmt);
-                                            voucherList.add(newVoucher);
-                                            voucherAdapter.notifyDataSetChanged();
+                                            Voucher newVoucher = new Voucher(discountDescription, discountDescription, discountAmt); // Create new voucher object
+                                            voucherList.add(newVoucher); // Add voucher to list
+                                            voucherAdapter.notifyDataSetChanged(); // Notify adapter of data change
                                             Toast.makeText(getActivity(), "Redeemed " + discountDescription + " successfully!", Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnFailureListener(e -> {
@@ -320,57 +317,57 @@ public class pointsFragment extends Fragment {
     }
 
     private void updateProgressBar(long points) {
-        int progress = (int) points;
-        progressBar.setProgress(progress);
+        int progress = (int) points; // Convert points to int for progress bar
+        progressBar.setProgress(progress); // Set progress bar progress
 
         if (points >= 450) {
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.platinium)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.platinium))); // Set progress bar color to platinum
         } else if (points >= 300) {
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.gold)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.gold))); // Set progress bar color to gold
         } else if (points >= 100) {
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.silver)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.silver))); // Set progress bar color to silver
         } else {
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.bronze)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.bronze))); // Set progress bar color to bronze
         }
     }
 
     private String calculateTier(long points) {
         if (points >= 450) {
-            return "Platinum";
+            return "Platinum"; // Return platinum tier
         } else if (points >= 300) {
-            return "Gold";
+            return "Gold"; // Return gold tier
         } else if (points >= 100) {
-            return "Silver";
+            return "Silver"; // Return silver tier
         } else {
-            return "Bronze";
+            return "Bronze"; // Return bronze tier
         }
     }
 
     private void updateTier(long points) {
-        String tier = calculateTier(points);
-        currentTier.setText(tier);
-        goalPointsText.setText(calculateGoalPointsText(points));
+        String tier = calculateTier(points); // Calculate tier based on points
+        currentTier.setText(tier); // Update current tier
+        goalPointsText.setText(calculateGoalPointsText(points)); // Update goal points text
     }
 
     private String calculateGoalPointsText(long points) {
         if (points < 100) {
-            return "Points needed for Silver: " + (100 - points);
+            return "Points needed for Silver: " + (100 - points); // Return points needed for silver
         } else if (points < 300) {
-            return "Points needed for Gold: " + (300 - points);
+            return "Points needed for Gold: " + (300 - points); // Return points needed for gold
         } else if (points < 450) {
-            return "Points needed for Platinum: " + (450 - points);
+            return "Points needed for Platinum: " + (450 - points); // Return points needed for platinum
         } else {
-            return "You have reached the highest tier!";
+            return "You have reached the highest tier!"; // Return highest tier message
         }
     }
 
     private void navigateToCartWithVoucher(Voucher voucher) {
-        cartFragment cartFragment = new cartFragment();
+        cartFragment cartFragment = new cartFragment(); // Create new cart fragment
 
         Bundle args = new Bundle();
-        args.putString("voucherTitle", voucher.getTitle());
-        args.putInt("voucherDiscount", voucher.getDiscountAmt());
-        cartFragment.setArguments(args);
+        args.putString("voucherTitle", voucher.getTitle()); // Put voucher title in bundle
+        args.putInt("voucherDiscount", voucher.getDiscountAmt()); // Put voucher discount in bundle
+        cartFragment.setArguments(args); // Set arguments to cart fragment
 
         // Navigate to the cartFragment
         requireActivity().getSupportFragmentManager().beginTransaction()
@@ -383,20 +380,20 @@ public class pointsFragment extends Fragment {
     }
 
     private void removeVoucherFromDatabase(Voucher voucher) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Get current authenticated user
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
-            db.collection("Accounts")
-                    .whereEqualTo("email", userEmail)
+            db.collection("Accounts") // Reference to Accounts collection in Firestore
+                    .whereEqualTo("email", userEmail) // Query documents where email matches
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 db.collection("Accounts").document(document.getId())
-                                        .update("vouchers", FieldValue.arrayRemove(voucher.toMap()))
+                                        .update("vouchers", FieldValue.arrayRemove(voucher.toMap())) // Remove voucher from array
                                         .addOnSuccessListener(aVoid -> {
-                                            voucherList.remove(voucher);
-                                            voucherAdapter.notifyDataSetChanged();
+                                            voucherList.remove(voucher); // Remove voucher from list
+                                            voucherAdapter.notifyDataSetChanged(); // Notify adapter of data change
                                             Toast.makeText(getActivity(), "Voucher removed successfully!", Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnFailureListener(e -> {

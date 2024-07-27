@@ -1,155 +1,152 @@
-package sg.edu.np.mad.mad_p01_team4;
+package sg.edu.np.mad.mad_p01_team4; // Package declaration for the project
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.speech.SpeechRecognizer;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.Manifest; // Import for microphone permission
+import android.content.Context; // Import for context handling
+import android.content.Intent; // Import for intent handling
+import android.content.pm.PackageManager; // Import for package manager
+import android.graphics.Color; // Import for handling colors
+import android.graphics.drawable.ColorDrawable; // Import for color drawable
+import android.os.Bundle; // Import for handling Activity lifecycle events
+import android.speech.SpeechRecognizer; // Import for speech recognition
+import android.text.Editable; // Import for editable text interface
+import android.text.TextWatcher; // Import for text change listener
+import android.util.Log; // Import for logging
+import android.view.Gravity; // Import for setting gravity
+import android.view.KeyEvent; // Import for key events
+import android.view.LayoutInflater; // Import for layout inflater
+import android.view.View; // Import for handling view interactions
+import android.view.ViewGroup; // Import for view groups
+import android.view.inputmethod.EditorInfo; // Import for handling input methods
+import android.widget.Button; // Import for Button widget
+import android.widget.EditText; // Import for EditText widget
+import android.widget.ImageButton; // Import for ImageButton widget
+import android.widget.LinearLayout; // Import for LinearLayout widget
+import android.widget.PopupWindow; // Import for PopupWindow
+import android.widget.RelativeLayout; // Import for RelativeLayout widget
+import android.widget.Spinner; // Import for Spinner widget
+import android.widget.TextView; // Import for TextView widget
+import android.widget.Toast; // Import for Toast messages
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull; // Import for non-null annotation
+import androidx.core.app.ActivityCompat; // Import for activity compatibility
+import androidx.core.content.ContextCompat; // Import for context compatibility
+import androidx.core.view.GravityCompat; // Import for handling drawer gravity
+import androidx.drawerlayout.widget.DrawerLayout; // Import for DrawerLayout
+import androidx.fragment.app.Fragment; // Import for fragment handling
+import androidx.recyclerview.widget.DefaultItemAnimator; // Import for default item animator
+import androidx.recyclerview.widget.GridLayoutManager; // Import for grid layout manager in RecyclerView
+import androidx.recyclerview.widget.RecyclerView; // Import for RecyclerView
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.android.material.floatingactionbutton.FloatingActionButton; // Import for floating action button
+import com.google.android.material.navigation.NavigationView; // Import for navigation view
+import com.google.firebase.auth.FirebaseAuth; // Import for Firebase authentication
+import com.google.firebase.auth.FirebaseUser; // Import for Firebase user
+import com.google.firebase.firestore.FirebaseFirestore; // Import for Firestore database
+import com.google.firebase.firestore.QueryDocumentSnapshot; // Import for Firestore query document snapshot
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.ArrayList; // Import for ArrayList
+import java.util.HashMap; // Import for HashMap
+import java.util.List; // Import for List interface
+import java.util.Locale; // Import for Locale settings
+import java.util.Map; // Import for Map interface
 
-public class productFragment extends Fragment {
+public class productFragment extends Fragment { // Main fragment class extending Fragment
 
     public productFragment() {
         // Required empty public constructor
     }
 
-    private static final String TAG = "productpage";
-    private static final int REQUEST_MIC_PERMISSION = 1;
+    private static final String TAG = "productpage"; // Tag for logging
+    private static final int REQUEST_MIC_PERMISSION = 1;  // Constant for microphone permission request
 
-    private FirebaseFirestore db;
-    private ArrayList<Food> allFoodList;
-    private FoodAdapter foodAdapter;
-    private TextView allRestaurantsText;
-    private TextView sortedByText;
-    private EditText searchEditText;
+    private FirebaseFirestore db; // Firestore database instance
+    private ArrayList<Food> allFoodList; // List to store food items
+    private FoodAdapter foodAdapter; // Adapter for the RecyclerView
+    private TextView allRestaurantsText; // TextView for displaying all restaurants text
+    private TextView sortedByText; // TextView for displaying sorted by text
+    private EditText searchEditText; // EditText for search input
 
-    private DrawerLayout drawerLayout;
-    private ImageButton buttonDrawer;
-    private NavigationView navigationView;
-    private LinearLayout voicePopup;
-    private SpeechRecognitionHelper speechRecognitionHelper;
+    private DrawerLayout drawerLayout; // DrawerLayout for navigation drawer
+    private ImageButton buttonDrawer; // ImageButton for opening the drawer
+    private NavigationView navigationView; // NavigationView for navigation items
+    private LinearLayout voicePopup; // LinearLayout for voice popup
+    private SpeechRecognitionHelper speechRecognitionHelper; // Helper class for speech recognition
 
-    private TextView noProductTextView;
+    private TextView noProductTextView; // TextView for displaying no products message
 
-    private Map<Integer, Class<? extends Fragment>> fragmentMap;
+    private Map<Integer, Class<? extends Fragment>> fragmentMap; // Map to store fragment classes
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.productpage, container, false);
+        View view = inflater.inflate(R.layout.productpage, container, false); // Inflate the layout for this fragment
 
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle);
-        navigationView = view.findViewById(R.id.navigationView);
-        searchEditText = view.findViewById(R.id.searchEditText);
-        voicePopup = view.findViewById(R.id.voice_popup);
-        noProductTextView = view.findViewById(R.id.noProductTextView);
-        ImageButton voiceButton = view.findViewById(R.id.search_voice_btn);
+        drawerLayout = view.findViewById(R.id.drawer_layout); // Find DrawerLayout by ID
+        buttonDrawer = view.findViewById(R.id.buttonDrawerToggle); // Find ImageButton by ID
+        navigationView = view.findViewById(R.id.navigationView); // Find NavigationView by ID
+        searchEditText = view.findViewById(R.id.searchEditText); // Find EditText by ID
+        voicePopup = view.findViewById(R.id.voice_popup); // Find LinearLayout by ID
+        noProductTextView = view.findViewById(R.id.noProductTextView); // Find TextView by ID
+        ImageButton voiceButton = view.findViewById(R.id.search_voice_btn); // Find ImageButton by ID
 
-        voiceButton.setOnClickListener(v -> startVoiceRecognition());
-        checkMicrophonePermission();
+        voiceButton.setOnClickListener(v -> startVoiceRecognition()); // Set click listener for voice button
+        checkMicrophonePermission(); // Check microphone permission
 
-        buttonDrawer.setOnClickListener(v -> drawerLayout.open());
+        buttonDrawer.setOnClickListener(v -> drawerLayout.open()); // Set click listener for drawer button
 
-        initializeFragmentMap();
+        initializeFragmentMap(); // Initialize fragment map
 
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            int itemId = menuItem.getItemId();
+        navigationView.setNavigationItemSelectedListener(menuItem -> { // Set navigation item selected listener
+            int itemId = menuItem.getItemId(); // Get selected item ID
             Log.d(TAG, "Navigation item clicked: " + itemId);
-            displaySelectedFragment(itemId);
-            drawerLayout.closeDrawer(GravityCompat.START);
+            displaySelectedFragment(itemId); // Display selected fragment
+            drawerLayout.closeDrawer(GravityCompat.START); // Close the drawer
             return true;
         });
 
-        db = FirebaseFirestore.getInstance();
-        allFoodList = new ArrayList<>();
-        foodAdapter = new FoodAdapter(new ArrayList<>(), getContext(), R.layout.custom_itemlist_small); // Use the default layout for products
+        db = FirebaseFirestore.getInstance(); // Get Firestore instance
+        allFoodList = new ArrayList<>(); // Initialize the food list
+        foodAdapter = new FoodAdapter(new ArrayList<>(), getContext(), R.layout.custom_itemlist_small); // Initialize the adapter with the food list
 
+        setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter); // Set up RecyclerView
 
-        setUpRecyclerView(view, R.id.productrecyclerView, foodAdapter);
+        allRestaurantsText = view.findViewById(R.id.allRestaurantsText); // Find TextView by ID
+        sortedByText = view.findViewById(R.id.sortedByText); // Find TextView by ID
 
-        allRestaurantsText = view.findViewById(R.id.allRestaurantsText);
-        sortedByText = view.findViewById(R.id.sortedByText);
+        fetchFoodItems(); // Fetch food items from Firestore
 
-        fetchFoodItems();
+        ImageButton filbtn = view.findViewById(R.id.filterIcon); // Find filter button by ID
+        filbtn.setOnClickListener(v -> showFilterPopup()); // Set click listener for filter button
 
-        ImageButton filbtn = view.findViewById(R.id.filterIcon);
-        filbtn.setOnClickListener(v -> showFilterPopup());
-
-        RelativeLayout cartbutton = view.findViewById(R.id.cart_button);
-        cartbutton.setOnClickListener(v -> {
+        RelativeLayout cartbutton = view.findViewById(R.id.cart_button); // Find cart button by ID
+        cartbutton.setOnClickListener(v -> { // Set click listener for cart button
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new cartFragment())
+                    .replace(R.id.fragment_container, new cartFragment()) // Replace current fragment with cart fragment
                     .addToBackStack(null)
                     .commit();
         });
 
-        FloatingActionButton floatingActionButton = view.findViewById(R.id.chatbot_button);
-        floatingActionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), chatbot.class);
-            startActivity(intent);
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.chatbot_button); // Find floating action button by ID
+        floatingActionButton.setOnClickListener(v -> { // Set click listener for floating action button
+            Intent intent = new Intent(getActivity(), chatbot.class); // Create intent for chatbot activity
+            startActivity(intent); // Start chatbot activity
         });
 
-
-
-        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> { // Set editor action listener for search EditText
             if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                performSearch(v.getText().toString());
+                performSearch(v.getText().toString()); // Perform search when search action is triggered
                 return true;
             }
             return false;
         });
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        searchEditText.addTextChangedListener(new TextWatcher() { // Add text watcher to search EditText
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performSearch(s.toString());
+                performSearch(s.toString()); // Perform search as text changes
             }
 
             @Override
@@ -157,34 +154,34 @@ public class productFragment extends Fragment {
             }
         });
 
-        return view;
+        return view; // Return the inflated view
     }
 
     private void checkMicrophonePermission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION); // Request microphone permission if not granted
         } else {
-            initializeSpeechRecognitionHelper();
+            initializeSpeechRecognitionHelper(); // Initialize speech recognition helper if permission is granted
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        dismissMicPopup();
+        dismissMicPopup(); // Dismiss microphone popup on pause
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        dismissMicPopup();
+        dismissMicPopup(); // Dismiss microphone popup on view destroy
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (speechRecognitionHelper != null) {
-            speechRecognitionHelper.destroy();
+            speechRecognitionHelper.destroy(); // Destroy speech recognition helper on destroy
         }
     }
 
@@ -193,7 +190,7 @@ public class productFragment extends Fragment {
         speechRecognitionHelper = new SpeechRecognitionHelper(getContext(), new SpeechRecognitionHelper.SpeechRecognitionListener() {
             @Override
             public void onReadyForSpeech() {
-                showMicPopup();
+                showMicPopup(); // Show microphone popup when ready for speech
             }
 
             @Override
@@ -214,27 +211,27 @@ public class productFragment extends Fragment {
 
             @Override
             public void onError(int error) {
-                dismissMicPopup();
+                dismissMicPopup(); // Dismiss microphone popup on error
                 Log.e(TAG, "Speech recognition error: " + error);
-                String errorMessage = getErrorText(error);
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                String errorMessage = getErrorText(error); // Get error message based on error code
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show(); // Show error message
                 if (error == SpeechRecognizer.ERROR_NO_MATCH) {
-                    startVoiceRecognition();
+                    startVoiceRecognition(); // Restart voice recognition if no match error occurs
                 }
             }
 
             @Override
             public void onResults(String result) {
                 Log.d(TAG, "Recognized result: " + result);
-                updateRecognizedText(result);
-                handleVoiceCommand(result);
-                dismissMicPopup();
+                updateRecognizedText(result); // Update recognized text
+                handleVoiceCommand(result); // Handle voice command
+                dismissMicPopup(); // Dismiss microphone popup
             }
 
             @Override
             public void onPartialResults(String partialResult) {
                 Log.d(TAG, "Partial result: " + partialResult);
-                updateRecognizedText(partialResult);
+                updateRecognizedText(partialResult); // Update recognized text with partial result
             }
 
             @Override
@@ -245,12 +242,12 @@ public class productFragment extends Fragment {
 
     private void startVoiceRecognition() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION); // Request microphone permission if not granted
         } else {
             if (speechRecognitionHelper != null) {
                 Log.d(TAG, "Starting voice recognition");
-                speechRecognitionHelper.startListening();
-                showMicPopup();
+                speechRecognitionHelper.startListening(); // Start listening for voice input
+                showMicPopup(); // Show microphone popup
             } else {
                 Log.e(TAG, "SpeechRecognitionHelper is not initialized");
             }
@@ -258,22 +255,22 @@ public class productFragment extends Fragment {
     }
 
     private void showMicPopup() {
-        voicePopup.setVisibility(View.VISIBLE);
+        voicePopup.setVisibility(View.VISIBLE); // Show microphone popup
     }
 
     private void dismissMicPopup() {
         if (voicePopup != null) {
-            voicePopup.setVisibility(View.GONE);
+            voicePopup.setVisibility(View.GONE); // Hide microphone popup
         }
     }
 
     private void updateRecognizedText(String text) {
         Log.d(TAG, "Attempting to update recognized text: " + text);
         if (voicePopup != null && voicePopup.getVisibility() == View.VISIBLE) {
-            TextView recognizedTextView = voicePopup.findViewById(R.id.recognized_text);
+            TextView recognizedTextView = voicePopup.findViewById(R.id.recognized_text); // Find recognized text view by ID
             if (recognizedTextView != null) {
                 Log.d(TAG, "Updating recognized text: " + text);
-                recognizedTextView.setText(text);
+                recognizedTextView.setText(text); // Set recognized text
             } else {
                 Log.e(TAG, "recognizedTextView is null");
             }
@@ -284,55 +281,55 @@ public class productFragment extends Fragment {
 
     private void handleVoiceCommand(String command) {
         Log.d(TAG, "Handling voice command: " + command);
-        command = command.toLowerCase(Locale.ROOT);
+        command = command.toLowerCase(Locale.ROOT); // Convert command to lower case
 
-        Fragment selectedFragment = null;
+        Fragment selectedFragment = null; // Initialize selected fragment
 
-        if (command.contains("account")|| command.contains("profile")|| command.contains("account")) {
+        if (command.contains("account") || command.contains("profile") || command.contains("account")) {
             Log.d(TAG, "Navigating to account fragment");
-            selectedFragment = new profileFragment();
-        } else if (command.contains("shopping") || command.contains("cart")|| command.contains("checkout")) {
+            selectedFragment = new profileFragment(); // Navigate to profile fragment
+        } else if (command.contains("shopping") || command.contains("cart") || command.contains("checkout")) {
             Log.d(TAG, "Navigating to cart fragment");
-            selectedFragment = new cartFragment();
-        } else if (command.contains("product")|| command.contains("Home")|| command.contains("Food")) {
+            selectedFragment = new cartFragment(); // Navigate to cart fragment
+        } else if (command.contains("product") || command.contains("Home") || command.contains("Food")) {
             Log.d(TAG, "Navigating to product fragment");
-            selectedFragment = new productFragment();
-        } else if (command.contains("points")|| command.contains("rewards")) {
+            selectedFragment = new productFragment(); // Navigate to product fragment
+        } else if (command.contains("points") || command.contains("rewards")) {
             Log.d(TAG, "Navigating to points fragment");
-            selectedFragment = new pointsFragment();
+            selectedFragment = new pointsFragment(); // Navigate to points fragment
         } else {
             Log.d(TAG, "Unrecognized command: " + command);
         }
 
         if (selectedFragment != null) {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, selectedFragment)
+                    .replace(R.id.fragment_container, selectedFragment) // Replace current fragment with selected fragment
                     .addToBackStack(null)
                     .commit();
         }
     }
 
     private void setUpRecyclerView(View view, int recyclerViewId, RecyclerView.Adapter<?> adapter) {
-        RecyclerView recyclerView = view.findViewById(recyclerViewId);
+        RecyclerView recyclerView = view.findViewById(recyclerViewId); // Find RecyclerView by ID
         int numberOfColumns = 2; // Set the number of columns for the grid layout
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns); // Create a grid layout manager
+        recyclerView.setLayoutManager(layoutManager); // Set layout manager to RecyclerView
+        recyclerView.setItemAnimator(new DefaultItemAnimator()); // Set default item animator
+        recyclerView.setAdapter(adapter); // Set adapter to RecyclerView
     }
 
     private void fetchFoodItems() {
-        db.collection("Food_Items")
+        db.collection("Food_Items") // Reference to Food_Items collection in Firestore
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         allFoodList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Food food = document.toObject(Food.class);
-                            food.setModifications((List<Map<String, Object>>) document.get("modifications"));
-                            allFoodList.add(food);
+                            Food food = document.toObject(Food.class); // Convert document to Food object
+                            food.setModifications((List<Map<String, Object>>) document.get("modifications")); // Set modifications
+                            allFoodList.add(food); // Add food item to list
                         }
-                        updateAllAdapters(allFoodList);
+                        updateAllAdapters(allFoodList); // Update adapters with the fetched food items
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
@@ -340,34 +337,34 @@ public class productFragment extends Fragment {
     }
 
     private void updateAllAdapters(ArrayList<Food> foodList) {
-        foodAdapter.updateList(foodList);
+        foodAdapter.updateList(foodList); // Update adapter with the new food list
     }
 
     private void showFilterPopup() {
         try {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.activity_flitering_page, null);
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
-            boolean focusable = true;
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-            View mainLayout = getActivity().findViewById(android.R.id.content).getRootView();
-            popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); // Get layout inflater
+            View popupView = inflater.inflate(R.layout.activity_flitering_page, null); // Inflate filter popup layout
+            int width = LinearLayout.LayoutParams.MATCH_PARENT; // Set popup width to match parent
+            int height = LinearLayout.LayoutParams.MATCH_PARENT; // Set popup height to match parent
+            boolean focusable = true; // Set popup focusable
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable); // Create popup window
+            View mainLayout = getActivity().findViewById(android.R.id.content).getRootView(); // Get main layout
+            popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0); // Show popup window at center
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // Set transparent background
 
-            Button applyButton = popupView.findViewById(R.id.applyButton);
+            Button applyButton = popupView.findViewById(R.id.applyButton); // Find apply button by ID
             applyButton.setOnClickListener(v -> {
-                Spinner categorySpinner = popupView.findViewById(R.id.spinnerCategory);
-                Spinner priceSpinner = popupView.findViewById(R.id.spinnerPrice);
-                String selectedCategory = categorySpinner.getSelectedItem().toString();
-                String selectedPriceRange = priceSpinner.getSelectedItem().toString();
+                Spinner categorySpinner = popupView.findViewById(R.id.spinnerCategory); // Find category spinner by ID
+                Spinner priceSpinner = popupView.findViewById(R.id.spinnerPrice); // Find price spinner by ID
+                String selectedCategory = categorySpinner.getSelectedItem().toString(); // Get selected category
+                String selectedPriceRange = priceSpinner.getSelectedItem().toString(); // Get selected price range
 
-                applyFilter(selectedCategory, selectedPriceRange);
-                popupWindow.dismiss();
+                applyFilter(selectedCategory, selectedPriceRange); // Apply filter with selected category and price range
+                popupWindow.dismiss(); // Dismiss popup window
             });
 
-            Button closeButton = popupView.findViewById(R.id.cancelButton);
-            closeButton.setOnClickListener(v -> popupWindow.dismiss());
+            Button closeButton = popupView.findViewById(R.id.cancelButton); // Find close button by ID
+            closeButton.setOnClickListener(v -> popupWindow.dismiss()); // Set click listener to dismiss popup window
         } catch (Exception e) {
             Log.e(TAG, "Error showing filter popup", e);
         }
@@ -378,14 +375,14 @@ public class productFragment extends Fragment {
         put("$10 - $20", new double[]{10.0, 20.0});
         put("$20 and above", new double[]{20.0, Double.MAX_VALUE});
         put("All", new double[]{0, Double.MAX_VALUE});
-    }};
+    }}; // Map to store price ranges
 
     private final Map<String, String> priceRangeSymbolMap = new HashMap<String, String>() {{
         put("$0 - $10", "$0 - $10");
         put("$10 - $20", "$10 - $20");
         put("$20 and above", "$20 and above");
         put("All", "");
-    }};
+    }}; // Map to store price range symbols
 
     private void applyFilter(String selectedCategory, String selectedPriceRange) {
         ArrayList<Food> filteredList = new ArrayList<>();
@@ -402,12 +399,12 @@ public class productFragment extends Fragment {
             }
         }
 
-        updateAllAdapters(filteredList);
+        updateAllAdapters(filteredList); // Update adapters with the filtered food items
 
         if (filteredList.isEmpty()) {
-            noProductTextView.setVisibility(View.VISIBLE);
+            noProductTextView.setVisibility(View.VISIBLE); // Show no products message if the list is empty
         } else {
-            noProductTextView.setVisibility(View.GONE);
+            noProductTextView.setVisibility(View.GONE); // Hide no products message if the list is not empty
         }
 
         String priceRangeSymbol = priceRangeSymbolMap.getOrDefault(selectedPriceRange, "");
@@ -430,7 +427,7 @@ public class productFragment extends Fragment {
     private void clearFilter() {
         allRestaurantsText.setText("All Category");
         sortedByText.setText("sorted by category");
-        updateAllAdapters(allFoodList);
+        updateAllAdapters(allFoodList); // Clear filter and update adapter with all food items
     }
 
     private void performSearch(String query) {
@@ -439,16 +436,16 @@ public class productFragment extends Fragment {
 
         for (Food food : allFoodList) {
             if (food.getName().toLowerCase().contains(lowercaseQuery)) {
-                filteredList.add(food);
+                filteredList.add(food); // Add food item to filtered list if it matches the search query
             }
         }
 
-        foodAdapter.updateList(filteredList);
+        foodAdapter.updateList(filteredList); // Update adapter with the filtered food items
     }
 
     private void clearSearch() {
         searchEditText.setText("");
-        updateAllAdapters(allFoodList);
+        updateAllAdapters(allFoodList); // Clear search and update adapter with all food items
         allRestaurantsText.setText("All Categories");
         sortedByText.setText("sorted by category");
     }
@@ -459,9 +456,9 @@ public class productFragment extends Fragment {
         if (requestCode == REQUEST_MIC_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "Microphone permission granted");
-                initializeSpeechRecognitionHelper();
+                initializeSpeechRecognitionHelper(); // Initialize speech recognition helper if permission is granted
             } else {
-                Toast.makeText(getContext(), "Microphone permission is required for speech recognition", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Microphone permission is required for speech recognition", Toast.LENGTH_SHORT).show(); // Show permission required message
             }
         }
     }
@@ -477,15 +474,15 @@ public class productFragment extends Fragment {
         fragmentMap.put(R.id.navOngoingOrders, ongoingFragment.class);
         fragmentMap.put(R.id.navHistory, orderhistoryFragment.class);
         fragmentMap.put(R.id.navFavourite, FavoritesFragment.class);
-    }
+    } // Initialize map to store fragment classes
 
     private void displaySelectedFragment(int itemId) {
-        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId);
+        Class<? extends Fragment> fragmentClass = fragmentMap.get(itemId); // Get fragment class based on item ID
         if (fragmentClass != null) {
             try {
-                Fragment selectedFragment = fragmentClass.newInstance();
+                Fragment selectedFragment = fragmentClass.newInstance(); // Create a new instance of the fragment
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
+                        .replace(R.id.fragment_container, selectedFragment) // Replace current fragment with selected fragment
                         .addToBackStack(null)
                         .commit();
                 Log.d(TAG, "Fragment transaction committed for: " + fragmentClass.getSimpleName());
@@ -534,6 +531,6 @@ public class productFragment extends Fragment {
                 message = "Unknown error, please try again.";
                 break;
         }
-        return message;
+        return message; // Return error message based on error code
     }
 }

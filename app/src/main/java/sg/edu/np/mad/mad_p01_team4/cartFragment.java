@@ -1,5 +1,7 @@
 package sg.edu.np.mad.mad_p01_team4;
 
+import static android.content.Intent.getIntent;
+
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -325,28 +328,42 @@ public class cartFragment extends Fragment {
 
     // Method to show payment options
     private void showPayment() {
-        View view = getLayoutInflater().inflate(R.layout.activity_payment_method, null);
-        RadioGroup paymentGroup = view.findViewById(R.id.payment_method_group);
-        BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
+        // Inflate the layout for the BottomSheetDialog
+        View view = getLayoutInflater().inflate(R.layout.activity_card_payment, null);
+
+        // Initialize views from the inflated layout
+        EditText nameOnCard = view.findViewById(R.id.name_on_card);
+        EditText cardNumber = view.findViewById(R.id.card_number);
+        EditText expiryDate = view.findViewById(R.id.expiry_date);
+        EditText cvv = view.findViewById(R.id.cvv);
+        EditText postalCode = view.findViewById(R.id.postal_code);
+        TextView totalAmountView = view.findViewById(R.id.total_amount);
+
+        totalAmountView.setText("Total Amount: " + totalprice.getText());
+
+        // Initialize BottomSheetDialog
+        BottomSheetDialog dialog = new BottomSheetDialog(requireActivity());
         dialog.setContentView(view);
-        Button payButton = view.findViewById(R.id.payButton);
-        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) view.getParent());
-        bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelSize(R.dimen.bottom_sheet_peek_height));
-        bottomSheetBehavior.setHideable(false);
 
-        paymentGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId != -1) {
-                payButton.setEnabled(true);
-            } else {
-                payButton.setEnabled(false);
-            }
-        });
+        // Handle Pay Button click
+        Button payButton = view.findViewById(R.id.pay_button);
+        payButton.setOnClickListener(v -> {
+            if (validateInputs(nameOnCard, cardNumber, expiryDate, cvv, postalCode)) {
+                // Extract numeric part from totalAmountView
+                String totalAmountText = totalAmountView.getText().toString();
+                double totalPrice = 0.00;
+                try {
+                    // Extract the number part from the text
+                    totalPrice = Double.parseDouble(totalAmountText.replaceAll("[^0-9.]", ""));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Invalid total amount format", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method if parsing fails
+                }
 
-        if (payButton != null) {
-            payButton.setOnClickListener(v -> {
-                Toast.makeText(v.getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
                 moveOrdersToOngoing();
-                double totalPrice = Double.parseDouble(totalpricing.getText().toString().substring(1));
+
                 updatePointsAfterCheckout(totalPrice);
 
                 // Trigger the notification
@@ -355,19 +372,49 @@ public class cartFragment extends Fragment {
                 // Navigate to the points fragment to show updated points
                 Fragment pointsFragment = new pointsFragment();
                 FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, pointsFragment); // Replace R.id.fragment_container with the ID of your container layout
+                transaction.replace(R.id.fragment_container, pointsFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                dialog.dismiss();
 
+                dialog.dismiss();
                 // Show AlertDialog to prompt user to add widget
                 showAddWidgetDialog();
-            });
-            dialog.show();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
+    }
+
+    private boolean validateInputs(EditText nameOnCard, EditText cardNumber, EditText expiryDate, EditText cvv, EditText postalCode) {
+        boolean isValid = true;
+
+        if (TextUtils.isEmpty(nameOnCard.getText())) {
+            nameOnCard.setError("Name on card is required");
+            isValid = false;
         }
 
-        ImageView cross = dialog.findViewById(R.id.cross);
-        cross.setOnClickListener(v -> dialog.dismiss());
+        if (TextUtils.isEmpty(cardNumber.getText()) || cardNumber.getText().length() != 16) {
+            cardNumber.setError("Valid card number is required");
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(expiryDate.getText()) || !expiryDate.getText().toString().matches("(0[1-9]|1[0-2])/[0-9]{2}")) {
+            expiryDate.setError("Valid expiry date is required (MM/YY)");
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(cvv.getText()) || cvv.getText().length() != 3) {
+            cvv.setError("Valid CVV is required");
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(postalCode.getText())) {
+            postalCode.setError("Postal code is required");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     private void triggerCheckoutNotification() {

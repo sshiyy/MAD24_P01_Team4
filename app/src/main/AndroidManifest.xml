@@ -67,6 +67,13 @@
         <activity
             android:name=".loginPage"
             android:exported="true" />
+
+        <activity
+            android:name=".PaymentOptionsActivity"
+            android:exported="true" />
+
+        <activity android:name=".CardPaymentActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true" >

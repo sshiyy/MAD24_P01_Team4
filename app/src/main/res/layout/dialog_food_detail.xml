@@ -14,7 +14,7 @@
             android:id="@+id/dialogcross"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:srcCompat="@drawable/cross"
+            app:srcCompat="@drawable/blackcross"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"

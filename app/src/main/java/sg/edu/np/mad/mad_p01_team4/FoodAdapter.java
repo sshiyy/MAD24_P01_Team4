@@ -35,12 +35,22 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     private ArrayList<Food> foodList;
     private ArrayList<Food> filteredFoodList;
     private Context context;
+    private int layoutResource;
+    private FavoritesFragment favoritesFragment; // Optional
 
-    public FoodAdapter(ArrayList<Food> foodList, Context context) {
+    // Constructor for general use
+    public FoodAdapter(ArrayList<Food> foodList, Context context, int layoutResource) {
         this.foodList = foodList;
         this.filteredFoodList = new ArrayList<>(foodList);
         sortFoodList(filteredFoodList); // Sort the filtered list initially
         this.context = context;
+        this.layoutResource = layoutResource;
+    }
+
+    // Constructor for use with FavoritesFragment
+    public FoodAdapter(ArrayList<Food> foodList, Context context, int layoutResource, FavoritesFragment favoritesFragment) {
+        this(foodList, context, layoutResource);
+        this.favoritesFragment = favoritesFragment;
     }
 
     public List<Food> getFoodList() {
@@ -51,7 +61,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @Override
     public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate the custom layout for each item in the recyclerview
-        View view = LayoutInflater.from(context).inflate(R.layout.custom_productlist, parent, false);
+        View view = LayoutInflater.from(context).inflate(layoutResource, parent, false);
         return new FoodViewHolder(view);
     }
 
@@ -211,6 +221,9 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         filteredFoodList.addAll(newList);
         sortFoodList(filteredFoodList); // Sort the list after updating it
         notifyDataSetChanged();
+        if (favoritesFragment != null) {
+            favoritesFragment.updateFavoriteItems(filteredFoodList); // Update the fragment list
+        }
     }
 
     // Method to update the filtered list based on search query
@@ -276,6 +289,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                             document.getReference().delete();
                         }
                         favBtn.setImageResource(R.drawable.favbtn);
+                        removeItemFromList(food); // Remove item from the list
                     } else {
                         Map<String, Object> favorite = new HashMap<>();
                         favorite.put("userId", currentUser.getUid());
@@ -298,4 +312,14 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                     Toast.makeText(context, "Failed to update favorites: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+
+    private void removeItemFromList(Food food) {
+        filteredFoodList.remove(food);
+        notifyDataSetChanged();
+        if (favoritesFragment != null) {
+            favoritesFragment.toggleEmptyMessage();
+        }
+    }
 }
+

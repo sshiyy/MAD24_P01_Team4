@@ -124,10 +124,13 @@ they want to remove they can click on the 'X' button.
 ```
 Jason 
 Stage 1 Improvements
-1. Allow user to upload profile image 
+1. Allow user to upload profile image
+2. Updated UI for Login,Register and Profile
+3. Added popups for authentication
+4. Hide and unhide passwords.
 -------------------------------------- 
 Stage 2 Features
-1. Add gps tracker for locations if Echante decides to franchise to allow Users to locate our cafes
+1. Added a GPS tracker to locate cafes near the user
 ```
 Jason's References
 1. [Image Uploader](https://www.youtube.com/watch?v=mHR9Lof_VHQ&t=61s)

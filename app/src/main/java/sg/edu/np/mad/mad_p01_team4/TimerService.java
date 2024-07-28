@@ -9,7 +9,7 @@ import android.util.Log;
 public class TimerService extends Service {
 
     public static final String ACTION_UPDATE_WIDGET = "sg.edu.np.mad.mad_p01_team4.UPDATE_WIDGET";
-    private static final int TOTAL_TIME = 1 * 60 * 1000; // 10 minutes in milliseconds
+    private static final int TOTAL_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
     private int timeRemaining = TOTAL_TIME;
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -26,7 +26,6 @@ public class TimerService extends Service {
                 Intent intent = new Intent(ACTION_UPDATE_WIDGET);
                 intent.putExtra("time", time);
                 intent.putExtra("order_ready", false);
-
                 sendBroadcast(intent);
 
                 handler.postDelayed(this, 1000);

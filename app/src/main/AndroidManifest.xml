@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -27,25 +28,20 @@
         android:theme="@style/Theme.madAssignment1"
         tools:targetApi="31" >
 
-        <service android:name=".TimerService" android:enabled="true" android:exported="false"/>
         <receiver
-            android:name=".OrderWidget" android:exported="true" >
+            android:name=".OrderWidget"
+            android:label="Order Widget"
+            android:icon="@drawable/notification"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/order_widget_info" />
         </receiver>
 
-        <receiver
-            android:name=".OrderWidget$TimerUpdateReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="sg.edu.np.mad.mad_p01_team4.UPDATE_WIDGET" />
-            </intent-filter>
-        </receiver>
+        <service android:name=".TimerService" />
 
         <activity
             android:name=".viewallproduct"
@@ -68,6 +64,7 @@
         <activity
             android:name=".loginPage"
             android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true" >

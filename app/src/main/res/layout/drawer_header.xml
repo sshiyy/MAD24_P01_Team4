@@ -8,39 +8,13 @@
     android:background="@color/orange"
     android:layout_height="180dp">
     
-    <androidx.cardview.widget.CardView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:cardCornerRadius="40dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#D1D1D1">
+   <ImageView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:src="@drawable/mainlogov2">
 
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/account"/>
+   </ImageView>
 
-
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/textusername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="15sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textColor="#323232"
-        android:textSize="13sp"/>
 
 
 
